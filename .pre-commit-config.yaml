@@ -1,0 +1,39 @@
+repos:
+-   repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+    -   id: black
+        args: [--safe, --quiet]
+        language_version: python3
+-   repo: https://github.com/asottile/blacken-docs
+    rev: 1.16.0
+    hooks:
+    -   id: blacken-docs
+        additional_dependencies: [black==23.1.0]
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: debug-statements
+-   repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort
+        args: ["--force-single-line", "--line-length=100", "--profile=black"]
+-   repo: local
+    hooks:
+    -   id: rst
+        name: rst
+        entry: rst-lint --encoding utf-8
+        files: ^(CHANGELOG.rst|HOWTORELEASE.rst|README.rst)$
+        language: python
+        additional_dependencies: [pygments, restructuredtext_lint]
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+    -   id: mypy
+        files: ^(src/)
+        args: []
+        additional_dependencies: [types-attrs]
