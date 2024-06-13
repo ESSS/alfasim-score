@@ -1,4 +1,3 @@
-# mypy: disallow-untyped-defs
 from alfasim_sdk import AnnulusDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import ProfileDescription

@@ -11,7 +11,7 @@ requirements = [
     "alfasim-sdk==0.20.0",
     "attrs>=18.1.0",
     "numpy>=1.11.0",
-    "pandas>=2.2.2",
+    "pandas>=2.0.0",
     "oop-ext>=1.1",
     "typing_extensions",
 ]
