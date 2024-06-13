@@ -7,7 +7,14 @@ with open("README.rst", encoding="UTF-8") as readme_file:
 with open("CHANGELOG.rst", encoding="UTF-8") as changelog_file:
     history = changelog_file.read()
 
-requirements = ["attrs>=18.1.0", "numpy>=1.11.0", "oop-ext>=1.1", "typing_extensions"]
+requirements = [
+    "alfasim-sdk==0.20.0",
+    "attrs>=18.1.0",
+    "numpy>=1.11.0",
+    "pandas>=2.2.2",
+    "oop-ext>=1.1",
+    "typing_extensions",
+]
 extras_require = {
     "testing": [
         "codecov",
@@ -16,6 +23,7 @@ extras_require = {
         "pytest",
         "pytest-cov",
         "pytest-mock",
+        "pytest-regressions",
         "tox",
     ],
 }
