@@ -12,10 +12,10 @@ from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
 
 
-class AlfacaseConverter:
+class ScoreAlfacaseConverter:
     def __init__(self, score_reader: ScoreInputReader):
         self.score_input = score_reader
-        self.well_name = score_reader.score_filepath.stem
+        self.well_name = score_reader.input_content["name"]
 
     def _get_well_start_vertical_position(self) -> Scalar:
         _, y = self.score_input.read_well_trajectory()

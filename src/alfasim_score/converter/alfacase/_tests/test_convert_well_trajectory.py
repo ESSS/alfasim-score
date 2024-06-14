@@ -5,7 +5,7 @@ import pytest
 from pathlib import Path
 from pytest_regressions.num_regression import NumericRegressionFixture
 
-from alfasim_score.converter.alfacase.convert_alfacase import AlfacaseConverter
+from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 
@@ -18,7 +18,7 @@ def test_convert_well_trajectory(
     num_regression: NumericRegressionFixture,
     score_input_example: ScoreInputReader,
 ) -> None:
-    builder = AlfacaseConverter(score_input_example)
+    builder = ScoreAlfacaseConverter(score_input_example)
     well_description = builder.build_well()
     num_regression.check(
         {
