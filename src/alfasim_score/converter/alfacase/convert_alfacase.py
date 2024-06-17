@@ -17,10 +17,6 @@ class ScoreAlfacaseConverter:
         self.score_input = score_reader
         self.well_name = score_reader.input_content["name"]
 
-    def _get_well_start_vertical_position(self) -> Scalar:
-        _, y = self.score_input.read_well_trajectory()
-        return Scalar(y[0], LENGTH_UNIT)
-
     def _convert_well_trajectory(self) -> ProfileDescription:
         """
         Convert the trajectory for the imported well.
@@ -36,7 +32,7 @@ class ScoreAlfacaseConverter:
 
     # TODO PWPA-1934: implement this method
     def _convert_formation(self) -> AnnulusDescription:
-        return FormationDescription(reference_y_coordinate=self._get_well_start_vertical_position())
+        return FormationDescription(reference_y_coordinate=Scalar(0.0, "m", "length"))
 
     def build_well(self) -> WellDescription:
         return WellDescription(
