@@ -16,6 +16,7 @@ def test_convert_well_trajectory(
 ) -> None:
     builder = ScoreAlfacaseConverter(score_input_example)
     well_description = builder.build_well()
+
     num_regression.check(
         {
             "x": well_description.profile.x_and_y.x.GetValues("m"),

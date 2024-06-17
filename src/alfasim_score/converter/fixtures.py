@@ -1,6 +1,5 @@
-from pathlib import Path
-
 import pytest
+from pathlib import Path
 
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 

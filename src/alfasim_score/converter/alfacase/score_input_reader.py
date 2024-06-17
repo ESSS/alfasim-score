@@ -1,9 +1,20 @@
+from typing import Dict
+from typing import List
+from typing import Tuple
+from typing import Union
+
 import json
 from barril.units import Array
+from barril.units import Scalar
 from pathlib import Path
-from typing import Tuple
 
+from alfasim_score.units import DENSITY_UNIT
+from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import SPECIFIT_HEAT_UNIT
+from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
+from alfasim_score.units import THERMAL_EXPANSION_UNIT
+from alfasim_score.units import YOUNG_MODULUS_UNIT
 
 
 class ScoreInputReader:
@@ -17,3 +28,65 @@ class ScoreInputReader:
         x = [entry["displacement"] for entry in self.input_content["trajectory"]["data"]]
         y = [-entry["vertical_depth"] for entry in self.input_content["trajectory"]["data"]]
         return Array(x, LENGTH_UNIT), Array(y, LENGTH_UNIT)
+
+    def read_tubing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
+        """ "Read the data for the tubings from SCORE input file"""
+        tubing_data = []
+        for section in self.input_content["operation"]["tubing_string"]["string_sections"]:
+            thermal_property = section["pipe"]["grade"]["thermomechanical_property"]
+            tubing_data.append(
+                {
+                    "name": section["pipe"]["grade"]["name"],
+                    "density": Scalar(thermal_property["density"], DENSITY_UNIT),
+                    "thermal_conductivity": Scalar(
+                        thermal_property["thermal_conductivity"], THERMAL_CONDUCTIVITY_UNIT
+                    ),
+                    "specific_heat": Scalar(thermal_property["specific_heat"], SPECIFIT_HEAT_UNIT),
+                    "thermal_expansion": Scalar(
+                        thermal_property["thermal_expansion_coefficient"], THERMAL_EXPANSION_UNIT
+                    ),
+                    "young_modulus": Scalar(thermal_property["e"], YOUNG_MODULUS_UNIT),
+                    "poisson_coefficient": Scalar(thermal_property["nu"], FRACTION_UNIT),
+                }
+            )
+        return tubing_data
+
+    def read_cement_material(self) -> Dict[str, Union[Scalar, str]]:
+        """ "Read the data for the cement from SCORE input file"""
+        properties = self.input_content["well_strings"][0]["cementing"]["first_slurry"][
+            "thermomechanical_property"
+        ]
+        return {
+            "name": "cement",
+            "density": Scalar(properties["density"], DENSITY_UNIT),
+            "thermal_conductivity": Scalar(
+                properties["thermal_conductivity"], THERMAL_CONDUCTIVITY_UNIT
+            ),
+            "specific_heat": Scalar(properties["specific_heat"], SPECIFIT_HEAT_UNIT),
+            "thermal_expansion": Scalar(
+                properties["thermal_expansion_coefficient"], THERMAL_EXPANSION_UNIT
+            ),
+            "young_modulus": Scalar(properties["e"], YOUNG_MODULUS_UNIT),
+            "poisson_coefficient": Scalar(properties["nu"], FRACTION_UNIT),
+        }
+
+    def read_lithology_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
+        """ "Read the data for the lithologies from SCORE input file"""
+        lithology_data = []
+        for lithology in self.input_content["lithologies"]:
+            properties = lithology["thermomechanical_property"]
+            lithology_data.append(
+                {
+                    "name": lithology["display_name"],
+                    "density": Scalar(properties["density"], DENSITY_UNIT),
+                    "thermal_conductivity": Scalar(
+                        properties["thermal_conductivity"], THERMAL_CONDUCTIVITY_UNIT
+                    ),
+                    "specific_heat": Scalar(properties["specific_heat"], SPECIFIT_HEAT_UNIT),
+                    # expansion has null value, so just use alfacase default 0.0 for this parameter
+                    "thermal_expansion": Scalar(0.0, THERMAL_EXPANSION_UNIT),
+                    "young_modulus": Scalar(properties["e"], YOUNG_MODULUS_UNIT),
+                    "poisson_coefficient": Scalar(properties["nu"], FRACTION_UNIT),
+                }
+            )
+        return lithology_data

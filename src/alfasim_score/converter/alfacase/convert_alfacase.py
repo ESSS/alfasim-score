@@ -1,5 +1,9 @@
+from typing import List
+
 from alfasim_sdk import AnnulusDescription
 from alfasim_sdk import FormationDescription
+from alfasim_sdk import MaterialDescription
+from alfasim_sdk import MaterialType
 from alfasim_sdk import ProfileDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
@@ -25,6 +29,27 @@ class ScoreAlfacaseConverter:
         """
         x, y = self.score_input.read_well_trajectory()
         return ProfileDescription(x_and_y=XAndYDescription(x=x, y=y))
+
+    def convert_materials(self) -> List[MaterialDescription]:
+        """Convert list of materials from SCORE file"""
+        material_descriptions = []
+        material_list = (
+            [self.score_input.read_cement_material()]
+            + self.score_input.read_tubing_materials()
+            + self.score_input.read_lithology_materials()
+        )
+        for data in material_list:
+            material_descriptions.append(
+                MaterialDescription(
+                    name=data["name"],
+                    material_type=MaterialType.Solid,
+                    density=data["density"],
+                    thermal_conductivity=data["thermal_conductivity"],
+                    heat_capacity=data["specific_heat"],
+                    expansion=data["thermal_expansion"],
+                )
+            )
+        return material_descriptions
 
     # TODO PWPA-1937: implement this method
     def _convert_annulus(self) -> AnnulusDescription:
