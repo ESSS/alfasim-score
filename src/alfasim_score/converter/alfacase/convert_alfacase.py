@@ -7,6 +7,7 @@ from alfasim_sdk import MaterialType
 from alfasim_sdk import ProfileDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
+from alfasim_sdk import CasingDescription, PackerDescription, TubingDescription, CasingSectionDescription, OpenHoleDescription
 from barril.units import Scalar
 
 from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
@@ -59,10 +60,56 @@ class ScoreAlfacaseConverter:
     def _convert_formation(self) -> AnnulusDescription:
         return FormationDescription(reference_y_coordinate=Scalar(0.0, "m", "length"))
 
+    def _convert_casing_list(self) -> List[CasingSectionDescription]:
+        return []
+    
+    def _convert_tubing_list(self) -> List[TubingDescription]:
+        tubing_sections = []
+        for i, data in enumerate(self.score_input.read_casings(), start=1):
+            tubing_sections.append(
+                TubingDescription(
+                    name=f"TUBING_{i}",
+                    length=Scalar(data["base_md"] - data["top_md"], LENGTH_UNIT, "length"),
+                    outer_diameter=data["outer_diameter"],
+                    inner_diameter=data["inner_diameter"],
+                    # TODO: set right the value for roughness...
+                    inner_roughness=Scalar(0.0, "mm"),
+                    material=data["material"]
+                )
+            )
+        return tubing_sections
+    
+    def _convert_packer_list(self) -> List[PackerDescription]:
+        """Create the description for the packers."""
+        packers = []
+        for data in self.score_input.read_packers():
+            packers.append(
+                PackerDescription(
+                    name=data["name"],
+                    position=data["position"],
+                    material_above=data["material_above"],
+                )
+            )
+        return packers
+
+    def _convert_open_hole(self) -> List[OpenHoleDescription]:
+        return []
+
+    def _convert_casing_list(self) -> WellDescription:
+        """Create the description for the casings."""
+        return CasingDescription(
+            casing_sections=self._convert_casing_list(),
+            tubings=self._convert_tubing_list(),
+            packers=self._convert_packer_list(),
+            open_holes=self._convert_open_hole(),
+        )
+        
     def build_well(self) -> WellDescription:
+        """Create the description for the well."""
         return WellDescription(
             name=self.well_name,
             profile=self._convert_well_trajectory(),
+            casing=self._convert_casing(),
             annulus=self._convert_annulus(),
             formation=self._convert_formation(),
             top_node=WELLBORE_TOP_NODE,

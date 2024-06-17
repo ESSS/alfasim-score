@@ -4,9 +4,9 @@ from typing import Tuple
 from typing import Union
 
 import json
-from barril.units import Array
-from barril.units import Scalar
+from barril.units import Array, Scalar
 from pathlib import Path
+from typing import Tuple, List, Dict
 
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.units import DENSITY_UNIT
@@ -25,7 +25,7 @@ class ScoreInputReader:
             self.input_content = json.load(f)
 
     def read_well_trajectory(self) -> Tuple[Array, Array]:
-        """Create the arrays with the x and y positions."""
+        """Read the arrays with the x and y positions."""
         x = [entry["displacement"] for entry in self.input_content["trajectory"]["data"]]
         y = [-entry["vertical_depth"] for entry in self.input_content["trajectory"]["data"]]
         return Array(x, LENGTH_UNIT), Array(y, LENGTH_UNIT)
@@ -97,3 +97,44 @@ class ScoreInputReader:
                 }
             )
         return lithology_data
+
+    # TODO: implement the casing parser
+    def read_casings() -> List[Dict[str, Scalar | str]]:
+        return []
+
+    def read_tubing(self) -> List[Dict[str, Scalar | str]]:
+        """"Read the data for the tubing from SCORE input file"""
+        casing_data = []
+        for section in self.input_content["operation"]["tubing_string"]["string_sections"]:
+            outer_radius = section["pipe"]["od"] / 2.0
+            thickness = section["pipe"]["wt"]
+            inner_diameter = 2.0 * (outer_radius - thickness)
+            casing_data.append(
+                {
+                    "top_md": Scalar(section["top_md"], LENGTH_UNIT, "length"),
+                    "base_md": Scalar(section["base_md"], LENGTH_UNIT, "length"),
+                    "inner_diameter": Scalar(inner_diameter, DIAMETER_UNIT, "diameter"),
+                    "outer_diameter": Scalar(section["od"], DIAMETER_UNIT, "diameter"),
+                    "material": section["pipe"]["grade"]["name"]
+                }
+            )
+        return casing_data
+
+    def read_packers(self) -> List[Dict[str, Scalar | str]]:
+        """"Read the data for the packers from SCORE input file"""
+        packer_data = []
+        for component in self.input_content["operation"]["tubing_string"]["components"]:
+            if component["component"]["type"] == "PACKER":
+                packer_data.append(
+                    {
+                        "name": component["name"],
+                        "position": Scalar(component["depth"], LENGTH_UNIT, "length"),
+                        # TODO: get material above from somewhere else
+                        "material_above": "",
+                    }
+                )
+        return packer_data
+
+    # TODO: implement the open holes parser
+    def read_open_hole(self) -> List[Dict[str, Scalar | str]]:
+        return []
