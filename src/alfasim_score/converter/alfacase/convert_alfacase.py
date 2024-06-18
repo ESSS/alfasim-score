@@ -1,16 +1,21 @@
 from typing import List
 
 from alfasim_sdk import AnnulusDescription
+from alfasim_sdk import CasingDescription
+from alfasim_sdk import CasingSectionDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import MaterialDescription
 from alfasim_sdk import MaterialType
+from alfasim_sdk import OpenHoleDescription
+from alfasim_sdk import PackerDescription
 from alfasim_sdk import ProfileDescription
+from alfasim_sdk import TubingDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
-from alfasim_sdk import CasingDescription, PackerDescription, TubingDescription, CasingSectionDescription, OpenHoleDescription
 from barril.units import Scalar
 
 from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
+from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE
 from alfasim_score.constants import WELLBORE_TOP_NODE
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
@@ -61,24 +66,42 @@ class ScoreAlfacaseConverter:
         return FormationDescription(reference_y_coordinate=Scalar(0.0, "m", "length"))
 
     def _convert_casing_list(self) -> List[CasingSectionDescription]:
-        return []
-    
+        casing_sections = []
+        for i, data in enumerate(self.score_input.read_casings(), start=1):
+            casing_sections.append(
+                CasingSectionDescription(
+                    name=f"CASING_{i}",
+                    hanger_depth=data["hanger_md"],
+                    settings_depth=data["final_md"],
+                    hole_diameter=data["hole_diameter"],
+                    outer_diameter=data["outer_diameter"],
+                    # TODO: missing values
+                    # inner_diameter: Scalar
+                    # inner_roughness: Scalar
+                    # material: Optional[str] = None
+                    top_of_filler=data["top_of_cement"],
+                    filler_material=CEMENT_NAME,
+                    # material_above_filler: Optional[str] = None
+                )
+            )
+        return casing_sections
+
     def _convert_tubing_list(self) -> List[TubingDescription]:
         tubing_sections = []
-        for i, data in enumerate(self.score_input.read_casings(), start=1):
+        for i, data in enumerate(self.score_input.read_tubing(), start=1):
             tubing_sections.append(
                 TubingDescription(
                     name=f"TUBING_{i}",
-                    length=Scalar(data["base_md"] - data["top_md"], LENGTH_UNIT, "length"),
+                    length=data["base_md"] - data["top_md"],
                     outer_diameter=data["outer_diameter"],
                     inner_diameter=data["inner_diameter"],
                     # TODO: set right the value for roughness...
                     inner_roughness=Scalar(0.0, "mm"),
-                    material=data["material"]
+                    material=data["material"],
                 )
             )
         return tubing_sections
-    
+
     def _convert_packer_list(self) -> List[PackerDescription]:
         """Create the description for the packers."""
         packers = []
@@ -92,24 +115,24 @@ class ScoreAlfacaseConverter:
             )
         return packers
 
-    def _convert_open_hole(self) -> List[OpenHoleDescription]:
+    def _convert_open_hole_list(self) -> List[OpenHoleDescription]:
         return []
 
-    def _convert_casing_list(self) -> WellDescription:
+    def _convert_casings(self) -> WellDescription:
         """Create the description for the casings."""
         return CasingDescription(
             casing_sections=self._convert_casing_list(),
             tubings=self._convert_tubing_list(),
             packers=self._convert_packer_list(),
-            open_holes=self._convert_open_hole(),
+            open_holes=self._convert_open_hole_list(),
         )
-        
+
     def build_well(self) -> WellDescription:
         """Create the description for the well."""
         return WellDescription(
             name=self.well_name,
             profile=self._convert_well_trajectory(),
-            casing=self._convert_casing(),
+            casing=self._convert_casings(),
             annulus=self._convert_annulus(),
             formation=self._convert_formation(),
             top_node=WELLBORE_TOP_NODE,

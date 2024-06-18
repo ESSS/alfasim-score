@@ -1,21 +1,36 @@
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Tuple
 from typing import Union
 
 import json
-from barril.units import Array, Scalar
+from barril.units import Array
+from barril.units import Scalar
+from enum import StrEnum
 from pathlib import Path
-from typing import Tuple, List, Dict
 
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.units import DENSITY_UNIT
+from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
+
+
+class WellItemType(StrEnum):
+    DRILLING = "DRILLING"
+    CASING = "CASING"
+
+
+class WellItemInterval(StrEnum):
+    CONDUCTOR = "CONDUCTOR"
+    SURFACE = "SURFACE"
+    PRODUCTION = "PRODUCTION"
+    OPEN = "OPEN"
 
 
 class ScoreInputReader:
@@ -98,30 +113,45 @@ class ScoreInputReader:
             )
         return lithology_data
 
-    # TODO: implement the casing parser
-    def read_casings() -> List[Dict[str, Scalar | str]]:
-        return []
-
-    def read_tubing(self) -> List[Dict[str, Scalar | str]]:
-        """"Read the data for the tubing from SCORE input file"""
+    def read_casings(self) -> List[Dict[str, Scalar | str]]:
+        """ "Read the data for the casing from SCORE input file"""
         casing_data = []
+        for section in self.input_content["well_strings"]:
+            if section["interval"] != WellItemInterval.OPEN.value:
+                casing_data.append(
+                    {
+                        "hanger_md": Scalar(section["hanger_md"], LENGTH_UNIT, "length"),
+                        "shoe_md": Scalar(section["shoe_md"], LENGTH_UNIT, "length"),
+                        "final_md": Scalar(section["final_md"], LENGTH_UNIT, "length"),
+                        "top_of_cement": Scalar(section["toc_md"], LENGTH_UNIT, "length"),
+                        "hole_diameter": Scalar(section["hole_size"], DIAMETER_UNIT, "diameter"),
+                        # TODO: check missing inner diameter here
+                        # "inner_diameter": Scalar(inner_diameter, DIAMETER_UNIT, "diameter"),
+                        "outer_diameter": Scalar(section["od"], DIAMETER_UNIT, "diameter"),
+                    }
+                )
+        return casing_data
+
+    def read_tubing(self) -> List[Dict[str, Any]]:
+        """ "Read the data for the tubing from SCORE input file"""
+        tubing_data = []
         for section in self.input_content["operation"]["tubing_string"]["string_sections"]:
             outer_radius = section["pipe"]["od"] / 2.0
             thickness = section["pipe"]["wt"]
             inner_diameter = 2.0 * (outer_radius - thickness)
-            casing_data.append(
+            tubing_data.append(
                 {
                     "top_md": Scalar(section["top_md"], LENGTH_UNIT, "length"),
                     "base_md": Scalar(section["base_md"], LENGTH_UNIT, "length"),
                     "inner_diameter": Scalar(inner_diameter, DIAMETER_UNIT, "diameter"),
-                    "outer_diameter": Scalar(section["od"], DIAMETER_UNIT, "diameter"),
-                    "material": section["pipe"]["grade"]["name"]
+                    "outer_diameter": Scalar(section["pipe"]["od"], DIAMETER_UNIT, "diameter"),
+                    "material": section["pipe"]["grade"]["name"],
                 }
             )
-        return casing_data
+        return tubing_data
 
     def read_packers(self) -> List[Dict[str, Scalar | str]]:
-        """"Read the data for the packers from SCORE input file"""
+        """ "Read the data for the packers from SCORE input file"""
         packer_data = []
         for component in self.input_content["operation"]["tubing_string"]["components"]:
             if component["component"]["type"] == "PACKER":
@@ -135,6 +165,21 @@ class ScoreInputReader:
                 )
         return packer_data
 
-    # TODO: implement the open holes parser
     def read_open_hole(self) -> List[Dict[str, Scalar | str]]:
-        return []
+        """ "Read the data for the open hole from SCORE input file"""
+        casing_data = []
+        for section in self.input_content["well_strings"]:
+            if section["interval"] == WellItemInterval.OPEN.value:
+                casing_data.append(
+                    {
+                        "hanger_md": Scalar(section["hanger_md"], LENGTH_UNIT, "length"),
+                        "shoe_md": Scalar(section["shoe_md"], LENGTH_UNIT, "length"),
+                        "final_md": Scalar(section["final_md"], LENGTH_UNIT, "length"),
+                        "top_of_cement": Scalar(section["toc_md"], LENGTH_UNIT, "length"),
+                        "hole_diameter": Scalar(section["hole_size"], DIAMETER_UNIT, "diameter"),
+                        # TODO: check missing inner diameter here
+                        # "inner_diameter": Scalar(inner_diameter, DIAMETER_UNIT, "diameter"),
+                        "outer_diameter": Scalar(section["od"], DIAMETER_UNIT, "diameter"),
+                    }
+                )
+        return casing_data
