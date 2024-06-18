@@ -34,7 +34,7 @@ class ScoreAlfacaseConverter:
         """Convert list of materials from SCORE file"""
         material_descriptions = []
         material_list = (
-            [self.score_input.read_cement_material()]
+            self.score_input.read_cement_material()
             + self.score_input.read_tubing_materials()
             + self.score_input.read_lithology_materials()
         )
