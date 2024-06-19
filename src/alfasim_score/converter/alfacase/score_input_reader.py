@@ -24,9 +24,10 @@ from alfasim_score.units import YOUNG_MODULUS_UNIT
 class WellItemType(StrEnum):
     DRILLING = "DRILLING"
     CASING = "CASING"
+    NONE = "NONE"
 
 
-class WellItemInterval(StrEnum):
+class WellItemFunction(StrEnum):
     CONDUCTOR = "CONDUCTOR"
     SURFACE = "SURFACE"
     PRODUCTION = "PRODUCTION"
@@ -67,15 +68,37 @@ class ScoreInputReader:
             )
         return tubing_data
 
+    def read_casing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
+        """Read the data for the casing from SCORE input file."""
+        casing_data = []
+        for item in self.input_content["operation"]["thermal_simulation"]["well_strings"]:
+            for section in item["string_sections"]:
+                properties = section["pipe"]["grade"]["thermomechanical_property"]
+                casing_data.append(
+                    {
+                        "name": section["pipe"]["grade"]["name"],
+                        "density": Scalar(properties["density"], DENSITY_UNIT),
+                        "thermal_conductivity": Scalar(
+                            properties["thermal_conductivity"], THERMAL_CONDUCTIVITY_UNIT
+                        ),
+                        "specific_heat": Scalar(properties["specific_heat"], SPECIFIC_HEAT_UNIT),
+                        "thermal_expansion": Scalar(
+                            properties["thermal_expansion_coefficient"], THERMAL_EXPANSION_UNIT
+                        ),
+                        "young_modulus": Scalar(properties["e"], YOUNG_MODULUS_UNIT),
+                        "poisson_ratio": Scalar(properties["nu"], FRACTION_UNIT),
+                    }
+                )
+        return casing_data
+
     def read_cement_material(self) -> List[Dict[str, Union[Scalar, str]]]:
         """
         Read the data for the cement from SCORE input file.
         This method assumes all configured cement properties are the same and that
         the first_slurry and second_slurry have the same properties.
         """
-        properties = self.input_content["well_strings"][0]["cementing"]["first_slurry"][
-            "thermomechanical_property"
-        ]
+        well_strings = self.input_content["operation"]["thermal_simulation"]["well_strings"]
+        properties = well_strings[0]["cementing"]["first_slurry"]["thermomechanical_property"]
         return [
             {
                 "name": CEMENT_NAME,
@@ -113,27 +136,47 @@ class ScoreInputReader:
             )
         return lithology_data
 
-    def read_casings(self) -> List[Dict[str, Scalar | str]]:
-        """ "Read the data for the casing from SCORE input file"""
+    def read_casings(self) -> List[Dict[str, Any]]:
+        """Read the data for the casing from SCORE input file"""
         casing_data = []
-        for section in self.input_content["well_strings"]:
-            if section["interval"] != WellItemInterval.OPEN.value:
+        for item in self.input_content["operation"]["thermal_simulation"]["well_strings"]:
+            if item["interval"] != WellItemFunction.OPEN.value:
                 casing_data.append(
                     {
-                        "hanger_md": Scalar(section["hanger_md"], LENGTH_UNIT, "length"),
-                        "shoe_md": Scalar(section["shoe_md"], LENGTH_UNIT, "length"),
-                        "final_md": Scalar(section["final_md"], LENGTH_UNIT, "length"),
-                        "top_of_cement": Scalar(section["toc_md"], LENGTH_UNIT, "length"),
-                        "hole_diameter": Scalar(section["hole_size"], DIAMETER_UNIT, "diameter"),
-                        # TODO: check missing inner diameter here
-                        # "inner_diameter": Scalar(inner_diameter, DIAMETER_UNIT, "diameter"),
-                        "outer_diameter": Scalar(section["od"], DIAMETER_UNIT, "diameter"),
+                        "type": WellItemType(item["type"]) if "type" in item else WellItemType.NONE,
+                        "function": WellItemFunction(item["interval"]),
+                        "hanger_md": Scalar(item["hanger_md"], LENGTH_UNIT, "length"),
+                        "shoe_md": Scalar(item["shoe_md"], LENGTH_UNIT, "length"),
+                        "final_md": Scalar(item["final_md"], LENGTH_UNIT, "length"),
+                        "top_of_cement": Scalar(item["toc_md"], LENGTH_UNIT, "length"),
+                        # TODO: check how to get this material obove filler
+                        "material_above_filler": None,
+                        "hole_diameter": Scalar(item["hole_size"], DIAMETER_UNIT, "diameter"),
+                        # TODO: check if these diameters should be used here
+                        # "inner_diameter":,
+                        # "outer_diameter": Scalar(item["od"], DIAMETER_UNIT, "diameter"),
+                        "sections": [
+                            {
+                                "material": section["pipe"]["grade"]["name"],
+                                "top_md": Scalar(section["top_md"], LENGTH_UNIT, "length"),
+                                "base_md": Scalar(section["base_md"], LENGTH_UNIT, "length"),
+                                "inner_diameter": Scalar(
+                                    section["pipe"]["od"] - 2.0 * section["pipe"]["wt"],
+                                    DIAMETER_UNIT,
+                                    "diameter",
+                                ),
+                                "outer_diameter": Scalar(
+                                    section["pipe"]["od"], DIAMETER_UNIT, "diameter"
+                                ),
+                            }
+                            for section in item["string_sections"]
+                        ],
                     }
                 )
         return casing_data
 
     def read_tubing(self) -> List[Dict[str, Any]]:
-        """ "Read the data for the tubing from SCORE input file"""
+        """Read the data for the tubing from SCORE input file"""
         tubing_data = []
         for section in self.input_content["operation"]["tubing_string"]["string_sections"]:
             outer_radius = section["pipe"]["od"] / 2.0
@@ -150,8 +193,8 @@ class ScoreInputReader:
             )
         return tubing_data
 
-    def read_packers(self) -> List[Dict[str, Scalar | str]]:
-        """ "Read the data for the packers from SCORE input file"""
+    def read_packers(self) -> List[Dict[str, Any]]:
+        """Read the data for the packers from SCORE input file"""
         packer_data = []
         for component in self.input_content["operation"]["tubing_string"]["components"]:
             if component["component"]["type"] == "PACKER":
@@ -160,26 +203,21 @@ class ScoreInputReader:
                         "name": component["name"],
                         "position": Scalar(component["depth"], LENGTH_UNIT, "length"),
                         # TODO: get material above from somewhere else
-                        "material_above": "",
+                        # well_string items have the annular_fluids, but the fluids don't have properties in file
+                        "material_above": None,
                     }
                 )
         return packer_data
 
     def read_open_hole(self) -> List[Dict[str, Scalar | str]]:
-        """ "Read the data for the open hole from SCORE input file"""
+        """Read the data for the open hole from SCORE input file"""
         casing_data = []
-        for section in self.input_content["well_strings"]:
-            if section["interval"] == WellItemInterval.OPEN.value:
+        for section in self.input_content["operation"]["thermal_simulation"]["well_strings"]:
+            if section["interval"] == WellItemFunction.OPEN.value:
                 casing_data.append(
                     {
-                        "hanger_md": Scalar(section["hanger_md"], LENGTH_UNIT, "length"),
-                        "shoe_md": Scalar(section["shoe_md"], LENGTH_UNIT, "length"),
                         "final_md": Scalar(section["final_md"], LENGTH_UNIT, "length"),
-                        "top_of_cement": Scalar(section["toc_md"], LENGTH_UNIT, "length"),
                         "hole_diameter": Scalar(section["hole_size"], DIAMETER_UNIT, "diameter"),
-                        # TODO: check missing inner diameter here
-                        # "inner_diameter": Scalar(inner_diameter, DIAMETER_UNIT, "diameter"),
-                        "outer_diameter": Scalar(section["od"], DIAMETER_UNIT, "diameter"),
                     }
                 )
         return casing_data
