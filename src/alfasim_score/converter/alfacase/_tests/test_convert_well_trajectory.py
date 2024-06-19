@@ -9,17 +9,13 @@ from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConve
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 
-@pytest.fixture
-def score_input_example(shared_datadir: Path) -> ScoreInputReader:
-    return ScoreInputReader(shared_datadir / "score_input_example.json")
-
-
 def test_convert_well_trajectory(
     num_regression: NumericRegressionFixture,
     score_input_example: ScoreInputReader,
 ) -> None:
     builder = ScoreAlfacaseConverter(score_input_example)
     well_description = builder.build_well()
+
     num_regression.check(
         {
             "x": well_description.profile.x_and_y.x.GetValues("m"),
