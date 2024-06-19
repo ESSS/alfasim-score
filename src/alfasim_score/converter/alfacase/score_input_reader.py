@@ -153,7 +153,7 @@ class ScoreInputReader:
                         "material_above_filler": None,
                         "hole_diameter": Scalar(item["hole_size"], DIAMETER_UNIT, "diameter"),
                         # TODO: check if these diameters should be used here
-                        # "inner_diameter":,
+                        # "inner_diameter": ???,
                         # "outer_diameter": Scalar(item["od"], DIAMETER_UNIT, "diameter"),
                         "sections": [
                             {

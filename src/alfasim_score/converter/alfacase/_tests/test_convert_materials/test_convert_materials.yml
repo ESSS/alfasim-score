@@ -6,6 +6,36 @@
   type: solid
 - density: 65.5035
   heat_capacity: 460.9
+  name: B
+  thermal_conductivity: 45.345257
+  thermal_expansion: 1.2e-05
+  type: solid
+- density: 65.5035
+  heat_capacity: 460.9
+  name: X-80
+  thermal_conductivity: 45.345257
+  thermal_expansion: 1.2e-05
+  type: solid
+- density: 65.5035
+  heat_capacity: 460.9
+  name: N-80
+  thermal_conductivity: 45.345257
+  thermal_expansion: 1.2e-05
+  type: solid
+- density: 65.5035
+  heat_capacity: 460.9
+  name: C-110 HC
+  thermal_conductivity: 45.345257
+  thermal_expansion: 1.2e-05
+  type: solid
+- density: 65.5035
+  heat_capacity: 460.9
+  name: SDSS/125KSI
+  thermal_conductivity: 45.345257
+  thermal_expansion: 1.2e-05
+  type: solid
+- density: 65.5035
+  heat_capacity: 460.9
   name: SDSS/125KSI
   thermal_conductivity: 45.345257
   thermal_expansion: 1.2e-05

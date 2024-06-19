@@ -30,6 +30,7 @@ def filter_duplicated_materials(
 ) -> List[MaterialDescription]:
     """Remove the duplicated materials parsed by the reader"""
     # TODO: implement it to filter the duplicated materials
+    # TODO: remember to get all cements (???)
     return material_list
 
 
@@ -50,7 +51,7 @@ class ScoreAlfacaseConverter:
     def convert_materials(self) -> List[MaterialDescription]:
         """Convert list of materials from SCORE file"""
         material_descriptions = []
-        material_list = filter_duplicated_materials(
+        material_list = (
             self.score_input.read_cement_material()
             + self.score_input.read_casing_materials()
             + self.score_input.read_tubing_materials()
@@ -81,7 +82,8 @@ class ScoreAlfacaseConverter:
     def _convert_casing_list(self) -> List[CasingSectionDescription]:
         """Create the description for the casings."""
         casing_sections = []
-        for i, data in enumerate(self.score_input.read_casings(), start=1):
+        i = 1
+        for data in self.score_input.read_casings():
             for section in data["sections"]:
                 casing_sections.append(
                     CasingSectionDescription(
@@ -95,9 +97,10 @@ class ScoreAlfacaseConverter:
                         material=section["material"],
                         top_of_filler=data["top_of_cement"],
                         filler_material=CEMENT_NAME,
-                        material_above_filler=data["material_above"],
+                        material_above_filler=data["material_above_filler"],
                     )
                 )
+                i += 1
         return casing_sections
 
     def _convert_tubing_list(self) -> List[TubingDescription]:
@@ -133,11 +136,11 @@ class ScoreAlfacaseConverter:
         """Create the description for the open hole."""
         open_hole = []
         start_position = Scalar(
-            max([data["shoe_md"] for data in self.score_input.read_casings()]),
+            max([data["shoe_md"].GetValue() for data in self.score_input.read_casings()]),
             LENGTH_UNIT,
             "length",
         )
-        for i, data in enumerate(self.score_input.read_tubing(), start=1):
+        for i, data in enumerate(self.score_input.read_open_hole(), start=1):
             open_hole.append(
                 OpenHoleDescription(
                     name=f"OPEN_HOLE_{i}",
