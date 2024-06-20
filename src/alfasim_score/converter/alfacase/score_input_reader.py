@@ -11,6 +11,7 @@ from enum import StrEnum
 from pathlib import Path
 
 from alfasim_score.constants import CEMENT_NAME
+from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
@@ -54,6 +55,7 @@ class ScoreInputReader:
             tubing_data.append(
                 {
                     "name": section["pipe"]["grade"]["name"],
+                    "type": "solid",
                     "density": Scalar(thermal_property["density"], DENSITY_UNIT),
                     "thermal_conductivity": Scalar(
                         thermal_property["thermal_conductivity"], THERMAL_CONDUCTIVITY_UNIT
@@ -77,6 +79,7 @@ class ScoreInputReader:
                 casing_data.append(
                     {
                         "name": section["pipe"]["grade"]["name"],
+                        "type": "solid",
                         "density": Scalar(properties["density"], DENSITY_UNIT),
                         "thermal_conductivity": Scalar(
                             properties["thermal_conductivity"], THERMAL_CONDUCTIVITY_UNIT
@@ -102,6 +105,7 @@ class ScoreInputReader:
         return [
             {
                 "name": CEMENT_NAME,
+                "type": "solid",
                 "density": Scalar(properties["density"], DENSITY_UNIT),
                 "thermal_conductivity": Scalar(
                     properties["thermal_conductivity"], THERMAL_CONDUCTIVITY_UNIT
@@ -123,6 +127,7 @@ class ScoreInputReader:
             lithology_data.append(
                 {
                     "name": lithology["display_name"],
+                    "type": "solid",
                     "density": Scalar(properties["density"], DENSITY_UNIT),
                     "thermal_conductivity": Scalar(
                         properties["thermal_conductivity"], THERMAL_CONDUCTIVITY_UNIT
@@ -135,6 +140,21 @@ class ScoreInputReader:
                 }
             )
         return lithology_data
+
+    def read_packer_fluid(self) -> List[Dict[str, Any]]:
+        """ "Get the properties of fluid above packer."""
+        # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
+        # the fluid used now is water
+        return [
+            {
+                "name": FLUID_DEFAULT_NAME,
+                "type": "fluid",
+                "density": Scalar(1000.0, "kg/m3", "density"),
+                "thermal_conductivity": Scalar(0.6, THERMAL_CONDUCTIVITY_UNIT),
+                "specific_heat": Scalar(4181.0, SPECIFIC_HEAT_UNIT),
+                "thermal_expansion": Scalar(0.0004, THERMAL_EXPANSION_UNIT),
+            }
+        ]
 
     def read_casings(self) -> List[Dict[str, Any]]:
         """Read the data for the casing from SCORE input file"""
@@ -149,12 +169,7 @@ class ScoreInputReader:
                         "shoe_md": Scalar(item["shoe_md"], LENGTH_UNIT, "length"),
                         "final_md": Scalar(item["final_md"], LENGTH_UNIT, "length"),
                         "top_of_cement": Scalar(item["toc_md"], LENGTH_UNIT, "length"),
-                        # TODO: check how to get this material obove filler
-                        "material_above_filler": None,
                         "hole_diameter": Scalar(item["hole_size"], DIAMETER_UNIT, "diameter"),
-                        # TODO: check if these diameters should be used here
-                        # "inner_diameter": ???,
-                        # "outer_diameter": Scalar(item["od"], DIAMETER_UNIT, "diameter"),
                         "sections": [
                             {
                                 "material": section["pipe"]["grade"]["name"],
@@ -202,9 +217,6 @@ class ScoreInputReader:
                     {
                         "name": component["name"],
                         "position": Scalar(component["depth"], LENGTH_UNIT, "length"),
-                        # TODO: get material above from somewhere else
-                        # well_string items have the annular_fluids, but the fluids don't have properties in file
-                        "material_above": None,
                     }
                 )
         return packer_data

@@ -4,7 +4,7 @@
   inner_diameter: 33.0
   inner_roughness: 0.05
   material: B
-  material_above_filler: null
+  material_above_filler: fluid_default
   name: CONDUCTOR_DRILLING_1
   outer_diameter: 36.0
   settings_depth: 2168.0
@@ -15,7 +15,7 @@
   inner_diameter: 16.25
   inner_roughness: 0.05
   material: X-80
-  material_above_filler: null
+  material_above_filler: fluid_default
   name: SURFACE_CASING_2
   outer_diameter: 18.0
   settings_depth: 3490.0
@@ -26,7 +26,7 @@
   inner_diameter: 10.711
   inner_roughness: 0.05
   material: N-80
-  material_above_filler: null
+  material_above_filler: fluid_default
   name: PRODUCTION_CASING_3
   outer_diameter: 11.875
   settings_depth: 3072.0
@@ -37,7 +37,7 @@
   inner_diameter: 9.156
   inner_roughness: 0.05
   material: C-110 HC
-  material_above_filler: null
+  material_above_filler: fluid_default
   name: PRODUCTION_CASING_4
   outer_diameter: 10.75
   settings_depth: 5441.0
@@ -48,7 +48,7 @@
   inner_diameter: 8.684000000000001
   inner_roughness: 0.05
   material: SDSS/125KSI
-  material_above_filler: null
+  material_above_filler: fluid_default
   name: PRODUCTION_CASING_5
   outer_diameter: 10.75
   settings_depth: 5607.0

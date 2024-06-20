@@ -17,6 +17,7 @@ from barril.units import Scalar
 from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
+from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import ROCK_DEFAULT_ROUGHNESS
 from alfasim_score.constants import TUBING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE
@@ -55,13 +56,14 @@ class ScoreAlfacaseConverter:
             + self.score_input.read_casing_materials()
             + self.score_input.read_tubing_materials()
             + self.score_input.read_lithology_materials()
+            + self.score_input.read_packer_fluid()
         )
 
         for data in material_list:
             material_descriptions.append(
                 MaterialDescription(
                     name=data["name"],
-                    material_type=MaterialType.Solid,
+                    material_type=MaterialType(data["type"]),
                     density=data["density"],
                     thermal_conductivity=data["thermal_conductivity"],
                     heat_capacity=data["specific_heat"],
@@ -96,7 +98,8 @@ class ScoreAlfacaseConverter:
                         material=section["material"],
                         top_of_filler=data["top_of_cement"],
                         filler_material=CEMENT_NAME,
-                        material_above_filler=data["material_above_filler"],
+                        # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
+                        material_above_filler=FLUID_DEFAULT_NAME,
                     )
                 )
                 i += 1
@@ -126,7 +129,8 @@ class ScoreAlfacaseConverter:
                 PackerDescription(
                     name=data["name"],
                     position=data["position"],
-                    material_above=data["material_above"],
+                    # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
+                    material_above=FLUID_DEFAULT_NAME,
                 )
             )
         return packers

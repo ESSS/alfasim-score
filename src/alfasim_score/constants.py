@@ -11,3 +11,6 @@ CEMENT_NAME = "cement"
 ROCK_DEFAULT_ROUGHNESS = Scalar(0.1, ROUGHNESS_UNIT)
 CASING_DEFAULT_ROUGHNESS = Scalar(0.05, ROUGHNESS_UNIT)
 TUBING_DEFAULT_ROUGHNESS = Scalar(0.05, ROUGHNESS_UNIT)
+
+# This default fluid name for packer and fluid above filler
+FLUID_DEFAULT_NAME = "fluid_default"

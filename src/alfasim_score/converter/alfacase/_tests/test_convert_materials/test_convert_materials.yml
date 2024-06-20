@@ -40,3 +40,9 @@
   thermal_conductivity: 50.0
   thermal_expansion: 0.0
   type: solid
+- density: 1000.0
+  heat_capacity: 4181.0
+  name: fluid_default
+  thermal_conductivity: 0.6
+  thermal_expansion: 0.0004
+  type: fluid
