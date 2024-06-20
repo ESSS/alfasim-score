@@ -16,7 +16,7 @@
   inner_roughness: 0.05
   material: X-80
   material_above_filler: fluid_default
-  name: SURFACE_CASING_2
+  name: SURFACE_CASING_1
   outer_diameter: 18.0
   settings_depth: 3490.0
   top_of_filler: 2072.0
@@ -27,7 +27,7 @@
   inner_roughness: 0.05
   material: N-80
   material_above_filler: fluid_default
-  name: PRODUCTION_CASING_3
+  name: PRODUCTION_CASING_1
   outer_diameter: 11.875
   settings_depth: 3072.0
   top_of_filler: 4905.0
@@ -38,7 +38,7 @@
   inner_roughness: 0.05
   material: C-110 HC
   material_above_filler: fluid_default
-  name: PRODUCTION_CASING_4
+  name: PRODUCTION_CASING_2
   outer_diameter: 10.75
   settings_depth: 5441.0
   top_of_filler: 4905.0
@@ -49,7 +49,7 @@
   inner_roughness: 0.05
   material: SDSS/125KSI
   material_above_filler: fluid_default
-  name: PRODUCTION_CASING_5
+  name: PRODUCTION_CASING_3
   outer_diameter: 10.75
   settings_depth: 5607.0
   top_of_filler: 4905.0

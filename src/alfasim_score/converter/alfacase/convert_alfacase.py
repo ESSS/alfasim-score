@@ -83,9 +83,8 @@ class ScoreAlfacaseConverter:
     def _convert_casing_list(self) -> List[CasingSectionDescription]:
         """Create the description for the casings."""
         casing_sections = []
-        i = 1
         for data in self.score_input.read_casings():
-            for section in data["sections"]:
+            for i, section in enumerate(data["sections"], 1):
                 casing_sections.append(
                     CasingSectionDescription(
                         name=f"{data['function'].value}_{data['type'].value}_{i}",

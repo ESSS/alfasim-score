@@ -159,7 +159,7 @@ class ScoreInputReader:
     def read_casings(self) -> List[Dict[str, Any]]:
         """Read the data for the casing from SCORE input file"""
         casing_data = []
-        for item in self.input_content["operation"]["thermal_simulation"]["well_strings"]:
+        for item in self.input_content["well_strings"]:
             if item["interval"] != WellItemFunction.OPEN.value:
                 casing_data.append(
                     {
@@ -190,7 +190,7 @@ class ScoreInputReader:
                 )
         return casing_data
 
-    def read_tubing(self) -> List[Dict[str, Union[Scalar, str]]]:
+    def read_tubing(self) -> List[Dict[str, Any]]:
         """Read the data for the tubing from SCORE input file"""
         tubing_data = []
         for section in self.input_content["operation"]["tubing_string"]["string_sections"]:
@@ -223,13 +223,13 @@ class ScoreInputReader:
 
     def read_open_hole(self) -> List[Dict[str, Scalar]]:
         """Read the data for the open hole from SCORE input file"""
-        casing_data = []
-        for section in self.input_content["operation"]["thermal_simulation"]["well_strings"]:
+        open_hole_data = []
+        for section in self.input_content["well_strings"]:
             if section["interval"] == WellItemFunction.OPEN.value:
-                casing_data.append(
+                open_hole_data.append(
                     {
                         "final_md": Scalar(section["final_md"], LENGTH_UNIT, "length"),
                         "hole_diameter": Scalar(section["hole_size"], DIAMETER_UNIT, "diameter"),
                     }
                 )
-        return casing_data
+        return open_hole_data
