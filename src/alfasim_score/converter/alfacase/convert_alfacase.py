@@ -29,9 +29,8 @@ def filter_duplicated_materials(
     material_list: List[MaterialDescription],
 ) -> List[MaterialDescription]:
     """Remove the duplicated materials parsed by the reader"""
-    # TODO: implement it to filter the duplicated materials
-    # TODO: remember to get all cements (???)
-    return material_list
+    filtered = {material.name: material for material in material_list}
+    return list(filtered.values())
 
 
 class ScoreAlfacaseConverter:
@@ -69,7 +68,7 @@ class ScoreAlfacaseConverter:
                     expansion=data["thermal_expansion"],
                 )
             )
-        return material_descriptions
+        return filter_duplicated_materials(material_descriptions)
 
     # TODO PWPA-1937: implement this method
     def _convert_annulus(self) -> AnnulusDescription:
