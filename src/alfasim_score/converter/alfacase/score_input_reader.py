@@ -7,7 +7,7 @@ from typing import Union
 import json
 from barril.units import Array
 from barril.units import Scalar
-from enum import StrEnum
+from enum import Enum
 from pathlib import Path
 
 from alfasim_score.constants import CEMENT_NAME
@@ -22,13 +22,13 @@ from alfasim_score.units import THERMAL_EXPANSION_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
 
 
-class WellItemType(StrEnum):
+class WellItemType(str, Enum):
     DRILLING = "DRILLING"
     CASING = "CASING"
     NONE = "NONE"
 
 
-class WellItemFunction(StrEnum):
+class WellItemFunction(str, Enum):
     CONDUCTOR = "CONDUCTOR"
     SURFACE = "SURFACE"
     PRODUCTION = "PRODUCTION"
@@ -141,7 +141,7 @@ class ScoreInputReader:
             )
         return lithology_data
 
-    def read_packer_fluid(self) -> List[Dict[str, Any]]:
+    def read_packer_fluid(self) -> List[Dict[str, Union[Scalar, str]]]:
         """ "Get the properties of fluid above packer."""
         # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
         # the fluid used now is water
@@ -190,7 +190,7 @@ class ScoreInputReader:
                 )
         return casing_data
 
-    def read_tubing(self) -> List[Dict[str, Any]]:
+    def read_tubing(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Read the data for the tubing from SCORE input file"""
         tubing_data = []
         for section in self.input_content["operation"]["tubing_string"]["string_sections"]:
@@ -208,7 +208,7 @@ class ScoreInputReader:
             )
         return tubing_data
 
-    def read_packers(self) -> List[Dict[str, Any]]:
+    def read_packers(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Read the data for the packers from SCORE input file"""
         packer_data = []
         for component in self.input_content["operation"]["tubing_string"]["components"]:
@@ -221,7 +221,7 @@ class ScoreInputReader:
                 )
         return packer_data
 
-    def read_open_hole(self) -> List[Dict[str, Scalar | str]]:
+    def read_open_hole(self) -> List[Dict[str, Scalar]]:
         """Read the data for the open hole from SCORE input file"""
         casing_data = []
         for section in self.input_content["operation"]["thermal_simulation"]["well_strings"]:

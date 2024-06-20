@@ -88,7 +88,7 @@ class ScoreAlfacaseConverter:
             for section in data["sections"]:
                 casing_sections.append(
                     CasingSectionDescription(
-                        name=f"{data['function']}_{data['type']}_{i}",
+                        name=f"{data['function'].value}_{data['type'].value}_{i}",
                         hanger_depth=section["top_md"],
                         settings_depth=section["base_md"],
                         hole_diameter=data["hole_diameter"],
