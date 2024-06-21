@@ -1,96 +1,224 @@
-- inner_diameter: 4.67
-  inner_roughness: 0.05
-  length: 40.210000000000036
+- inner_diameter:
+    unit: in
+    value: 4.67
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 40.210000000000036
   material: SDSS/125KSI
   name: TUBING_1
-  outer_diameter: 5.5
-- inner_diameter: 5.791
-  inner_roughness: 0.05
-  length: 732.9000000000001
+  outer_diameter:
+    unit: in
+    value: 5.5
+- inner_diameter:
+    unit: in
+    value: 5.791
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 732.9000000000001
   material: SDSS/125KSI
   name: TUBING_2
-  outer_diameter: 6.625
-- inner_diameter: 4.67
-  inner_roughness: 0.05
-  length: 56.40000000000009
+  outer_diameter:
+    unit: in
+    value: 6.625
+- inner_diameter:
+    unit: in
+    value: 4.67
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 56.40000000000009
   material: SDSS/125KSI
   name: TUBING_3
-  outer_diameter: 5.5
-- inner_diameter: 5.791
-  inner_roughness: 0.05
-  length: 48.90000000000009
+  outer_diameter:
+    unit: in
+    value: 5.5
+- inner_diameter:
+    unit: in
+    value: 5.791
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 48.90000000000009
   material: SDSS/125KSI
   name: TUBING_4
-  outer_diameter: 6.625
-- inner_diameter: 4.67
-  inner_roughness: 0.05
-  length: 54.90000000000009
+  outer_diameter:
+    unit: in
+    value: 6.625
+- inner_diameter:
+    unit: in
+    value: 4.67
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 54.90000000000009
   material: SDSS/125KSI
   name: TUBING_5
-  outer_diameter: 5.5
-- inner_diameter: 5.791
-  inner_roughness: 0.05
-  length: 2400.9
+  outer_diameter:
+    unit: in
+    value: 5.5
+- inner_diameter:
+    unit: in
+    value: 5.791
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 2400.9
   material: SDSS/125KSI
   name: TUBING_6
-  outer_diameter: 6.625
-- inner_diameter: 4.67
-  inner_roughness: 0.05
-  length: 158.97000000000025
+  outer_diameter:
+    unit: in
+    value: 6.625
+- inner_diameter:
+    unit: in
+    value: 4.67
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 158.97000000000025
   material: SDSS/125KSI
   name: TUBING_7
-  outer_diameter: 5.5
-- inner_diameter: 3.92
-  inner_roughness: 0.05
-  length: 31.039999999999964
+  outer_diameter:
+    unit: in
+    value: 5.5
+- inner_diameter:
+    unit: in
+    value: 3.92
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 31.039999999999964
   material: SDSS/125KSI
   name: TUBING_8
-  outer_diameter: 4.5
-- inner_diameter: 4.67
-  inner_roughness: 0.05
-  length: 24.899999999999636
+  outer_diameter:
+    unit: in
+    value: 4.5
+- inner_diameter:
+    unit: in
+    value: 4.67
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 24.899999999999636
   material: SDSS/125KSI
   name: TUBING_9
-  outer_diameter: 5.5
-- inner_diameter: 3.92
-  inner_roughness: 0.05
-  length: 21.670000000000073
+  outer_diameter:
+    unit: in
+    value: 5.5
+- inner_diameter:
+    unit: in
+    value: 3.92
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 21.670000000000073
   material: SDSS/125KSI
   name: TUBING_10
-  outer_diameter: 4.5
-- inner_diameter: 4.67
-  inner_roughness: 0.05
-  length: 20.23999999999978
+  outer_diameter:
+    unit: in
+    value: 4.5
+- inner_diameter:
+    unit: in
+    value: 4.67
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 20.23999999999978
   material: SDSS/125KSI
   name: TUBING_11
-  outer_diameter: 5.5
-- inner_diameter: 3.92
-  inner_roughness: 0.05
-  length: 27.420000000000073
+  outer_diameter:
+    unit: in
+    value: 5.5
+- inner_diameter:
+    unit: in
+    value: 3.92
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 27.420000000000073
   material: SDSS/125KSI
   name: TUBING_12
-  outer_diameter: 4.5
-- inner_diameter: 4.67
-  inner_roughness: 0.05
-  length: 132.89999999999964
+  outer_diameter:
+    unit: in
+    value: 4.5
+- inner_diameter:
+    unit: in
+    value: 4.67
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 132.89999999999964
   material: SDSS/125KSI
   name: TUBING_13
-  outer_diameter: 5.5
-- inner_diameter: 3.92
-  inner_roughness: 0.05
-  length: 21.670000000000073
+  outer_diameter:
+    unit: in
+    value: 5.5
+- inner_diameter:
+    unit: in
+    value: 3.92
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 21.670000000000073
   material: SDSS/125KSI
   name: TUBING_14
-  outer_diameter: 4.5
-- inner_diameter: 4.67
-  inner_roughness: 0.05
-  length: 20.23999999999978
+  outer_diameter:
+    unit: in
+    value: 4.5
+- inner_diameter:
+    unit: in
+    value: 4.67
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 20.23999999999978
   material: SDSS/125KSI
   name: TUBING_15
-  outer_diameter: 5.5
-- inner_diameter: 3.92
-  inner_roughness: 0.05
-  length: 31.859999999999673
+  outer_diameter:
+    unit: in
+    value: 5.5
+- inner_diameter:
+    unit: in
+    value: 3.92
+  inner_roughness:
+    unit: mm
+    value: 0.05
+  length:
+    unit: m
+    value: 31.859999999999673
   material: SDSS/125KSI
   name: TUBING_16
-  outer_diameter: 4.5
+  outer_diameter:
+    unit: in
+    value: 4.5

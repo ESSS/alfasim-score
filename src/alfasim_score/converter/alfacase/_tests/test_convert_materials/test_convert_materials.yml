@@ -1,48 +1,112 @@
-- density: 15.7743
-  heat_capacity: 837.9
+- density:
+    unit: kg/m3
+    value: 15.7743
+  heat_capacity:
+    unit: J/kg.K
+    value: 837.9
   name: cement
-  thermal_conductivity: 0.983057
-  thermal_expansion: 1.0e-06
+  thermal_conductivity:
+    unit: W/m.K
+    value: 0.983057
+  thermal_expansion:
+    unit: 1/K
+    value: 1.0e-06
   type: solid
-- density: 65.5035
-  heat_capacity: 460.9
+- density:
+    unit: kg/m3
+    value: 65.5035
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
   name: B
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  thermal_expansion:
+    unit: 1/K
+    value: 1.2e-05
   type: solid
-- density: 65.5035
-  heat_capacity: 460.9
+- density:
+    unit: kg/m3
+    value: 65.5035
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
   name: X-80
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  thermal_expansion:
+    unit: 1/K
+    value: 1.2e-05
   type: solid
-- density: 65.5035
-  heat_capacity: 460.9
+- density:
+    unit: kg/m3
+    value: 65.5035
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
   name: N-80
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  thermal_expansion:
+    unit: 1/K
+    value: 1.2e-05
   type: solid
-- density: 65.5035
-  heat_capacity: 460.9
+- density:
+    unit: kg/m3
+    value: 65.5035
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
   name: C-110 HC
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  thermal_expansion:
+    unit: 1/K
+    value: 1.2e-05
   type: solid
-- density: 65.5035
-  heat_capacity: 460.9
+- density:
+    unit: kg/m3
+    value: 65.5035
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
   name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  thermal_expansion:
+    unit: 1/K
+    value: 1.2e-05
   type: solid
-- density: 1.0
-  heat_capacity: 5.0
+- density:
+    unit: kg/m3
+    value: 1.0
+  heat_capacity:
+    unit: J/kg.K
+    value: 5.0
   name: Folhelho
-  thermal_conductivity: 50.0
-  thermal_expansion: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 50.0
+  thermal_expansion:
+    unit: 1/K
+    value: 0.0
   type: solid
-- density: 1000.0
-  heat_capacity: 4181.0
+- density:
+    unit: kg/m3
+    value: 1000.0
+  heat_capacity:
+    unit: J/kg.K
+    value: 4181.0
   name: fluid_default
-  thermal_conductivity: 0.6
-  thermal_expansion: 0.0004
+  thermal_conductivity:
+    unit: W/m.K
+    value: 0.6
+  thermal_expansion:
+    unit: 1/K
+    value: 0.0004
   type: fluid

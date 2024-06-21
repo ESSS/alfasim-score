@@ -1,3 +1,5 @@
 - material_above: fluid_default
   name: 'Packer (Hidráulico) #1'
-  position: 5565.18
+  position:
+    unit: m
+    value: 5565.18
