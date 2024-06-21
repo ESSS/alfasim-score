@@ -1,108 +1,184 @@
-- density: 15.7743
-  heat_capacity: 837.9
+- density:
+    unit: kg/m3
+    value: 15.7743
+  expansion:
+    unit: 1/K
+    value: 1.0e-06
+  heat_capacity:
+    unit: J/kg.K
+    value: 837.9
+  inner_emissivity:
+    unit: '-'
+    value: 0.0
+  material_type: solid
   name: cement
-  thermal_conductivity: 0.983057
-  thermal_expansion: 1.0e-06
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
+  outer_emissivity:
+    unit: '-'
+    value: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 0.983057
+  viscosity:
+    unit: cP
+    value: 0.0
+- density:
+    unit: kg/m3
+    value: 65.5035
+  expansion:
+    unit: 1/K
+    value: 1.2e-05
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
+  inner_emissivity:
+    unit: '-'
+    value: 0.0
+  material_type: solid
+  name: B
+  outer_emissivity:
+    unit: '-'
+    value: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  viscosity:
+    unit: cP
+    value: 0.0
+- density:
+    unit: kg/m3
+    value: 65.5035
+  expansion:
+    unit: 1/K
+    value: 1.2e-05
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
+  inner_emissivity:
+    unit: '-'
+    value: 0.0
+  material_type: solid
+  name: X-80
+  outer_emissivity:
+    unit: '-'
+    value: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  viscosity:
+    unit: cP
+    value: 0.0
+- density:
+    unit: kg/m3
+    value: 65.5035
+  expansion:
+    unit: 1/K
+    value: 1.2e-05
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
+  inner_emissivity:
+    unit: '-'
+    value: 0.0
+  material_type: solid
+  name: N-80
+  outer_emissivity:
+    unit: '-'
+    value: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  viscosity:
+    unit: cP
+    value: 0.0
+- density:
+    unit: kg/m3
+    value: 65.5035
+  expansion:
+    unit: 1/K
+    value: 1.2e-05
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
+  inner_emissivity:
+    unit: '-'
+    value: 0.0
+  material_type: solid
+  name: C-110 HC
+  outer_emissivity:
+    unit: '-'
+    value: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  viscosity:
+    unit: cP
+    value: 0.0
+- density:
+    unit: kg/m3
+    value: 65.5035
+  expansion:
+    unit: 1/K
+    value: 1.2e-05
+  heat_capacity:
+    unit: J/kg.K
+    value: 460.9
+  inner_emissivity:
+    unit: '-'
+    value: 0.0
+  material_type: solid
   name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 65.5035
-  heat_capacity: 460.9
-  name: SDSS/125KSI
-  thermal_conductivity: 45.345257
-  thermal_expansion: 1.2e-05
-  type: solid
-- density: 1.0
-  heat_capacity: 5.0
+  outer_emissivity:
+    unit: '-'
+    value: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 45.345257
+  viscosity:
+    unit: cP
+    value: 0.0
+- density:
+    unit: kg/m3
+    value: 1.0
+  expansion:
+    unit: 1/K
+    value: 0.0
+  heat_capacity:
+    unit: J/kg.K
+    value: 5.0
+  inner_emissivity:
+    unit: '-'
+    value: 0.0
+  material_type: solid
   name: Folhelho
-  thermal_conductivity: 50.0
-  thermal_expansion: 0.0
-  type: solid
+  outer_emissivity:
+    unit: '-'
+    value: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 50.0
+  viscosity:
+    unit: cP
+    value: 0.0
+- density:
+    unit: kg/m3
+    value: 1000.0
+  expansion:
+    unit: 1/K
+    value: 0.0004
+  heat_capacity:
+    unit: J/kg.K
+    value: 4181.0
+  inner_emissivity:
+    unit: '-'
+    value: 0.0
+  material_type: fluid
+  name: fluid_default
+  outer_emissivity:
+    unit: '-'
+    value: 0.0
+  thermal_conductivity:
+    unit: W/m.K
+    value: 0.6
+  viscosity:
+    unit: cP
+    value: 0.0

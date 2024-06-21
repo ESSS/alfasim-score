@@ -1,0 +1,10 @@
+- diameter:
+    unit: in
+    value: 9.5
+  inner_roughness:
+    unit: mm
+    value: 0.1
+  length:
+    unit: m
+    value: 371.0
+  name: OPEN_HOLE_1

@@ -1,8 +1,3 @@
-from typing import Any
-
-import json
-import pytest
-from pathlib import Path
 from pytest_regressions.num_regression import NumericRegressionFixture
 
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
@@ -14,11 +9,10 @@ def test_convert_well_trajectory(
     score_input_example: ScoreInputReader,
 ) -> None:
     builder = ScoreAlfacaseConverter(score_input_example)
-    well_description = builder.build_well()
-
+    well_trajectory = builder._convert_well_trajectory()
     num_regression.check(
         {
-            "x": well_description.profile.x_and_y.x.GetValues("m"),
-            "y": well_description.profile.x_and_y.y.GetValues("m"),
+            "x": well_trajectory.x_and_y.x.GetValues(),
+            "y": well_trajectory.x_and_y.y.GetValues(),
         }
     )
