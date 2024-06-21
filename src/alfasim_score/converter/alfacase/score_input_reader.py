@@ -157,7 +157,7 @@ class ScoreInputReader:
         ]
 
     def read_casings(self) -> List[Dict[str, Any]]:
-        """Read the data for the casing from SCORE input file"""
+        """Read the data for the casing from SCORE input file."""
         casing_data = []
         for item in self.input_content["well_strings"]:
             if item["interval"] != WellItemFunction.OPEN.value:
@@ -191,7 +191,7 @@ class ScoreInputReader:
         return casing_data
 
     def read_tubing(self) -> List[Dict[str, Any]]:
-        """Read the data for the tubing from SCORE input file"""
+        """Read the data for the tubing from SCORE input file."""
         tubing_data = []
         for section in self.input_content["operation"]["tubing_string"]["string_sections"]:
             outer_radius = section["pipe"]["od"] / 2.0
@@ -209,7 +209,7 @@ class ScoreInputReader:
         return tubing_data
 
     def read_packers(self) -> List[Dict[str, Union[Scalar, str]]]:
-        """Read the data for the packers from SCORE input file"""
+        """Read the data for the packers from SCORE input file."""
         packer_data = []
         for component in self.input_content["operation"]["tubing_string"]["components"]:
             if component["component"]["type"] == "PACKER":
@@ -222,7 +222,7 @@ class ScoreInputReader:
         return packer_data
 
     def read_open_hole(self) -> List[Dict[str, Scalar]]:
-        """Read the data for the open hole from SCORE input file"""
+        """Read the data for the open hole from SCORE input file."""
         open_hole_data = []
         for section in self.input_content["well_strings"]:
             if section["interval"] == WellItemFunction.OPEN.value:
@@ -233,3 +233,14 @@ class ScoreInputReader:
                     }
                 )
         return open_hole_data
+
+    def read_formations(self) -> List[Dict[str, Scalar]]:
+        """Read data for formations from SCORE input file."""
+        return [
+            {
+                "material": lithology["display_name"],
+                "top_elevation": Scalar(lithology["top_elevation"], LENGTH_UNIT, "length"),
+                "base_elevation": Scalar(lithology["base_elevation"], LENGTH_UNIT, "length"),
+            }
+            for lithology in self.input_content["lithologies"]
+        ]
