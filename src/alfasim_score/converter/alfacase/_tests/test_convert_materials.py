@@ -1,3 +1,4 @@
+import attr
 from pytest_regressions.data_regression import DataRegressionFixture
 
 from alfasim_score.common import prepare_for_regression
@@ -12,18 +13,4 @@ def test_convert_materials(
     builder = ScoreAlfacaseConverter(score_input_example)
     materials = builder.convert_materials()
 
-    data_regression.check(
-        [
-            prepare_for_regression(
-                {
-                    "name": material.name,
-                    "type": material.material_type.value,
-                    "density": material.density,
-                    "thermal_conductivity": material.thermal_conductivity,
-                    "heat_capacity": material.heat_capacity,
-                    "thermal_expansion": material.expansion,
-                }
-            )
-            for material in materials
-        ]
-    )
+    data_regression.check([prepare_for_regression(attr.asdict(material)) for material in materials])

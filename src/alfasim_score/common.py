@@ -3,6 +3,7 @@ from typing import Dict
 
 from barril.units import Array
 from barril.units import Scalar
+from enum import Enum
 
 
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:
@@ -19,6 +20,8 @@ def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:
                 "values": value.values,
                 "unit": value.unit,
             }
+        elif isinstance(value, Enum):
+            regression_values[key] = value.value
         else:
             regression_values[key] = value
 
