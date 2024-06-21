@@ -77,7 +77,7 @@ class ScoreAlfacaseConverter:
         return AnnulusDescription(has_annulus_flow=False, top_node=ANNULUS_TOP_NODE_NAME)
 
     # TODO PWPA-1934: implement this method
-    def _convert_formation(self) -> AnnulusDescription:
+    def _convert_formation(self) -> FormationDescription:
         return FormationDescription(reference_y_coordinate=Scalar(0.0, "m", "length"))
 
     def _convert_casing_list(self) -> List[CasingSectionDescription]:
@@ -154,7 +154,7 @@ class ScoreAlfacaseConverter:
             start_position = data["final_md"]
         return open_hole
 
-    def _convert_casings(self) -> WellDescription:
+    def _convert_casings(self) -> CasingDescription:
         """Create the description for the casings."""
         return CasingDescription(
             casing_sections=self._convert_casing_list(),
