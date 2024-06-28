@@ -6,25 +6,42 @@ from alfasim_sdk import CasingDescription
 from alfasim_sdk import CasingSectionDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import FormationLayerDescription
+from alfasim_sdk import MassInflowSplitType
+from alfasim_sdk import MassSourceNodePropertiesDescription
+from alfasim_sdk import MassSourceType
 from alfasim_sdk import MaterialDescription
 from alfasim_sdk import MaterialType
+from alfasim_sdk import MultiInputType
+from alfasim_sdk import NodeCellType
+from alfasim_sdk import NodeDescription
 from alfasim_sdk import OpenHoleDescription
 from alfasim_sdk import PackerDescription
+from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileDescription
 from alfasim_sdk import TubingDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
 from barril.units import Scalar
 
+from alfasim_score.common import LiftMethod
 from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
+from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import FLUID_DEFAULT_NAME
+from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
+from alfasim_score.constants import GAS_LIFT_PVT_TABLE_NAME
+from alfasim_score.constants import GAS_LIFT_TEMPERATURE
+from alfasim_score.constants import NULL_MASS_FLOW_RATE
+from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import ROCK_DEFAULT_ROUGHNESS
 from alfasim_score.constants import TUBING_DEFAULT_ROUGHNESS
-from alfasim_score.constants import WELLBORE_BOTTOM_NODE
+from alfasim_score.constants import WELL_BOTTOM_NODE_DEFAULT_PRESSURE
+from alfasim_score.constants import WELL_BOTTOM_NODE_DEFAULT_TEMPERATURE
+from alfasim_score.constants import WELL_TOP_NODE_DEFAULT_TEMPERATURE
+from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_NAME
-from alfasim_score.constants import WELLBORE_TOP_NODE
+from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
 
@@ -75,8 +92,9 @@ class ScoreAlfacaseConverter:
             )
         return filter_duplicated_materials(material_descriptions)
 
-    # TODO PWPA-1937: implement this method
     def _convert_annulus(self) -> AnnulusDescription:
+        # TODO PWPA-1937: implement this method
+        # TODO PWPA-1937: top_node = GAS_LIFT_MASS_NODE if has_gas_lift else ANNULUS_TOP_NODE_NAME
         return AnnulusDescription(has_annulus_flow=False, top_node=ANNULUS_TOP_NODE_NAME)
 
     def _convert_formation(self) -> FormationDescription:
@@ -176,6 +194,56 @@ class ScoreAlfacaseConverter:
             open_holes=self._convert_open_hole_list(),
         )
 
+    def build_nodes(self) -> List[NodeDescription]:
+        """Create the description for the node list."""
+        nodes = [
+            NodeDescription(
+                name=WELLBORE_TOP_NODE_NAME,
+                node_type=NodeCellType.MassSource,
+                pvt_model=BASE_PVT_TABLE_NAME,
+                mass_source_properties=MassSourceNodePropertiesDescription(
+                    temperature_input_type=MultiInputType.Constant,
+                    temperature=WELL_TOP_NODE_DEFAULT_TEMPERATURE,
+                    source_type=MassSourceType.AllVolumetricFlowRates,
+                    volumetric_flow_rates_std={
+                        "gas": NULL_VOLUMETRIC_FLOW_RATE,
+                        "oil": NULL_VOLUMETRIC_FLOW_RATE,
+                        "water": NULL_VOLUMETRIC_FLOW_RATE,
+                    },
+                ),
+            ),
+            NodeDescription(
+                name=WELLBORE_BOTTOM_NODE_NAME,
+                node_type=NodeCellType.Pressure,
+                pvt_model=BASE_PVT_TABLE_NAME,
+                pressure_properties=PressureNodePropertiesDescription(
+                    pressure=WELL_BOTTOM_NODE_DEFAULT_PRESSURE,
+                    temperature=WELL_BOTTOM_NODE_DEFAULT_TEMPERATURE,
+                    split_type=MassInflowSplitType.Pvt,
+                ),
+            ),
+        ]
+        operation_input_data = self.score_input.read_operation_data()
+        if operation_input_data["lift_method"] == LiftMethod.GAS_LIFT:
+            nodes.append(
+                NodeDescription(
+                    name=GAS_LIFT_MASS_NODE_NAME,
+                    node_type=NodeCellType.MassSource,
+                    pvt_model=GAS_LIFT_PVT_TABLE_NAME,
+                    mass_source_properties=MassSourceNodePropertiesDescription(
+                        temperature_input_type=MultiInputType.Constant,
+                        temperature=GAS_LIFT_TEMPERATURE,
+                        source_type=MassSourceType.AllVolumetricFlowRates,
+                        volumetric_flow_rates_std={
+                            "gas": NULL_VOLUMETRIC_FLOW_RATE,
+                            "oil": NULL_VOLUMETRIC_FLOW_RATE,
+                            "water": NULL_VOLUMETRIC_FLOW_RATE,
+                        },
+                    ),
+                )
+            )
+        return nodes
+
     def build_well(self) -> WellDescription:
         """Create the description for the well."""
         return WellDescription(
@@ -184,13 +252,14 @@ class ScoreAlfacaseConverter:
             casing=self._convert_casings(),
             annulus=self._convert_annulus(),
             formation=self._convert_formation(),
-            top_node=WELLBORE_TOP_NODE,
-            bottom_node=WELLBORE_BOTTOM_NODE,
+            top_node=WELLBORE_TOP_NODE_NAME,
+            bottom_node=WELLBORE_BOTTOM_NODE_NAME,
         )
 
     def build_case_description(self) -> CaseDescription:
         return CaseDescription(
             name=self.case_name,
+            nodes=self.build_nodes(),
             wells=[self.build_well()],
             materials=self.convert_materials(),
         )
