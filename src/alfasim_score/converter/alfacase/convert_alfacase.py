@@ -1,9 +1,11 @@
 from typing import List
 
 from alfasim_sdk import AnnulusDescription
+from alfasim_sdk import CaseDescription
 from alfasim_sdk import CasingDescription
 from alfasim_sdk import CasingSectionDescription
 from alfasim_sdk import FormationDescription
+from alfasim_sdk import FormationLayerDescription
 from alfasim_sdk import MaterialDescription
 from alfasim_sdk import MaterialType
 from alfasim_sdk import OpenHoleDescription
@@ -21,6 +23,7 @@ from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import ROCK_DEFAULT_ROUGHNESS
 from alfasim_score.constants import TUBING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE
+from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
@@ -37,7 +40,7 @@ def filter_duplicated_materials(
 class ScoreAlfacaseConverter:
     def __init__(self, score_reader: ScoreInputReader):
         self.score_input = score_reader
-        self.well_name = score_reader.input_content["name"]
+        self.case_name = score_reader.input_content["name"]
 
     def _convert_well_trajectory(self) -> ProfileDescription:
         """
@@ -76,9 +79,19 @@ class ScoreAlfacaseConverter:
     def _convert_annulus(self) -> AnnulusDescription:
         return AnnulusDescription(has_annulus_flow=False, top_node=ANNULUS_TOP_NODE_NAME)
 
-    # TODO PWPA-1934: implement this method
     def _convert_formation(self) -> FormationDescription:
-        return FormationDescription(reference_y_coordinate=Scalar(0.0, "m", "length"))
+        """Create the description for the formations."""
+        layers = [
+            FormationLayerDescription(
+                name=f"formation_{i}",
+                start=data["top_elevation"],
+                material=data["material"],
+            )
+            for i, data in enumerate(self.score_input.read_formations(), start=1)
+        ]
+        return FormationDescription(
+            reference_y_coordinate=Scalar(0.0, "m", "length"), layers=layers
+        )
 
     def _convert_casing_list(self) -> List[CasingSectionDescription]:
         """Create the description for the casings."""
@@ -166,11 +179,18 @@ class ScoreAlfacaseConverter:
     def build_well(self) -> WellDescription:
         """Create the description for the well."""
         return WellDescription(
-            name=self.well_name,
+            name=WELLBORE_NAME,
             profile=self._convert_well_trajectory(),
             casing=self._convert_casings(),
             annulus=self._convert_annulus(),
             formation=self._convert_formation(),
             top_node=WELLBORE_TOP_NODE,
             bottom_node=WELLBORE_BOTTOM_NODE,
+        )
+
+    def build_case_description(self) -> CaseDescription:
+        return CaseDescription(
+            name=self.case_name,
+            wells=[self.build_well()],
+            materials=self.convert_materials(),
         )
