@@ -102,7 +102,7 @@ outputs:
     unit: s
 pipes: []
 nodes:
-- name: WELBORE_TOP_NODE
+- name: WELLBORE_TOP_NODE
   node_type: mass_source_boundary
   pvt_model: base
   pressure_properties:
@@ -193,7 +193,7 @@ nodes:
       min_value: -1e+50
       max_value: 1e+50
       max_rate_of_change: 1e+50
-- name: WELBORE_BOTTOM_NODE
+- name: WELLBORE_BOTTOM_NODE
   node_type: pressure_boundary
   pvt_model: base
   pressure_properties:
@@ -941,8 +941,8 @@ wells:
         value: 2072.0
         unit: m
       material: Folhelho
-  top_node: WELBORE_TOP_NODE
-  bottom_node: WELBORE_BOTTOM_NODE
+  top_node: WELLBORE_TOP_NODE
+  bottom_node: WELLBORE_BOTTOM_NODE
   environment:
     thermal_model: steady_state_heat_transfer
     position_input_mode: position_by_md
