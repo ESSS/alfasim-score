@@ -1,10 +1,13 @@
 from typing import Any
 from typing import Dict
 
+import numpy as np
 from barril.curve.curve import Curve
 from barril.units import Array
 from barril.units import Scalar
 from enum import Enum
+
+from alfasim_score.units import LENGTH_UNIT
 
 
 class WellItemType(str, Enum):
@@ -55,3 +58,9 @@ def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:
             regression_values[key] = value
 
     return regression_values
+
+
+def convert_quota_to_tvd(quota: Scalar, air_gap: Scalar) -> Scalar:
+    """Convert quota value to TVD given the air_gap"""
+    tvd = np.abs(quota.GetValue(LENGTH_UNIT)) + air_gap.GetValue(LENGTH_UNIT)
+    return Scalar(tvd, LENGTH_UNIT)
