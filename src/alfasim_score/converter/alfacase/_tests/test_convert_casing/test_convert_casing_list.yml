@@ -1,7 +1,7 @@
 - filler_material: cement
   hanger_depth:
     unit: m
-    value: 2072.0
+    value: 0.0
   hole_diameter:
     unit: in
     value: 42.0
@@ -19,14 +19,14 @@
     value: 36.0
   settings_depth:
     unit: m
-    value: 2168.0
+    value: 96.0
   top_of_filler:
     unit: m
-    value: 2072.0
+    value: 0.0
 - filler_material: cement
   hanger_depth:
     unit: m
-    value: 2072.0
+    value: 0.0
   hole_diameter:
     unit: in
     value: 20.0
@@ -44,14 +44,14 @@
     value: 18.0
   settings_depth:
     unit: m
-    value: 3490.0
+    value: 1418.0
   top_of_filler:
     unit: m
-    value: 2072.0
+    value: 0.0
 - filler_material: cement
   hanger_depth:
     unit: m
-    value: 2072.0
+    value: 0.0
   hole_diameter:
     unit: in
     value: 14.75
@@ -69,14 +69,14 @@
     value: 11.875
   settings_depth:
     unit: m
-    value: 3072.0
+    value: 1000.0
   top_of_filler:
     unit: m
-    value: 4905.0
+    value: 2833.0
 - filler_material: cement
   hanger_depth:
     unit: m
-    value: 3072.0
+    value: 1000.0
   hole_diameter:
     unit: in
     value: 14.75
@@ -94,14 +94,14 @@
     value: 10.75
   settings_depth:
     unit: m
-    value: 5441.0
+    value: 3369.0
   top_of_filler:
     unit: m
-    value: 4905.0
+    value: 2833.0
 - filler_material: cement
   hanger_depth:
     unit: m
-    value: 5441.0
+    value: 3369.0
   hole_diameter:
     unit: in
     value: 14.75
@@ -119,7 +119,7 @@
     value: 10.75
   settings_depth:
     unit: m
-    value: 5607.0
+    value: 3535.0
   top_of_filler:
     unit: m
-    value: 4905.0
+    value: 2833.0
