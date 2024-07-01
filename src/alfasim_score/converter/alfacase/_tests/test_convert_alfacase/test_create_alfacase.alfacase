@@ -482,7 +482,7 @@ wells:
         unit: mm
       material: N-80
       top_of_filler:
-        value: 2833.0
+        value: 1000.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
@@ -532,7 +532,7 @@ wells:
         unit: mm
       material: SDSS/125KSI
       top_of_filler:
-        value: 2833.0
+        value: 3369.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
