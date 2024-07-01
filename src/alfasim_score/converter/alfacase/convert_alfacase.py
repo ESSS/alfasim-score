@@ -45,7 +45,7 @@ from alfasim_score.units import LENGTH_UNIT
 def filter_duplicated_materials(
     material_list: List[MaterialDescription],
 ) -> List[MaterialDescription]:
-    """Remove the duplicated materials parsed by the reader"""
+    """Remove the duplicated materials parsed by the reader."""
     filtered = {material.name: material for material in material_list}
     return list(filtered.values())
 
@@ -57,8 +57,18 @@ class ScoreAlfacaseConverter:
         self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
 
     def _get_position_in_well(self, position: Scalar) -> Scalar:
-        """Get the position relative to the well start position"""
+        """Get the position relative to the well start position."""
         return position - self.well_start_position
+
+    def _get_section_top_of_filler(
+        self, filler_depth: Scalar, hanger_depth: Scalar, final_depth: Scalar
+    ) -> Scalar:
+        """Get the depth of filler in the current casing section."""
+        if filler_depth > final_depth:
+            return final_depth
+        if filler_depth <= hanger_depth:
+            return hanger_depth
+        return filler_depth
 
     def _convert_well_trajectory(self) -> ProfileDescription:
         """
@@ -70,7 +80,7 @@ class ScoreAlfacaseConverter:
         return ProfileDescription(x_and_y=XAndYDescription(x=x, y=y))
 
     def convert_materials(self) -> List[MaterialDescription]:
-        """Convert list of materials from SCORE file"""
+        """Convert list of materials from SCORE file."""
         material_descriptions = []
         material_list = (
             self.score_input.read_cement_material()
@@ -119,18 +129,25 @@ class ScoreAlfacaseConverter:
         """Create the description for the casings."""
         casing_sections = []
         for casing in self.score_input.read_casings():
+            # TODO: FIX the TOC (create a function to calculate the end of TOC for the sections)
             for i, section in enumerate(casing["sections"], 1):
+                hanger_depth = self._get_position_in_well(section["top_md"])
+                settings_depth = self._get_position_in_well(section["base_md"])
+                filler_depth = self._get_position_in_well(casing["top_of_cement"])
+                top_of_filler = self._get_section_top_of_filler(
+                    filler_depth, hanger_depth, settings_depth
+                )
                 casing_sections.append(
                     CasingSectionDescription(
                         name=f"{casing['function'].value}_{casing['type'].value}_{i}",
-                        hanger_depth=self._get_position_in_well(section["top_md"]),
-                        settings_depth=self._get_position_in_well(section["base_md"]),
+                        hanger_depth=hanger_depth,
+                        settings_depth=settings_depth,
                         hole_diameter=casing["hole_diameter"],
                         outer_diameter=section["outer_diameter"],
                         inner_diameter=section["inner_diameter"],
                         inner_roughness=CASING_DEFAULT_ROUGHNESS,
                         material=section["material"],
-                        top_of_filler=self._get_position_in_well(casing["top_of_cement"]),
+                        top_of_filler=top_of_filler,
                         filler_material=CEMENT_NAME,
                         # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
                         material_above_filler=FLUID_DEFAULT_NAME,
@@ -257,6 +274,7 @@ class ScoreAlfacaseConverter:
         )
 
     def build_case_description(self) -> CaseDescription:
+        """ "Create the description for the alfacase."""
         return CaseDescription(
             name=self.general_data["case_name"],
             nodes=self.build_nodes(),
