@@ -367,6 +367,8 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
+  pvt_model: base
+  stagnant_fluid: fluid_default
   profile:
     x_and_y:
       x:

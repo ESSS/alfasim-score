@@ -50,6 +50,17 @@ def filter_duplicated_materials(
     return list(filtered.values())
 
 
+def get_section_top_of_filler(
+    filler_depth: Scalar, hanger_depth: Scalar, final_depth: Scalar
+) -> Scalar:
+    """Get the depth of filler in the current casing section."""
+    if filler_depth > final_depth:
+        return final_depth
+    if filler_depth <= hanger_depth:
+        return hanger_depth
+    return filler_depth
+
+
 class ScoreAlfacaseConverter:
     def __init__(self, score_reader: ScoreInputReader):
         self.score_input = score_reader
@@ -59,16 +70,6 @@ class ScoreAlfacaseConverter:
     def _get_position_in_well(self, position: Scalar) -> Scalar:
         """Get the position relative to the well start position."""
         return position - self.well_start_position
-
-    def _get_section_top_of_filler(
-        self, filler_depth: Scalar, hanger_depth: Scalar, final_depth: Scalar
-    ) -> Scalar:
-        """Get the depth of filler in the current casing section."""
-        if filler_depth > final_depth:
-            return final_depth
-        if filler_depth <= hanger_depth:
-            return hanger_depth
-        return filler_depth
 
     def _convert_well_trajectory(self) -> ProfileDescription:
         """
@@ -129,12 +130,11 @@ class ScoreAlfacaseConverter:
         """Create the description for the casings."""
         casing_sections = []
         for casing in self.score_input.read_casings():
-            # TODO: FIX the TOC (create a function to calculate the end of TOC for the sections)
             for i, section in enumerate(casing["sections"], 1):
                 hanger_depth = self._get_position_in_well(section["top_md"])
                 settings_depth = self._get_position_in_well(section["base_md"])
                 filler_depth = self._get_position_in_well(casing["top_of_cement"])
-                top_of_filler = self._get_section_top_of_filler(
+                top_of_filler = get_section_top_of_filler(
                     filler_depth, hanger_depth, settings_depth
                 )
                 casing_sections.append(
@@ -265,6 +265,8 @@ class ScoreAlfacaseConverter:
         """Create the description for the well."""
         return WellDescription(
             name=WELLBORE_NAME,
+            pvt_model=BASE_PVT_TABLE_NAME,
+            stagnant_fluid=FLUID_DEFAULT_NAME,
             profile=self._convert_well_trajectory(),
             casing=self._convert_casings(),
             annulus=self._convert_annulus(),
