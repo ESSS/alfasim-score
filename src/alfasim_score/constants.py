@@ -1,10 +1,10 @@
 from barril.units import Scalar
 
 from alfasim_score.units import MASS_FLOW_RATE_UNIT
-from alfasim_score.units import PRESSURE
+from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import ROUGHNESS_UNIT
 from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
-from alfasim_score.units import TEMPERATURE
+from alfasim_score.units import TEMPERATURE_UNIT
 
 WELLBORE_NAME = "WELLBORE"
 WELLBORE_TOP_NODE_NAME = "WELLBORE_TOP_NODE"
@@ -14,8 +14,11 @@ GAS_LIFT_MASS_NODE_NAME = "GAS_LIFT_MASS_NODE"
 CEMENT_NAME = "cement"
 
 ROCK_DEFAULT_ROUGHNESS = Scalar(0.1, ROUGHNESS_UNIT)
+ROCK_DEFAULT_HEAT_TRANSFER_COEFFICIENT = Scalar(1000.0, "W/m2.K")
 CASING_DEFAULT_ROUGHNESS = Scalar(0.05, ROUGHNESS_UNIT)
 TUBING_DEFAULT_ROUGHNESS = Scalar(0.05, ROUGHNESS_UNIT)
+
+REFERENCE_VERTICAL_COORDINATE = Scalar(0.0, "m", "length")
 
 # This default fluid name for packer and fluid above filler
 FLUID_DEFAULT_NAME = "fluid_default"

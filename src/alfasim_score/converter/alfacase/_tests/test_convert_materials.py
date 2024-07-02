@@ -11,6 +11,6 @@ def test_convert_materials(
     score_input_example: ScoreInputReader,
 ) -> None:
     builder = ScoreAlfacaseConverter(score_input_example)
-    materials = builder.convert_materials()
+    materials = builder._convert_materials()
 
     data_regression.check([prepare_for_regression(attr.asdict(material)) for material in materials])
