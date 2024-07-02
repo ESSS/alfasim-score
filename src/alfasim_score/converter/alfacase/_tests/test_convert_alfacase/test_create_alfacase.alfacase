@@ -101,7 +101,270 @@ outputs:
     value: 0.1
     unit: s
 pipes: []
-nodes: []
+nodes:
+- name: WELBORE_TOP_NODE
+  node_type: mass_source_boundary
+  pvt_model: base
+  pressure_properties:
+    pressure:
+      value: 100000.0
+      unit: Pa
+    temperature:
+      value: 288.6
+      unit: K
+    tracer_mass_fraction:
+      values: []
+      unit: '-'
+    split_type: mass_inflow_split_type_constant_volume_fraction
+    gas_liquid_ratio:
+      value: 0.0
+      unit: sm3/sm3
+    gas_oil_ratio:
+      value: 0.0
+      unit: sm3/sm3
+    water_cut:
+      value: 0.0
+      unit: '-'
+  mass_source_properties:
+    tracer_mass_fraction:
+      values: []
+      unit: '-'
+    temperature:
+      value: 288.6
+      unit: K
+    source_type: mass_source_type_all_volumetric_flow_rates
+    volumetric_flow_rates_std:
+      gas:
+        value: 0.0
+        unit: sm3/d
+      oil:
+        value: 0.0
+        unit: sm3/d
+      water:
+        value: 0.0
+        unit: sm3/d
+    total_mass_flow_rate:
+      value: 1.0
+      unit: kg/s
+    water_cut:
+      value: 0.0
+      unit: '-'
+    gas_oil_ratio:
+      value: 0.0
+      unit: sm3/sm3
+  separator_properties:
+    environment_temperature:
+      value: 25.0
+      unit: degC
+    geometry: vertical_cylinder
+    length:
+      value: 1.0
+      unit: m
+    overall_heat_transfer_coefficient:
+      value: 0.0
+      unit: W/m2.K
+    diameter:
+      value: 1.0
+      unit: m
+    initial_phase_volume_fractions:
+      gas:
+        value: 0.5
+        unit: '-'
+      oil:
+        value: 0.5
+        unit: '-'
+    gas_separation_efficiency:
+      value: 1.0
+      unit: '-'
+    liquid_separation_efficiency:
+      value: 1.0
+      unit: '-'
+  controller_properties:
+    type: pid
+    gain: 0.0001
+    setpoint: 0.0
+    integral_time:
+      value: 10.0
+      unit: s
+    derivative_time:
+      value: 1.0
+      unit: s
+    output_signal_properties:
+      min_value: -1e+50
+      max_value: 1e+50
+      max_rate_of_change: 1e+50
+- name: WELBORE_BOTTOM_NODE
+  node_type: pressure_boundary
+  pvt_model: base
+  pressure_properties:
+    pressure:
+      value: 100000.0
+      unit: Pa
+    temperature:
+      value: 288.6
+      unit: K
+    tracer_mass_fraction:
+      values: []
+      unit: '-'
+    split_type: mass_inflow_split_type_pvt
+    gas_liquid_ratio:
+      value: 0.0
+      unit: sm3/sm3
+    gas_oil_ratio:
+      value: 0.0
+      unit: sm3/sm3
+    water_cut:
+      value: 0.0
+      unit: '-'
+  mass_source_properties:
+    tracer_mass_fraction:
+      values: []
+      unit: '-'
+    temperature:
+      value: 288.6
+      unit: K
+    source_type: mass_source_type_mass_flow_rates
+    total_mass_flow_rate:
+      value: 1.0
+      unit: kg/s
+    water_cut:
+      value: 0.0
+      unit: '-'
+    gas_oil_ratio:
+      value: 0.0
+      unit: sm3/sm3
+  separator_properties:
+    environment_temperature:
+      value: 25.0
+      unit: degC
+    geometry: vertical_cylinder
+    length:
+      value: 1.0
+      unit: m
+    overall_heat_transfer_coefficient:
+      value: 0.0
+      unit: W/m2.K
+    diameter:
+      value: 1.0
+      unit: m
+    initial_phase_volume_fractions:
+      gas:
+        value: 0.5
+        unit: '-'
+      oil:
+        value: 0.5
+        unit: '-'
+    gas_separation_efficiency:
+      value: 1.0
+      unit: '-'
+    liquid_separation_efficiency:
+      value: 1.0
+      unit: '-'
+  controller_properties:
+    type: pid
+    gain: 0.0001
+    setpoint: 0.0
+    integral_time:
+      value: 10.0
+      unit: s
+    derivative_time:
+      value: 1.0
+      unit: s
+    output_signal_properties:
+      min_value: -1e+50
+      max_value: 1e+50
+      max_rate_of_change: 1e+50
+- name: GAS_LIFT_MASS_NODE
+  node_type: mass_source_boundary
+  pvt_model: gas_lift
+  pressure_properties:
+    pressure:
+      value: 100000.0
+      unit: Pa
+    temperature:
+      value: 288.6
+      unit: K
+    tracer_mass_fraction:
+      values: []
+      unit: '-'
+    split_type: mass_inflow_split_type_constant_volume_fraction
+    gas_liquid_ratio:
+      value: 0.0
+      unit: sm3/sm3
+    gas_oil_ratio:
+      value: 0.0
+      unit: sm3/sm3
+    water_cut:
+      value: 0.0
+      unit: '-'
+  mass_source_properties:
+    tracer_mass_fraction:
+      values: []
+      unit: '-'
+    temperature:
+      value: 288.6
+      unit: K
+    source_type: mass_source_type_all_volumetric_flow_rates
+    volumetric_flow_rates_std:
+      gas:
+        value: 0.0
+        unit: sm3/d
+      oil:
+        value: 0.0
+        unit: sm3/d
+      water:
+        value: 0.0
+        unit: sm3/d
+    total_mass_flow_rate:
+      value: 1.0
+      unit: kg/s
+    water_cut:
+      value: 0.0
+      unit: '-'
+    gas_oil_ratio:
+      value: 0.0
+      unit: sm3/sm3
+  separator_properties:
+    environment_temperature:
+      value: 25.0
+      unit: degC
+    geometry: vertical_cylinder
+    length:
+      value: 1.0
+      unit: m
+    overall_heat_transfer_coefficient:
+      value: 0.0
+      unit: W/m2.K
+    diameter:
+      value: 1.0
+      unit: m
+    initial_phase_volume_fractions:
+      gas:
+        value: 0.5
+        unit: '-'
+      oil:
+        value: 0.5
+        unit: '-'
+    gas_separation_efficiency:
+      value: 1.0
+      unit: '-'
+    liquid_separation_efficiency:
+      value: 1.0
+      unit: '-'
+  controller_properties:
+    type: pid
+    gain: 0.0001
+    setpoint: 0.0
+    integral_time:
+      value: 10.0
+      unit: s
+    derivative_time:
+      value: 1.0
+      unit: s
+    output_signal_properties:
+      min_value: -1e+50
+      max_value: 1e+50
+      max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
   profile:

@@ -7,9 +7,11 @@ from typing import Union
 import json
 from barril.units import Array
 from barril.units import Scalar
-from enum import Enum
 from pathlib import Path
 
+from alfasim_score.common import LiftMethod
+from alfasim_score.common import WellItemFunction
+from alfasim_score.common import WellItemType
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.units import DENSITY_UNIT
@@ -20,19 +22,6 @@ from alfasim_score.units import SPECIFIC_HEAT_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
-
-
-class WellItemType(str, Enum):
-    DRILLING = "DRILLING"
-    CASING = "CASING"
-    NONE = "NONE"
-
-
-class WellItemFunction(str, Enum):
-    CONDUCTOR = "CONDUCTOR"
-    SURFACE = "SURFACE"
-    PRODUCTION = "PRODUCTION"
-    OPEN = "OPEN"
 
 
 class ScoreInputReader:
@@ -244,3 +233,7 @@ class ScoreInputReader:
             }
             for lithology in self.input_content["lithologies"]
         ]
+
+    def read_operation_data(self) -> Dict[str, Any]:
+        """Read data for operation registered in SCORE input file."""
+        return {"lift_method": LiftMethod(self.input_content["operation"]["data"]["method"])}
