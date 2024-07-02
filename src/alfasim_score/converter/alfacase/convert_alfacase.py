@@ -31,14 +31,9 @@ from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import GAS_LIFT_PVT_TABLE_NAME
-from alfasim_score.constants import GAS_LIFT_TEMPERATURE
-from alfasim_score.constants import NULL_MASS_FLOW_RATE
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import ROCK_DEFAULT_ROUGHNESS
 from alfasim_score.constants import TUBING_DEFAULT_ROUGHNESS
-from alfasim_score.constants import WELL_BOTTOM_NODE_DEFAULT_PRESSURE
-from alfasim_score.constants import WELL_BOTTOM_NODE_DEFAULT_TEMPERATURE
-from alfasim_score.constants import WELL_TOP_NODE_DEFAULT_TEMPERATURE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
@@ -94,7 +89,8 @@ class ScoreAlfacaseConverter:
 
     def _convert_annulus(self) -> AnnulusDescription:
         # TODO PWPA-1937: implement this method
-        # TODO PWPA-1937: top_node = GAS_LIFT_MASS_NODE if has_gas_lift else ANNULUS_TOP_NODE_NAME
+        # TODO PWPA-1937: Use the GAS_LIFT_MASS_NODE, check for the gas lift presence
+        #                 and set flow rate zero with the flag false for annulus flow.
         return AnnulusDescription(has_annulus_flow=False, top_node=ANNULUS_TOP_NODE_NAME)
 
     def _convert_formation(self) -> FormationDescription:
@@ -203,7 +199,6 @@ class ScoreAlfacaseConverter:
                 pvt_model=BASE_PVT_TABLE_NAME,
                 mass_source_properties=MassSourceNodePropertiesDescription(
                     temperature_input_type=MultiInputType.Constant,
-                    temperature=WELL_TOP_NODE_DEFAULT_TEMPERATURE,
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
                         "gas": NULL_VOLUMETRIC_FLOW_RATE,
@@ -217,8 +212,6 @@ class ScoreAlfacaseConverter:
                 node_type=NodeCellType.Pressure,
                 pvt_model=BASE_PVT_TABLE_NAME,
                 pressure_properties=PressureNodePropertiesDescription(
-                    pressure=WELL_BOTTOM_NODE_DEFAULT_PRESSURE,
-                    temperature=WELL_BOTTOM_NODE_DEFAULT_TEMPERATURE,
                     split_type=MassInflowSplitType.Pvt,
                 ),
             ),
@@ -232,7 +225,6 @@ class ScoreAlfacaseConverter:
                     pvt_model=GAS_LIFT_PVT_TABLE_NAME,
                     mass_source_properties=MassSourceNodePropertiesDescription(
                         temperature_input_type=MultiInputType.Constant,
-                        temperature=GAS_LIFT_TEMPERATURE,
                         source_type=MassSourceType.AllVolumetricFlowRates,
                         volumetric_flow_rates_std={
                             "gas": NULL_VOLUMETRIC_FLOW_RATE,

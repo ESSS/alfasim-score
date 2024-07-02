@@ -130,8 +130,8 @@ nodes:
       values: []
       unit: '-'
     temperature:
-      value: 40.0
-      unit: degC
+      value: 288.6
+      unit: K
     source_type: mass_source_type_all_volumetric_flow_rates
     volumetric_flow_rates_std:
       gas:
@@ -198,11 +198,11 @@ nodes:
   pvt_model: base
   pressure_properties:
     pressure:
-      value: 10.0
-      unit: kgf/cm2
+      value: 100000.0
+      unit: Pa
     temperature:
-      value: 60.0
-      unit: degC
+      value: 288.6
+      unit: K
     tracer_mass_fraction:
       values: []
       unit: '-'
@@ -302,8 +302,8 @@ nodes:
       values: []
       unit: '-'
     temperature:
-      value: 40.0
-      unit: degC
+      value: 288.6
+      unit: K
     source_type: mass_source_type_all_volumetric_flow_rates
     volumetric_flow_rates_std:
       gas:
