@@ -24,6 +24,7 @@ from alfasim_sdk import XAndYDescription
 from barril.units import Scalar
 
 from alfasim_score.common import LiftMethod
+from alfasim_score.common import convert_quota_to_tvd
 from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
 from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
@@ -44,15 +45,31 @@ from alfasim_score.units import LENGTH_UNIT
 def filter_duplicated_materials(
     material_list: List[MaterialDescription],
 ) -> List[MaterialDescription]:
-    """Remove the duplicated materials parsed by the reader"""
+    """Remove the duplicated materials parsed by the reader."""
     filtered = {material.name: material for material in material_list}
     return list(filtered.values())
+
+
+def get_section_top_of_filler(
+    filler_depth: Scalar, hanger_depth: Scalar, final_depth: Scalar
+) -> Scalar:
+    """Get the depth of filler in the current casing section."""
+    if filler_depth > final_depth:
+        return final_depth
+    if filler_depth <= hanger_depth:
+        return hanger_depth
+    return filler_depth
 
 
 class ScoreAlfacaseConverter:
     def __init__(self, score_reader: ScoreInputReader):
         self.score_input = score_reader
-        self.case_name = score_reader.input_content["name"]
+        self.general_data = score_reader.read_general_data()
+        self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
+
+    def _get_position_in_well(self, position: Scalar) -> Scalar:
+        """Get the position relative to the well start position."""
+        return position - self.well_start_position
 
     def _convert_well_trajectory(self) -> ProfileDescription:
         """
@@ -64,7 +81,7 @@ class ScoreAlfacaseConverter:
         return ProfileDescription(x_and_y=XAndYDescription(x=x, y=y))
 
     def convert_materials(self) -> List[MaterialDescription]:
-        """Convert list of materials from SCORE file"""
+        """Convert list of materials from SCORE file."""
         material_descriptions = []
         material_list = (
             self.score_input.read_cement_material()
@@ -74,15 +91,15 @@ class ScoreAlfacaseConverter:
             + self.score_input.read_packer_fluid()
         )
 
-        for data in material_list:
+        for material in material_list:
             material_descriptions.append(
                 MaterialDescription(
-                    name=data["name"],
-                    material_type=MaterialType(data["type"]),
-                    density=data["density"],
-                    thermal_conductivity=data["thermal_conductivity"],
-                    heat_capacity=data["specific_heat"],
-                    expansion=data["thermal_expansion"],
+                    name=material["name"],
+                    material_type=MaterialType(material["type"]),
+                    density=material["density"],
+                    thermal_conductivity=material["thermal_conductivity"],
+                    heat_capacity=material["specific_heat"],
+                    expansion=material["thermal_expansion"],
                 )
             )
         return filter_duplicated_materials(material_descriptions)
@@ -98,10 +115,12 @@ class ScoreAlfacaseConverter:
         layers = [
             FormationLayerDescription(
                 name=f"formation_{i}",
-                start=data["top_elevation"],
-                material=data["material"],
+                start=convert_quota_to_tvd(
+                    formation["top_elevation"], self.general_data["air_gap"]
+                ),
+                material=formation["material"],
             )
-            for i, data in enumerate(self.score_input.read_formations(), start=1)
+            for i, formation in enumerate(self.score_input.read_formations(), start=1)
         ]
         return FormationDescription(
             reference_y_coordinate=Scalar(0.0, "m", "length"), layers=layers
@@ -110,19 +129,25 @@ class ScoreAlfacaseConverter:
     def _convert_casing_list(self) -> List[CasingSectionDescription]:
         """Create the description for the casings."""
         casing_sections = []
-        for data in self.score_input.read_casings():
-            for i, section in enumerate(data["sections"], 1):
+        for casing in self.score_input.read_casings():
+            for i, section in enumerate(casing["sections"], 1):
+                hanger_depth = self._get_position_in_well(section["top_md"])
+                settings_depth = self._get_position_in_well(section["base_md"])
+                filler_depth = self._get_position_in_well(casing["top_of_cement"])
+                top_of_filler = get_section_top_of_filler(
+                    filler_depth, hanger_depth, settings_depth
+                )
                 casing_sections.append(
                     CasingSectionDescription(
-                        name=f"{data['function'].value}_{data['type'].value}_{i}",
-                        hanger_depth=section["top_md"],
-                        settings_depth=section["base_md"],
-                        hole_diameter=data["hole_diameter"],
+                        name=f"{casing['function'].value}_{casing['type'].value}_{i}",
+                        hanger_depth=hanger_depth,
+                        settings_depth=settings_depth,
+                        hole_diameter=casing["hole_diameter"],
                         outer_diameter=section["outer_diameter"],
                         inner_diameter=section["inner_diameter"],
                         inner_roughness=CASING_DEFAULT_ROUGHNESS,
                         material=section["material"],
-                        top_of_filler=data["top_of_cement"],
+                        top_of_filler=top_of_filler,
                         filler_material=CEMENT_NAME,
                         # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
                         material_above_filler=FLUID_DEFAULT_NAME,
@@ -134,15 +159,15 @@ class ScoreAlfacaseConverter:
     def _convert_tubing_list(self) -> List[TubingDescription]:
         """Create the description for the tubing list."""
         tubing_sections = []
-        for i, data in enumerate(self.score_input.read_tubing(), start=1):
+        for i, tubing in enumerate(self.score_input.read_tubing(), start=1):
             tubing_sections.append(
                 TubingDescription(
                     name=f"TUBING_{i}",
-                    length=data["base_md"] - data["top_md"],
-                    outer_diameter=data["outer_diameter"],
-                    inner_diameter=data["inner_diameter"],
+                    length=tubing["base_md"] - tubing["top_md"],
+                    outer_diameter=tubing["outer_diameter"],
+                    inner_diameter=tubing["inner_diameter"],
                     inner_roughness=TUBING_DEFAULT_ROUGHNESS,
-                    material=data["material"],
+                    material=tubing["material"],
                 )
             )
         return tubing_sections
@@ -150,11 +175,11 @@ class ScoreAlfacaseConverter:
     def _convert_packer_list(self) -> List[PackerDescription]:
         """Create the description for the packers."""
         packers = []
-        for data in self.score_input.read_packers():
+        for packer in self.score_input.read_packers():
             packers.append(
                 PackerDescription(
-                    name=data["name"],
-                    position=data["position"],
+                    name=packer["name"],
+                    position=self._get_position_in_well(packer["position"]),
                     # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
                     material_above=FLUID_DEFAULT_NAME,
                 )
@@ -163,23 +188,23 @@ class ScoreAlfacaseConverter:
 
     def _convert_open_hole_list(self) -> List[OpenHoleDescription]:
         """Create the description for the open hole."""
-        open_hole = []
+        open_hole_list = []
         start_position = Scalar(
-            max([data["shoe_md"].GetValue() for data in self.score_input.read_casings()]),
+            max([casing["shoe_md"].GetValue() for casing in self.score_input.read_casings()]),
             LENGTH_UNIT,
             "length",
         )
-        for i, data in enumerate(self.score_input.read_open_hole(), start=1):
-            open_hole.append(
+        for i, open_hole in enumerate(self.score_input.read_open_hole(), start=1):
+            open_hole_list.append(
                 OpenHoleDescription(
                     name=f"OPEN_HOLE_{i}",
-                    length=data["final_md"] - start_position,
-                    diameter=data["hole_diameter"],
+                    length=open_hole["final_md"] - start_position,
+                    diameter=open_hole["hole_diameter"],
                     inner_roughness=ROCK_DEFAULT_ROUGHNESS,
                 )
             )
-            start_position = data["final_md"]
-        return open_hole
+            start_position = open_hole["final_md"]
+        return open_hole_list
 
     def _convert_casings(self) -> CasingDescription:
         """Create the description for the casings."""
@@ -240,6 +265,8 @@ class ScoreAlfacaseConverter:
         """Create the description for the well."""
         return WellDescription(
             name=WELLBORE_NAME,
+            pvt_model=BASE_PVT_TABLE_NAME,
+            stagnant_fluid=FLUID_DEFAULT_NAME,
             profile=self._convert_well_trajectory(),
             casing=self._convert_casings(),
             annulus=self._convert_annulus(),
@@ -249,8 +276,9 @@ class ScoreAlfacaseConverter:
         )
 
     def build_case_description(self) -> CaseDescription:
+        """ "Create the description for the alfacase."""
         return CaseDescription(
-            name=self.case_name,
+            name=self.general_data["case_name"],
             nodes=self.build_nodes(),
             wells=[self.build_well()],
             materials=self.convert_materials(),

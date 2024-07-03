@@ -102,7 +102,7 @@ outputs:
     unit: s
 pipes: []
 nodes:
-- name: WELBORE_TOP_NODE
+- name: WELLBORE_TOP_NODE
   node_type: mass_source_boundary
   pvt_model: base
   pressure_properties:
@@ -193,7 +193,7 @@ nodes:
       min_value: -1e+50
       max_value: 1e+50
       max_rate_of_change: 1e+50
-- name: WELBORE_BOTTOM_NODE
+- name: WELLBORE_BOTTOM_NODE
   node_type: pressure_boundary
   pvt_model: base
   pressure_properties:
@@ -367,6 +367,8 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
+  pvt_model: base
+  stagnant_fluid: fluid_default
   profile:
     x_and_y:
       x:
@@ -413,10 +415,10 @@ wells:
     casing_sections:
     - name: CONDUCTOR_DRILLING_1
       hanger_depth:
-        value: 2072.0
+        value: 0.0
         unit: m
       settings_depth:
-        value: 2168.0
+        value: 96.0
         unit: m
       hole_diameter:
         value: 42.0
@@ -432,16 +434,16 @@ wells:
         unit: mm
       material: B
       top_of_filler:
-        value: 2072.0
+        value: 0.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
     - name: SURFACE_CASING_1
       hanger_depth:
-        value: 2072.0
+        value: 0.0
         unit: m
       settings_depth:
-        value: 3490.0
+        value: 1418.0
         unit: m
       hole_diameter:
         value: 20.0
@@ -457,16 +459,16 @@ wells:
         unit: mm
       material: X-80
       top_of_filler:
-        value: 2072.0
+        value: 0.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
     - name: PRODUCTION_CASING_1
       hanger_depth:
-        value: 2072.0
+        value: 0.0
         unit: m
       settings_depth:
-        value: 3072.0
+        value: 1000.0
         unit: m
       hole_diameter:
         value: 14.75
@@ -482,16 +484,16 @@ wells:
         unit: mm
       material: N-80
       top_of_filler:
-        value: 4905.0
+        value: 1000.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
     - name: PRODUCTION_CASING_2
       hanger_depth:
-        value: 3072.0
+        value: 1000.0
         unit: m
       settings_depth:
-        value: 5441.0
+        value: 3369.0
         unit: m
       hole_diameter:
         value: 14.75
@@ -507,16 +509,16 @@ wells:
         unit: mm
       material: C-110 HC
       top_of_filler:
-        value: 4905.0
+        value: 2833.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
     - name: PRODUCTION_CASING_3
       hanger_depth:
-        value: 5441.0
+        value: 3369.0
         unit: m
       settings_depth:
-        value: 5607.0
+        value: 3535.0
         unit: m
       hole_diameter:
         value: 14.75
@@ -532,7 +534,7 @@ wells:
         unit: mm
       material: SDSS/125KSI
       top_of_filler:
-        value: 4905.0
+        value: 3369.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
@@ -764,7 +766,7 @@ wells:
     packers:
     - name: 'Packer (Hidráulico) #1'
       position:
-        value: 5565.18
+        value: 3493.1800000000003
         unit: m
       material_above: fluid_default
     open_holes:
@@ -938,11 +940,11 @@ wells:
     layers:
     - name: formation_1
       start:
-        value: -2047.0
+        value: 2072.0
         unit: m
       material: Folhelho
-  top_node: WELBORE_TOP_NODE
-  bottom_node: WELBORE_BOTTOM_NODE
+  top_node: WELLBORE_TOP_NODE
+  bottom_node: WELLBORE_BOTTOM_NODE
   environment:
     thermal_model: steady_state_heat_transfer
     position_input_mode: position_by_md

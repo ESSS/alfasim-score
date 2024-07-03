@@ -1,7 +1,7 @@
-- name: WELBORE_TOP_NODE
+- name: WELLBORE_TOP_NODE
   pvt_model: base
   type: mass_source_boundary
-- name: WELBORE_BOTTOM_NODE
+- name: WELLBORE_BOTTOM_NODE
   pvt_model: base
   type: pressure_boundary
 - name: GAS_LIFT_MASS_NODE

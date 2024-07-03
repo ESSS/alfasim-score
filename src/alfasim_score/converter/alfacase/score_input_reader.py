@@ -30,6 +30,15 @@ class ScoreInputReader:
         with open(score_filepath) as f:
             self.input_content = json.load(f)
 
+    def read_general_data(self) -> Dict[str, Any]:
+        """Read the general data from SCORE input file."""
+        return {
+            "case_name": self.input_content["name"],
+            "final_md": Scalar(self.input_content["final_md"], LENGTH_UNIT),
+            "water_depth": Scalar(self.input_content["water_depth"], LENGTH_UNIT),
+            "air_gap": Scalar(self.input_content["air_gap"], LENGTH_UNIT),
+        }
+
     def read_well_trajectory(self) -> Tuple[Array, Array]:
         """Read the arrays with the x and y positions."""
         x = [entry["displacement"] for entry in self.input_content["trajectory"]["data"]]
@@ -228,6 +237,7 @@ class ScoreInputReader:
         return [
             {
                 "material": lithology["display_name"],
+                # elevations are given by quota
                 "top_elevation": Scalar(lithology["top_elevation"], LENGTH_UNIT, "length"),
                 "base_elevation": Scalar(lithology["base_elevation"], LENGTH_UNIT, "length"),
             }
