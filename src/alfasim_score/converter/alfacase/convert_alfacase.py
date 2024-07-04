@@ -75,16 +75,6 @@ class ScoreAlfacaseConverter:
         self.general_data = score_reader.read_general_data()
         self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
 
-    def _get_mass_split(self) -> MassInflowSplitType:
-        """Check if the end of well trajectory is above the reservoir."""
-        threshold_distance = Scalar(100.0, LENGTH_UNIT)
-        well_trajectory_end = self.score_input.read_general_data()["final_md"]
-        reservoir_position = self.score_input.read_operation_data()["perforation_base_depth"]
-        # TODO: check the returned massinflow splits used here....
-        if reservoir_position - well_trajectory_end > threshold_distance:
-            return MassInflowSplitType.ConstantVolumeFraction
-        return MassInflowSplitType.Pvt
-
     def _get_position_in_well(self, position: Scalar) -> Scalar:
         """Get the position relative to the well start position."""
         return position - self.well_start_position

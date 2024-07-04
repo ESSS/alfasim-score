@@ -1,6 +1,7 @@
 from typing import List
 
 import attr
+from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
 from alfasim_sdk import MassSourceType
 from alfasim_sdk import MultiInputType
@@ -29,10 +30,11 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
-                        "gas": operation_data["gas_oil_ratio"].GetValue()
+                        "gas": -1.0
+                        * operation_data["gas_oil_ratio"].GetValue()
                         * operation_data["oil_flow_rate"],
-                        "oil": operation_data["oil_flow_rate"],
-                        "water": operation_data["water_flow_rate"],
+                        "oil": -1.0 * operation_data["oil_flow_rate"],
+                        "water": -1.0 * operation_data["water_flow_rate"],
                     },
                 ),
             ),
@@ -41,7 +43,7 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                 pressure_properties=PressureNodePropertiesDescription(
                     temperature=operation_data["flow_initial_temperature"],
                     pressure=operation_data["flow_initial_pressure"],
-                    split_type=self._get_mass_split(),
+                    split_type=MassInflowSplitType.Pvt,
                 ),
             ),
         ]

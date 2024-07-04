@@ -289,7 +289,7 @@ class ScoreInputReader:
             return {
                 "well_head_pressure": Scalar(method_data["well_head_pressure"], PRESSURE_UNIT),
                 "well_head_temperature": Scalar(
-                    method_data["well_head_temperature"], PRESSURE_UNIT
+                    method_data["well_head_temperature"], TEMPERATURE_UNIT
                 ),
                 "fluid": method_data["fluid_type"],
                 "valve_depth": Scalar(method_data["valve_depth"], LENGTH_UNIT),
