@@ -1,0 +1,20 @@
+- heat_transfer_coefficient:
+    unit: W/m2.K
+    value: 1000.0
+  position:
+    unit: m
+    value: 2072.0
+  temperature:
+    unit: degC
+    value: 4.44
+  type: walls_and_environment_heat_transfer_coefficient
+- heat_transfer_coefficient:
+    unit: W/m2.K
+    value: 1000.0
+  position:
+    unit: m
+    value: 5735.0
+  temperature:
+    unit: degC
+    value: 106.04
+  type: walls_and_environment_heat_transfer_coefficient

@@ -947,12 +947,44 @@ wells:
   bottom_node: WELLBORE_BOTTOM_NODE
   environment:
     thermal_model: steady_state_heat_transfer
-    position_input_mode: position_by_md
+    position_input_mode: position_by_tvd
     reference_y_coordinate:
       value: 0.0
       unit: m
     md_properties_table: []
-    tvd_properties_table: []
+    tvd_properties_table:
+    - position:
+        value: 2072.0
+        unit: m
+      temperature:
+        value: 4.44
+        unit: degC
+      type: walls_and_environment_heat_transfer_coefficient
+      heat_transfer_coefficient:
+        value: 1000.0
+        unit: W/m2.K
+      overall_heat_transfer_coefficient:
+        value: 0.0
+        unit: W/m2.K
+      fluid_velocity:
+        value: 0.0
+        unit: m/s
+    - position:
+        value: 5735.0
+        unit: m
+      temperature:
+        value: 106.04
+        unit: degC
+      type: walls_and_environment_heat_transfer_coefficient
+      heat_transfer_coefficient:
+        value: 1000.0
+        unit: W/m2.K
+      overall_heat_transfer_coefficient:
+        value: 0.0
+        unit: W/m2.K
+      fluid_velocity:
+        value: 0.0
+        unit: m/s
   initial_conditions:
     pressures:
       position_input_type: length

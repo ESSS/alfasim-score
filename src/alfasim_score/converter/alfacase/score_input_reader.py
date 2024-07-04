@@ -19,6 +19,7 @@ from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
+from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
@@ -237,12 +238,31 @@ class ScoreInputReader:
         return [
             {
                 "material": lithology["display_name"],
-                # elevations are given by quota
+                # elevations are given in quota
                 "top_elevation": Scalar(lithology["top_elevation"], LENGTH_UNIT, "length"),
                 "base_elevation": Scalar(lithology["base_elevation"], LENGTH_UNIT, "length"),
             }
             for lithology in self.input_content["lithologies"]
         ]
+
+    def read_formation_temperatures(self) -> Dict[str, Array]:
+        """Read data for formations temperatures from SCORE input file."""
+        label = "Geotérmico (default)"
+        temperature_profile = list(
+            filter(
+                lambda item: item["name"] == label or item["is_default"],
+                self.input_content["temperature"]["ground_thermal_profiles"],
+            )
+        )[0]
+        return {
+            "temperatures": Array(
+                [data["temperature"] for data in temperature_profile["data"]], TEMPERATURE_UNIT
+            ),
+            # elevations are given in quota
+            "elevations": Array(
+                [data["elevation"] for data in temperature_profile["data"]], LENGTH_UNIT
+            ),
+        }
 
     def read_operation_data(self) -> Dict[str, Any]:
         """Read data for operation registered in SCORE input file."""

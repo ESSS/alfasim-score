@@ -4,6 +4,8 @@ from alfasim_sdk import AnnulusDescription
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import CasingDescription
 from alfasim_sdk import CasingSectionDescription
+from alfasim_sdk import EnvironmentDescription
+from alfasim_sdk import EnvironmentPropertyDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import FormationLayerDescription
 from alfasim_sdk import MassInflowSplitType
@@ -16,6 +18,9 @@ from alfasim_sdk import NodeCellType
 from alfasim_sdk import NodeDescription
 from alfasim_sdk import OpenHoleDescription
 from alfasim_sdk import PackerDescription
+from alfasim_sdk import PipeEnvironmentHeatTransferCoefficientModelType
+from alfasim_sdk import PipeThermalModelType
+from alfasim_sdk import PipeThermalPositionInput
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileDescription
 from alfasim_sdk import TubingDescription
@@ -33,6 +38,8 @@ from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import GAS_LIFT_PVT_TABLE_NAME
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
+from alfasim_score.constants import REFERENCE_VERTICAL_COORDINATE
+from alfasim_score.constants import ROCK_DEFAULT_HEAT_TRANSFER_COEFFICIENT
 from alfasim_score.constants import ROCK_DEFAULT_ROUGHNESS
 from alfasim_score.constants import TUBING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
@@ -40,6 +47,7 @@ from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import TEMPERATURE_UNIT
 
 
 def filter_duplicated_materials(
@@ -80,7 +88,7 @@ class ScoreAlfacaseConverter:
         x, y = self.score_input.read_well_trajectory()
         return ProfileDescription(x_and_y=XAndYDescription(x=x, y=y))
 
-    def convert_materials(self) -> List[MaterialDescription]:
+    def _convert_materials(self) -> List[MaterialDescription]:
         """Convert list of materials from SCORE file."""
         material_descriptions = []
         material_list = (
@@ -123,7 +131,34 @@ class ScoreAlfacaseConverter:
             for i, formation in enumerate(self.score_input.read_formations(), start=1)
         ]
         return FormationDescription(
-            reference_y_coordinate=Scalar(0.0, "m", "length"), layers=layers
+            reference_y_coordinate=REFERENCE_VERTICAL_COORDINATE, layers=layers
+        )
+
+    def _convert_well_environment(self) -> EnvironmentDescription:
+        """Create the description for the formations environment."""
+        environment_description = []
+        temperature_profile = self.score_input.read_formation_temperatures()
+        for elevation, temperature in zip(
+            temperature_profile["elevations"].GetValues(LENGTH_UNIT),
+            temperature_profile["temperatures"].GetValues(TEMPERATURE_UNIT),
+        ):
+            depth_tvd = convert_quota_to_tvd(
+                Scalar(elevation, LENGTH_UNIT), self.general_data["air_gap"]
+            )
+            temperature = Scalar(temperature, TEMPERATURE_UNIT)
+            environment_description.append(
+                EnvironmentPropertyDescription(
+                    position=depth_tvd,
+                    temperature=temperature,
+                    type=PipeEnvironmentHeatTransferCoefficientModelType.WallsAndEnvironment,
+                    heat_transfer_coefficient=ROCK_DEFAULT_HEAT_TRANSFER_COEFFICIENT,
+                )
+            )
+        return EnvironmentDescription(
+            thermal_model=PipeThermalModelType.SteadyState,
+            position_input_mode=PipeThermalPositionInput.Tvd,
+            reference_y_coordinate=REFERENCE_VERTICAL_COORDINATE,
+            tvd_properties_table=environment_description,
         )
 
     def _convert_casing_list(self) -> List[CasingSectionDescription]:
@@ -273,6 +308,7 @@ class ScoreAlfacaseConverter:
             formation=self._convert_formation(),
             top_node=WELLBORE_TOP_NODE_NAME,
             bottom_node=WELLBORE_BOTTOM_NODE_NAME,
+            environment=self._convert_well_environment(),
         )
 
     def build_case_description(self) -> CaseDescription:
@@ -281,5 +317,5 @@ class ScoreAlfacaseConverter:
             name=self.general_data["case_name"],
             nodes=self.build_nodes(),
             wells=[self.build_well()],
-            materials=self.convert_materials(),
+            materials=self._convert_materials(),
         )
