@@ -284,7 +284,7 @@ class ScoreInputReader:
 
     def read_operation_method_data(self) -> Dict[str, Any]:
         method_data = self.input_content["operation"]["data"]["method_data"]
-        lift_method = LiftMethod(method_data["method"])
+        lift_method = LiftMethod(self.input_content["operation"]["data"]["method"])
         if lift_method == LiftMethod.GAS_LIFT:
             return {
                 "well_head_pressure": Scalar(method_data["well_head_pressure"], PRESSURE_UNIT),

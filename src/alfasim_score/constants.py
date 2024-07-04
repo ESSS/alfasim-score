@@ -4,7 +4,6 @@ from alfasim_score.units import MASS_FLOW_RATE_UNIT
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import ROUGHNESS_UNIT
 from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
-from alfasim_score.units import TEMPERATURE_UNIT
 
 WELLBORE_NAME = "WELLBORE"
 WELLBORE_TOP_NODE_NAME = "WELLBORE_TOP_NODE"
