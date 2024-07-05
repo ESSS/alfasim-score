@@ -8,6 +8,7 @@ from alfasim_sdk import EnvironmentDescription
 from alfasim_sdk import EnvironmentPropertyDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import FormationLayerDescription
+from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
 from alfasim_sdk import MassSourceType
@@ -18,6 +19,7 @@ from alfasim_sdk import NodeCellType
 from alfasim_sdk import NodeDescription
 from alfasim_sdk import OpenHoleDescription
 from alfasim_sdk import PackerDescription
+from alfasim_sdk import PhysicsDescription
 from alfasim_sdk import PipeEnvironmentHeatTransferCoefficientModelType
 from alfasim_sdk import PipeThermalModelType
 from alfasim_sdk import PipeThermalPositionInput
@@ -250,6 +252,10 @@ class ScoreAlfacaseConverter:
             open_holes=self._convert_open_hole_list(),
         )
 
+    def build_physics(self) -> PhysicsDescription:
+        """Create the description for the physics data."""
+        return PhysicsDescription(hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater)
+
     def build_nodes(self) -> List[NodeDescription]:
         """Create the description for the node list."""
         nodes = [
@@ -315,6 +321,7 @@ class ScoreAlfacaseConverter:
         """ "Create the description for the alfacase."""
         return CaseDescription(
             name=self.general_data["case_name"],
+            physics=self.build_physics(),
             nodes=self.build_nodes(),
             wells=[self.build_well()],
             materials=self._convert_materials(),
