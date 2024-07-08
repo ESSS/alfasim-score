@@ -10,6 +10,7 @@ from barril.units import Scalar
 from pathlib import Path
 
 from alfasim_score.common import LiftMethod
+from alfasim_score.common import ModelFluidType
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import WellItemType
 from alfasim_score.constants import CEMENT_NAME
@@ -297,4 +298,19 @@ class ScoreInputReader:
                     method_data["well_head_flow"], STD_VOLUMETRIC_FLOW_RATE_UNIT
                 ),
             }
+        # TODO PWPA-1983: need more examples of SCORE files to know the data for the other methods
         return {}
+
+    def read_operation_fluid_data(self) -> dict[str, Any]:
+        """Read data for the fluid for the operation registered in SCORE input file."""
+        fluid_data = self.input_content["operation"]["thermal_data"]
+        return {
+            "name": fluid_data["fluid"],
+            "fluid_model_type": ModelFluidType(fluid_data["fluid_type"]),
+            "gas_oil_ratio": Scalar(fluid_data["gas_oil_ratio"], FRACTION_UNIT),
+            "api_gravity": Scalar(fluid_data["api_gravity"], FRACTION_UNIT),
+            "gas_gravity": Scalar(fluid_data["gas_gravity"], FRACTION_UNIT),
+            # TODO: check if co2 and h2_s values could be used in the black-oil model configuration
+            # "CO2":  fluid_data["co2"],
+            # "H2S":  fluid_data["h2_s"],
+        }

@@ -83,6 +83,28 @@ numerical_options:
   always_repeat_timestep: False
   enable_fast_compositional: True
 plugins: []
+pvt_models:
+  correlations:
+    DFLT_BLACK_OIL_27.40_230.00_1.17:
+      oil_density_std:
+        value: 0.8904971680302076
+        unit: kg/m3
+      gas_density_std:
+        value: 1.43325
+        unit: '-'
+      rs_sat:
+        value: 150.0
+        unit: sm3/sm3
+      pvt_correlation_package: pvt_correlation_package_standing
+      h2s_mol_frac:
+        value: 0.0
+        unit: '-'
+      co2_mol_frac:
+        value: 0.0
+        unit: '-'
+      oil_viscosity: Egbogah
+      gas_viscosity: Lee Gonzalez Eakin
+      surface_tension: Baker Swerdloff
 outputs:
   automatic_trend_frequency: True
   trends:

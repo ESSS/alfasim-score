@@ -25,6 +25,8 @@ from alfasim_sdk import PipeThermalModelType
 from alfasim_sdk import PipeThermalPositionInput
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileDescription
+from alfasim_sdk import PvtModelCorrelationDescription
+from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import TubingDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
@@ -34,6 +36,8 @@ from alfasim_sdk._internal.constants import WATER_PHASE
 from barril.units import Scalar
 
 from alfasim_score.common import LiftMethod
+from alfasim_score.common import convert_api_to_oil_density
+from alfasim_score.common import convert_gas_gravity_to_gas_density
 from alfasim_score.common import convert_quota_to_tvd
 from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
 from alfasim_score.constants import BASE_PVT_TABLE_NAME
@@ -255,6 +259,20 @@ class ScoreAlfacaseConverter:
             open_holes=self._convert_open_hole_list(),
         )
 
+    def _convert_pvt_model(self) -> PvtModelsDescription:
+        """Create the black-oil fluid for the casings."""
+        fluid_data = self.score_input.read_operation_fluid_data()
+        oil_density = convert_api_to_oil_density(fluid_data["api_gravity"])
+        gas_density = convert_gas_gravity_to_gas_density(fluid_data["gas_gravity"])
+        return PvtModelsDescription(
+            correlations={
+                fluid_data["name"]: PvtModelCorrelationDescription(
+                    oil_density_std=oil_density,
+                    gas_density_std=gas_density,
+                )
+            }
+        )
+
     def build_physics(self) -> PhysicsDescription:
         """Create the description for the physics data."""
         return PhysicsDescription(hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater)
@@ -325,6 +343,7 @@ class ScoreAlfacaseConverter:
         return CaseDescription(
             name=self.general_data["case_name"],
             physics=self.build_physics(),
+            pvt_models=self._convert_pvt_model(),
             nodes=self.build_nodes(),
             wells=[self.build_well()],
             materials=self._convert_materials(),

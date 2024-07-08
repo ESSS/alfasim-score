@@ -7,6 +7,8 @@ from barril.units import Array
 from barril.units import Scalar
 from enum import Enum
 
+from alfasim_score.units import DENSITY_UNIT
+from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
 
 
@@ -29,6 +31,12 @@ class LiftMethod(str, Enum):
     # NATURAL_FLOW = "???"
     # BCS_PUMP = "???"
     GAS_LIFT = "GASLIFT"
+
+
+# TODO: need more examples of SCORE files to know the label for other models
+#       the model is in the file tree in the path operation/thermal_data/fluid_type
+class ModelFluidType(str, Enum):
+    BLACK_OIL = "BLACK_OIL"
 
 
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:
@@ -64,3 +72,13 @@ def convert_quota_to_tvd(quota: Scalar, air_gap: Scalar) -> Scalar:
     """Convert quota value to TVD given the air_gap"""
     tvd = np.abs(quota.GetValue(LENGTH_UNIT)) + air_gap.GetValue(LENGTH_UNIT)
     return Scalar(tvd, LENGTH_UNIT)
+
+
+def convert_api_to_oil_density(api_gravity: Scalar) -> Scalar:
+    """Calculate the oil standard condition density based on API density"""
+    return Scalar(141.5 / (api_gravity.GetValue(FRACTION_UNIT) + 131.5), DENSITY_UNIT)
+
+
+def convert_gas_gravity_to_gas_density(gas_gravity: Scalar) -> Scalar:
+    # TODO: check this calculation it's using dirrect value of air density at std
+    return gas_gravity * 1.225
