@@ -8,6 +8,7 @@ from alfasim_sdk import EnvironmentDescription
 from alfasim_sdk import EnvironmentPropertyDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import FormationLayerDescription
+from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
 from alfasim_sdk import MassSourceType
@@ -18,6 +19,7 @@ from alfasim_sdk import NodeCellType
 from alfasim_sdk import NodeDescription
 from alfasim_sdk import OpenHoleDescription
 from alfasim_sdk import PackerDescription
+from alfasim_sdk import PhysicsDescription
 from alfasim_sdk import PipeEnvironmentHeatTransferCoefficientModelType
 from alfasim_sdk import PipeThermalModelType
 from alfasim_sdk import PipeThermalPositionInput
@@ -26,6 +28,9 @@ from alfasim_sdk import ProfileDescription
 from alfasim_sdk import TubingDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
+from alfasim_sdk._internal.constants import GAS_PHASE
+from alfasim_sdk._internal.constants import OIL_PHASE
+from alfasim_sdk._internal.constants import WATER_PHASE
 from barril.units import Scalar
 
 from alfasim_score.common import LiftMethod
@@ -250,6 +255,10 @@ class ScoreAlfacaseConverter:
             open_holes=self._convert_open_hole_list(),
         )
 
+    def build_physics(self) -> PhysicsDescription:
+        """Create the description for the physics data."""
+        return PhysicsDescription(hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater)
+
     def build_nodes(self) -> List[NodeDescription]:
         """Create the description for the node list."""
         nodes = [
@@ -261,9 +270,9 @@ class ScoreAlfacaseConverter:
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
-                        "gas": NULL_VOLUMETRIC_FLOW_RATE,
-                        "oil": NULL_VOLUMETRIC_FLOW_RATE,
-                        "water": NULL_VOLUMETRIC_FLOW_RATE,
+                        GAS_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
+                        OIL_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
+                        WATER_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
                     },
                 ),
             ),
@@ -315,6 +324,7 @@ class ScoreAlfacaseConverter:
         """ "Create the description for the alfacase."""
         return CaseDescription(
             name=self.general_data["case_name"],
+            physics=self.build_physics(),
             nodes=self.build_nodes(),
             wells=[self.build_well()],
             materials=self._convert_materials(),

@@ -18,7 +18,9 @@ from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
+from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
@@ -266,4 +268,33 @@ class ScoreInputReader:
 
     def read_operation_data(self) -> Dict[str, Any]:
         """Read data for operation registered in SCORE input file."""
-        return {"lift_method": LiftMethod(self.input_content["operation"]["data"]["method"])}
+        operation = self.input_content["operation"]["data"]
+        return {
+            "lift_method": LiftMethod(operation["method"]),
+            "flow_initial_temperature": Scalar(
+                operation["flow_initial_temperature"], TEMPERATURE_UNIT
+            ),
+            "flow_initial_pressure": Scalar(operation["flow_initial_pressure"], PRESSURE_UNIT),
+            "perforation_base_depth": Scalar(operation["perforation_base_depth"], LENGTH_UNIT),
+            "oil_flow_rate": Scalar(operation["oil_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
+            "gas_oil_ratio": Scalar(operation["gor"], FRACTION_UNIT),
+            "flow_rate": Scalar(operation["flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
+            "water_flow_rate": Scalar(operation["water_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
+        }
+
+    def read_operation_method_data(self) -> Dict[str, Any]:
+        method_data = self.input_content["operation"]["data"]["method_data"]
+        lift_method = LiftMethod(self.input_content["operation"]["data"]["method"])
+        if lift_method == LiftMethod.GAS_LIFT:
+            return {
+                "well_head_pressure": Scalar(method_data["well_head_pressure"], PRESSURE_UNIT),
+                "well_head_temperature": Scalar(
+                    method_data["well_head_temperature"], TEMPERATURE_UNIT
+                ),
+                "fluid": method_data["fluid_type"],
+                "valve_depth": Scalar(method_data["valve_depth"], LENGTH_UNIT),
+                "well_head_flow": Scalar(
+                    method_data["well_head_flow"], STD_VOLUMETRIC_FLOW_RATE_UNIT
+                ),
+            }
+        return {}
