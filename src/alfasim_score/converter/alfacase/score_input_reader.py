@@ -18,7 +18,7 @@ from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
-from alfasim_score.units import GAS_OIL_RATIO
+from alfasim_score.units import GAS_OIL_RATIO_UNIT
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
@@ -279,7 +279,7 @@ class ScoreInputReader:
             "flow_initial_pressure": Scalar(operation["flow_initial_pressure"], PRESSURE_UNIT),
             "perforation_base_depth": Scalar(operation["perforation_base_depth"], LENGTH_UNIT),
             "oil_flow_rate": Scalar(operation["oil_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
-            "gas_oil_ratio": Scalar(operation["gor"], GAS_OIL_RATIO),
+            "gas_oil_ratio": Scalar(operation["gor"], GAS_OIL_RATIO_UNIT),
             "flow_rate": Scalar(operation["flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
             "water_flow_rate": Scalar(operation["water_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
         }
@@ -302,13 +302,13 @@ class ScoreInputReader:
         # TODO PWPA-1983: need more examples of SCORE files to know the data for the other methods
         return {}
 
-    def read_operation_fluid_data(self) -> dict[str, Any]:
+    def read_operation_fluid_data(self) -> Dict[str, Any]:
         """Read data for the fluid for the operation registered in SCORE input file."""
         fluid_data = self.input_content["operation"]["thermal_data"]
         return {
             "name": fluid_data["fluid"],
             "fluid_model_type": ModelFluidType(fluid_data["fluid_type"]),
-            "gas_oil_ratio": Scalar(fluid_data["gas_oil_ratio"], GAS_OIL_RATIO),
+            "gas_oil_ratio": Scalar(fluid_data["gas_oil_ratio"], GAS_OIL_RATIO_UNIT),
             "api_gravity": Scalar(fluid_data["api_gravity"], FRACTION_UNIT),
             "gas_gravity": Scalar(fluid_data["gas_gravity"], FRACTION_UNIT),
         }

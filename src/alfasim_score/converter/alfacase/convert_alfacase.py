@@ -30,9 +30,9 @@ from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import TubingDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
-from alfasim_sdk._internal.constants import GAS_PHASE
-from alfasim_sdk._internal.constants import OIL_PHASE
-from alfasim_sdk._internal.constants import WATER_PHASE
+from alfasim_sdk._internal.constants import FLUID_GAS
+from alfasim_sdk._internal.constants import FLUID_OIL
+from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Scalar
 
 from alfasim_score.common import LiftMethod
@@ -291,9 +291,9 @@ class ScoreAlfacaseConverter:
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
-                        GAS_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
-                        OIL_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
-                        WATER_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
                     },
                 ),
             ),

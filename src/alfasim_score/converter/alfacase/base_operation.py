@@ -7,9 +7,9 @@ from alfasim_sdk import MassSourceType
 from alfasim_sdk import MultiInputType
 from alfasim_sdk import NodeDescription
 from alfasim_sdk import PressureNodePropertiesDescription
-from alfasim_sdk._internal.constants import GAS_PHASE
-from alfasim_sdk._internal.constants import OIL_PHASE
-from alfasim_sdk._internal.constants import WATER_PHASE
+from alfasim_sdk._internal.constants import FLUID_GAS
+from alfasim_sdk._internal.constants import FLUID_OIL
+from alfasim_sdk._internal.constants import FLUID_WATER
 
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
@@ -33,11 +33,11 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
-                        GAS_PHASE: -1.0
+                        FLUID_GAS: -1.0
                         * operation_data["gas_oil_ratio"].GetValue()
                         * operation_data["oil_flow_rate"],
-                        OIL_PHASE: -1.0 * operation_data["oil_flow_rate"],
-                        WATER_PHASE: -1.0 * operation_data["water_flow_rate"],
+                        FLUID_OIL: -1.0 * operation_data["oil_flow_rate"],
+                        FLUID_WATER: -1.0 * operation_data["water_flow_rate"],
                     },
                 ),
             ),
@@ -60,9 +60,9 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                         temperature=gas_lift_data["well_head_temperature"],
                         source_type=MassSourceType.AllVolumetricFlowRates,
                         volumetric_flow_rates_std={
-                            GAS_PHASE: gas_lift_data["well_head_flow"],
-                            OIL_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
-                            WATER_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
+                            FLUID_GAS: gas_lift_data["well_head_flow"],
+                            FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
+                            FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
                         },
                     ),
                 )
