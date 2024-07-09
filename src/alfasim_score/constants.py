@@ -1,10 +1,13 @@
 from barril.units import Scalar
 
 from alfasim_score.units import DENSITY_UNIT
+from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import HEAT_TRANSFER_COEFFICIENT_UNIT
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import MASS_FLOW_RATE_UNIT
+from alfasim_score.units import NONE_UNIT
+from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import ROUGHNESS_UNIT
 from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
 
@@ -14,6 +17,7 @@ WELLBORE_BOTTOM_NODE_NAME = "WELLBORE_BOTTOM_NODE"
 ANNULUS_TOP_NODE_NAME = "WELLBORE_ANNULUS_TOP_NODE"
 GAS_LIFT_MASS_NODE_NAME = "GAS_LIFT_MASS_NODE"
 CEMENT_NAME = "cement"
+GAS_LIFT_VALVE_NAME = "GAS_LIFT_VALVE"
 
 ROCK_DEFAULT_ROUGHNESS = Scalar(0.1, ROUGHNESS_UNIT)
 ROCK_DEFAULT_HEAT_TRANSFER_COEFFICIENT = Scalar(1000.0, HEAT_TRANSFER_COEFFICIENT_UNIT)
@@ -37,3 +41,8 @@ WATER_DENSITY_STANDARD = Scalar(999.016, DENSITY_UNIT)
 # default values used in the context of black-oil models
 H2S_MOLAR_FRACTION_DEFAULT = Scalar(0.0, FRACTION_UNIT)
 CO2_MOLAR_FRACTION_DEFAULT = Scalar(0.0, FRACTION_UNIT)
+
+# gas lift default values
+GAS_LIFT_VALVE_DEFAULT_DIAMETER = Scalar(0.25, DIAMETER_UNIT, "diameter")
+GAS_LIFT_VALVE_DEFAULT_DISCHARGE = Scalar(0.826, NONE_UNIT)
+GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN = Scalar(0.0, PRESSURE_UNIT)

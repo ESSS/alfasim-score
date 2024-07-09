@@ -1,6 +1,8 @@
+from typing import Dict
 from typing import List
 
 from alfasim_sdk import AnnulusDescription
+from alfasim_sdk import AnnulusEquipmentDescription
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import CasingDescription
 from alfasim_sdk import CasingSectionDescription
@@ -8,6 +10,7 @@ from alfasim_sdk import EnvironmentDescription
 from alfasim_sdk import EnvironmentPropertyDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import FormationLayerDescription
+from alfasim_sdk import GasLiftValveEquipmentDescription
 from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
@@ -28,6 +31,7 @@ from alfasim_sdk import ProfileDescription
 from alfasim_sdk import PvtModelCorrelationDescription
 from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import TubingDescription
+from alfasim_sdk import ValveType
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
 from alfasim_sdk._internal.constants import FLUID_GAS
@@ -47,6 +51,10 @@ from alfasim_score.constants import CO2_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import GAS_LIFT_PVT_TABLE_NAME
+from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN
+from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DIAMETER
+from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DISCHARGE
+from alfasim_score.constants import GAS_LIFT_VALVE_NAME
 from alfasim_score.constants import H2S_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import REFERENCE_VERTICAL_COORDINATE
@@ -124,10 +132,17 @@ class ScoreAlfacaseConverter:
         return filter_duplicated_materials(material_descriptions)
 
     def _convert_annulus(self) -> AnnulusDescription:
-        # TODO PWPA-1937: implement this method
-        # TODO PWPA-1937: Use the GAS_LIFT_MASS_NODE, check for the gas lift presence
-        #                 and set flow rate zero with the flag false for annulus flow.
-        return AnnulusDescription(has_annulus_flow=False, top_node=ANNULUS_TOP_NODE_NAME)
+        """Create the description for the annulus."""
+        operation_input_data = self.score_input.read_operation_data()
+        has_gas_lift = operation_input_data["lift_method"] == LiftMethod.GAS_LIFT
+        return AnnulusDescription(
+            has_annulus_flow=has_gas_lift,
+            pvt_model=GAS_LIFT_PVT_TABLE_NAME if has_gas_lift else BASE_PVT_TABLE_NAME,
+            equipment=AnnulusEquipmentDescription(
+                gas_lift_valves=self._convert_gas_lift_valves(),
+            ),
+            top_node=GAS_LIFT_MASS_NODE_NAME,
+        )
 
     def _convert_formation(self) -> FormationDescription:
         """Create the description for the formations."""
@@ -261,6 +276,20 @@ class ScoreAlfacaseConverter:
             open_holes=self._convert_open_hole_list(),
         )
 
+    def _convert_gas_lift_valves(self) -> Dict[str, GasLiftValveEquipmentDescription]:
+        """Create the gas lift valves for the annulus."""
+        gas_lift_data = self.score_input.read_operation_method_data()
+        valves = {
+            f"{GAS_LIFT_VALVE_NAME}_1": GasLiftValveEquipmentDescription(
+                position=self._get_position_in_well(gas_lift_data["valve_depth"]),
+                diameter=GAS_LIFT_VALVE_DEFAULT_DIAMETER,
+                valve_type=ValveType.CheckValve,
+                delta_p_min=GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN,
+                discharge_coefficient=GAS_LIFT_VALVE_DEFAULT_DISCHARGE,
+            )
+        }
+        return valves
+
     def _convert_pvt_model(self) -> PvtModelsDescription:
         """Create the black-oil fluid for the casings."""
         fluid_data = self.score_input.read_operation_fluid_data()
@@ -317,9 +346,9 @@ class ScoreAlfacaseConverter:
                         temperature_input_type=MultiInputType.Constant,
                         source_type=MassSourceType.AllVolumetricFlowRates,
                         volumetric_flow_rates_std={
-                            "gas": NULL_VOLUMETRIC_FLOW_RATE,
-                            "oil": NULL_VOLUMETRIC_FLOW_RATE,
-                            "water": NULL_VOLUMETRIC_FLOW_RATE,
+                            FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
+                            FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
+                            FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
                         },
                     ),
                 )
