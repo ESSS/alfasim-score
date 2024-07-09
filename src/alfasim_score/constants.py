@@ -1,7 +1,8 @@
 from barril.units import Scalar
 
+from alfasim_score.units import DENSITY_UNIT
+from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import MASS_FLOW_RATE_UNIT
-from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import ROUGHNESS_UNIT
 from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
 
@@ -27,3 +28,9 @@ BASE_PVT_TABLE_NAME = "base"
 GAS_LIFT_PVT_TABLE_NAME = "gas_lift"
 NULL_VOLUMETRIC_FLOW_RATE = Scalar(0.0, STD_VOLUMETRIC_FLOW_RATE_UNIT)
 NULL_MASS_FLOW_RATE = Scalar(0.0, MASS_FLOW_RATE_UNIT)
+
+AIR_DENSITY_STANDARD = Scalar(1.225, DENSITY_UNIT)
+
+# default values used in the context of black-oil models
+H2S_MOLAR_FRACTION_DEFAULT = Scalar(0.0, FRACTION_UNIT)
+CO2_MOLAR_FRACTION_DEFAULT = Scalar(0.0, FRACTION_UNIT)

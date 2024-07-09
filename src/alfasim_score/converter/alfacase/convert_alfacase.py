@@ -36,16 +36,18 @@ from alfasim_sdk._internal.constants import WATER_PHASE
 from barril.units import Scalar
 
 from alfasim_score.common import LiftMethod
-from alfasim_score.common import convert_api_to_oil_density
+from alfasim_score.common import convert_api_gravity_to_oil_density
 from alfasim_score.common import convert_gas_gravity_to_gas_density
 from alfasim_score.common import convert_quota_to_tvd
 from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
 from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
+from alfasim_score.constants import CO2_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import GAS_LIFT_PVT_TABLE_NAME
+from alfasim_score.constants import H2S_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import REFERENCE_VERTICAL_COORDINATE
 from alfasim_score.constants import ROCK_DEFAULT_HEAT_TRANSFER_COEFFICIENT
@@ -262,13 +264,14 @@ class ScoreAlfacaseConverter:
     def _convert_pvt_model(self) -> PvtModelsDescription:
         """Create the black-oil fluid for the casings."""
         fluid_data = self.score_input.read_operation_fluid_data()
-        oil_density = convert_api_to_oil_density(fluid_data["api_gravity"])
-        gas_density = convert_gas_gravity_to_gas_density(fluid_data["gas_gravity"])
         return PvtModelsDescription(
             correlations={
                 fluid_data["name"]: PvtModelCorrelationDescription(
-                    oil_density_std=oil_density,
-                    gas_density_std=gas_density,
+                    oil_density_std=convert_api_gravity_to_oil_density(fluid_data["api_gravity"]),
+                    gas_density_std=convert_gas_gravity_to_gas_density(fluid_data["gas_gravity"]),
+                    rs_sat=fluid_data["gas_oil_ratio"],
+                    h2s_mol_frac=H2S_MOLAR_FRACTION_DEFAULT,
+                    co2_mol_frac=CO2_MOLAR_FRACTION_DEFAULT,
                 )
             }
         )

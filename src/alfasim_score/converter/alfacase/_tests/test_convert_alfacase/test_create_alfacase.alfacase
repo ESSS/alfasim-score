@@ -91,9 +91,9 @@ pvt_models:
         unit: kg/m3
       gas_density_std:
         value: 1.43325
-        unit: '-'
+        unit: kg/m3
       rs_sat:
-        value: 150.0
+        value: 230.0
         unit: sm3/sm3
       pvt_correlation_package: pvt_correlation_package_standing
       h2s_mol_frac:

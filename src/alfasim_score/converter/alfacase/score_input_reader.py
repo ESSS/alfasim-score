@@ -18,6 +18,7 @@ from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
+from alfasim_score.units import GAS_OIL_RATIO
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
@@ -278,7 +279,7 @@ class ScoreInputReader:
             "flow_initial_pressure": Scalar(operation["flow_initial_pressure"], PRESSURE_UNIT),
             "perforation_base_depth": Scalar(operation["perforation_base_depth"], LENGTH_UNIT),
             "oil_flow_rate": Scalar(operation["oil_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
-            "gas_oil_ratio": Scalar(operation["gor"], FRACTION_UNIT),
+            "gas_oil_ratio": Scalar(operation["gor"], GAS_OIL_RATIO),
             "flow_rate": Scalar(operation["flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
             "water_flow_rate": Scalar(operation["water_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
         }
@@ -307,10 +308,7 @@ class ScoreInputReader:
         return {
             "name": fluid_data["fluid"],
             "fluid_model_type": ModelFluidType(fluid_data["fluid_type"]),
-            "gas_oil_ratio": Scalar(fluid_data["gas_oil_ratio"], FRACTION_UNIT),
+            "gas_oil_ratio": Scalar(fluid_data["gas_oil_ratio"], GAS_OIL_RATIO),
             "api_gravity": Scalar(fluid_data["api_gravity"], FRACTION_UNIT),
             "gas_gravity": Scalar(fluid_data["gas_gravity"], FRACTION_UNIT),
-            # TODO: check if co2 and h2_s values could be used in the black-oil model configuration
-            # "CO2":  fluid_data["co2"],
-            # "H2S":  fluid_data["h2_s"],
         }
