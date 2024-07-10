@@ -8,6 +8,7 @@ from barril.units import Scalar
 from enum import Enum
 
 from alfasim_score.constants import AIR_DENSITY_STANDARD
+from alfasim_score.constants import WATER_DENSITY_STANDARD
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
@@ -77,7 +78,8 @@ def convert_quota_to_tvd(quota: Scalar, air_gap: Scalar) -> Scalar:
 
 def convert_api_gravity_to_oil_density(api_gravity: Scalar) -> Scalar:
     """Calculate the oil standard condition density based on API density."""
-    return Scalar(141.5 / (api_gravity.GetValue(FRACTION_UNIT) + 131.5), DENSITY_UNIT)
+    specific_gravity = 141.5 / (api_gravity.GetValue(FRACTION_UNIT) + 131.5)
+    return WATER_DENSITY_STANDARD * specific_gravity
 
 
 def convert_gas_gravity_to_gas_density(gas_gravity: Scalar) -> Scalar:

@@ -87,7 +87,7 @@ pvt_models:
   correlations:
     DFLT_BLACK_OIL_27.40_230.00_1.17:
       oil_density_std:
-        value: 0.8904971680302076
+        value: 889.6209188168658
         unit: kg/m3
       gas_density_std:
         value: 1.43325

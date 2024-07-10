@@ -2,6 +2,8 @@ from barril.units import Scalar
 
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import FRACTION_UNIT
+from alfasim_score.units import HEAT_TRANSFER_COEFFICIENT_UNIT
+from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import MASS_FLOW_RATE_UNIT
 from alfasim_score.units import ROUGHNESS_UNIT
 from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
@@ -14,11 +16,11 @@ GAS_LIFT_MASS_NODE_NAME = "GAS_LIFT_MASS_NODE"
 CEMENT_NAME = "cement"
 
 ROCK_DEFAULT_ROUGHNESS = Scalar(0.1, ROUGHNESS_UNIT)
-ROCK_DEFAULT_HEAT_TRANSFER_COEFFICIENT = Scalar(1000.0, "W/m2.K")
+ROCK_DEFAULT_HEAT_TRANSFER_COEFFICIENT = Scalar(1000.0, HEAT_TRANSFER_COEFFICIENT_UNIT)
 CASING_DEFAULT_ROUGHNESS = Scalar(0.05, ROUGHNESS_UNIT)
 TUBING_DEFAULT_ROUGHNESS = Scalar(0.05, ROUGHNESS_UNIT)
 
-REFERENCE_VERTICAL_COORDINATE = Scalar(0.0, "m", "length")
+REFERENCE_VERTICAL_COORDINATE = Scalar(0.0, LENGTH_UNIT, "length")
 
 # This default fluid name for packer and fluid above filler
 FLUID_DEFAULT_NAME = "fluid_default"
@@ -30,6 +32,7 @@ NULL_VOLUMETRIC_FLOW_RATE = Scalar(0.0, STD_VOLUMETRIC_FLOW_RATE_UNIT)
 NULL_MASS_FLOW_RATE = Scalar(0.0, MASS_FLOW_RATE_UNIT)
 
 AIR_DENSITY_STANDARD = Scalar(1.225, DENSITY_UNIT)
+WATER_DENSITY_STANDARD = Scalar(999.016, DENSITY_UNIT)
 
 # default values used in the context of black-oil models
 H2S_MOLAR_FRACTION_DEFAULT = Scalar(0.0, FRACTION_UNIT)
