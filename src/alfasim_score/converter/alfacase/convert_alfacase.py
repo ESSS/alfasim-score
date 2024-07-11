@@ -25,23 +25,29 @@ from alfasim_sdk import PipeThermalModelType
 from alfasim_sdk import PipeThermalPositionInput
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileDescription
+from alfasim_sdk import PvtModelCorrelationDescription
+from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import TubingDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
-from alfasim_sdk._internal.constants import GAS_PHASE
-from alfasim_sdk._internal.constants import OIL_PHASE
-from alfasim_sdk._internal.constants import WATER_PHASE
+from alfasim_sdk._internal.constants import FLUID_GAS
+from alfasim_sdk._internal.constants import FLUID_OIL
+from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Scalar
 
 from alfasim_score.common import LiftMethod
+from alfasim_score.common import convert_api_gravity_to_oil_density
+from alfasim_score.common import convert_gas_gravity_to_gas_density
 from alfasim_score.common import convert_quota_to_tvd
 from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
 from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
+from alfasim_score.constants import CO2_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import GAS_LIFT_PVT_TABLE_NAME
+from alfasim_score.constants import H2S_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import REFERENCE_VERTICAL_COORDINATE
 from alfasim_score.constants import ROCK_DEFAULT_HEAT_TRANSFER_COEFFICIENT
@@ -255,6 +261,21 @@ class ScoreAlfacaseConverter:
             open_holes=self._convert_open_hole_list(),
         )
 
+    def _convert_pvt_model(self) -> PvtModelsDescription:
+        """Create the black-oil fluid for the casings."""
+        fluid_data = self.score_input.read_operation_fluid_data()
+        return PvtModelsDescription(
+            correlations={
+                fluid_data["name"]: PvtModelCorrelationDescription(
+                    oil_density_std=convert_api_gravity_to_oil_density(fluid_data["api_gravity"]),
+                    gas_density_std=convert_gas_gravity_to_gas_density(fluid_data["gas_gravity"]),
+                    rs_sat=fluid_data["gas_oil_ratio"],
+                    h2s_mol_frac=H2S_MOLAR_FRACTION_DEFAULT,
+                    co2_mol_frac=CO2_MOLAR_FRACTION_DEFAULT,
+                )
+            }
+        )
+
     def build_physics(self) -> PhysicsDescription:
         """Create the description for the physics data."""
         return PhysicsDescription(hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater)
@@ -270,9 +291,9 @@ class ScoreAlfacaseConverter:
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
-                        GAS_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
-                        OIL_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
-                        WATER_PHASE: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
                     },
                 ),
             ),
@@ -325,6 +346,7 @@ class ScoreAlfacaseConverter:
         return CaseDescription(
             name=self.general_data["case_name"],
             physics=self.build_physics(),
+            pvt_models=self._convert_pvt_model(),
             nodes=self.build_nodes(),
             wells=[self.build_well()],
             materials=self._convert_materials(),
