@@ -2,12 +2,15 @@ from typing import List
 
 from alfasim_sdk import AnnulusDescription
 from alfasim_sdk import CaseDescription
+from alfasim_sdk import CaseOutputDescription
 from alfasim_sdk import CasingDescription
 from alfasim_sdk import CasingSectionDescription
+from alfasim_sdk import EnergyModel
 from alfasim_sdk import EnvironmentDescription
 from alfasim_sdk import EnvironmentPropertyDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import FormationLayerDescription
+from alfasim_sdk import GlobalTrendDescription
 from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
@@ -18,6 +21,7 @@ from alfasim_sdk import MultiInputType
 from alfasim_sdk import NodeCellType
 from alfasim_sdk import NodeDescription
 from alfasim_sdk import OpenHoleDescription
+from alfasim_sdk import OutputAttachmentLocation
 from alfasim_sdk import PackerDescription
 from alfasim_sdk import PhysicsDescription
 from alfasim_sdk import PipeEnvironmentHeatTransferCoefficientModelType
@@ -25,8 +29,10 @@ from alfasim_sdk import PipeThermalModelType
 from alfasim_sdk import PipeThermalPositionInput
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileDescription
+from alfasim_sdk import ProfileOutputDescription
 from alfasim_sdk import PvtModelCorrelationDescription
 from alfasim_sdk import PvtModelsDescription
+from alfasim_sdk import TrendsOutputDescription
 from alfasim_sdk import TubingDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
@@ -278,9 +284,31 @@ class ScoreAlfacaseConverter:
             }
         )
 
+    def build_outputs(self) -> CaseOutputDescription:
+        """Create the outputs for the case."""
+        return CaseOutputDescription(
+            trends=TrendsOutputDescription(
+                global_trends=[GlobalTrendDescription(curve_names=["timestep"])]
+            ),
+            profiles=self.build_output_profiles(),
+        )
+
     def build_physics(self) -> PhysicsDescription:
         """Create the description for the physics data."""
-        return PhysicsDescription(hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater)
+        return PhysicsDescription(
+            hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater,
+            energy_model=EnergyModel.GlobalModel,
+        )
+
+    def build_output_profiles(self) -> List[ProfileOutputDescription]:
+        """Create the output profiles data for the well."""
+        return [
+            ProfileOutputDescription(
+                curve_names=[],
+                location=OutputAttachmentLocation.Main,
+                element_name=WELLBORE_NAME,
+            )
+        ]
 
     def build_nodes(self) -> List[NodeDescription]:
         """Create the description for the node list."""
@@ -345,6 +373,7 @@ class ScoreAlfacaseConverter:
             name=self.general_data["case_name"],
             physics=self.build_physics(),
             pvt_models=self._convert_pvt_model(),
+            outputs=self.build_outputs(),
             nodes=self.build_nodes(),
             wells=[self.build_well()],
             materials=self._convert_materials(),
