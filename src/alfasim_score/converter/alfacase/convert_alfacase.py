@@ -1,8 +1,6 @@
-from typing import Dict
 from typing import List
 
 from alfasim_sdk import AnnulusDescription
-from alfasim_sdk import AnnulusEquipmentDescription
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import CasingDescription
 from alfasim_sdk import CasingSectionDescription
@@ -10,7 +8,6 @@ from alfasim_sdk import EnvironmentDescription
 from alfasim_sdk import EnvironmentPropertyDescription
 from alfasim_sdk import FormationDescription
 from alfasim_sdk import FormationLayerDescription
-from alfasim_sdk import GasLiftValveEquipmentDescription
 from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
@@ -31,7 +28,6 @@ from alfasim_sdk import ProfileDescription
 from alfasim_sdk import PvtModelCorrelationDescription
 from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import TubingDescription
-from alfasim_sdk import ValveType
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
 from alfasim_sdk._internal.constants import FLUID_GAS
@@ -39,11 +35,10 @@ from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Scalar
 
-from alfasim_score.common import LiftMethod
+from alfasim_score.common import ModelFluidType
 from alfasim_score.common import convert_api_gravity_to_oil_density
 from alfasim_score.common import convert_gas_gravity_to_gas_density
 from alfasim_score.common import convert_quota_to_tvd
-from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
 from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
@@ -51,10 +46,6 @@ from alfasim_score.constants import CO2_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import GAS_LIFT_PVT_TABLE_NAME
-from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN
-from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DIAMETER
-from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DISCHARGE
-from alfasim_score.constants import GAS_LIFT_VALVE_NAME
 from alfasim_score.constants import H2S_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import REFERENCE_VERTICAL_COORDINATE
@@ -66,6 +57,7 @@ from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 
 
@@ -97,6 +89,10 @@ class ScoreAlfacaseConverter:
     def _get_position_in_well(self, position: Scalar) -> Scalar:
         """Get the position relative to the well start position."""
         return position - self.well_start_position
+
+    def get_fluid_model_name(self) -> ModelFluidType:
+        """Get the name of the fluid model used for this operation."""
+        return self.score_input.read_operation_fluid_data()["name"]
 
     def _convert_well_trajectory(self) -> ProfileDescription:
         """
@@ -131,18 +127,9 @@ class ScoreAlfacaseConverter:
             )
         return filter_duplicated_materials(material_descriptions)
 
-    def _convert_annulus(self) -> AnnulusDescription:
+    def build_annulus(self) -> AnnulusDescription:
         """Create the description for the annulus."""
-        operation_input_data = self.score_input.read_operation_data()
-        has_gas_lift = operation_input_data["lift_method"] == LiftMethod.GAS_LIFT
-        return AnnulusDescription(
-            has_annulus_flow=has_gas_lift,
-            pvt_model=GAS_LIFT_PVT_TABLE_NAME if has_gas_lift else BASE_PVT_TABLE_NAME,
-            equipment=AnnulusEquipmentDescription(
-                gas_lift_valves=self._convert_gas_lift_valves(),
-            ),
-            top_node=GAS_LIFT_MASS_NODE_NAME,
-        )
+        return AnnulusDescription(has_annulus_flow=False, top_node=GAS_LIFT_MASS_NODE_NAME)
 
     def _convert_formation(self) -> FormationDescription:
         """Create the description for the formations."""
@@ -276,20 +263,6 @@ class ScoreAlfacaseConverter:
             open_holes=self._convert_open_hole_list(),
         )
 
-    def _convert_gas_lift_valves(self) -> Dict[str, GasLiftValveEquipmentDescription]:
-        """Create the gas lift valves for the annulus."""
-        gas_lift_data = self.score_input.read_operation_method_data()
-        valves = {
-            f"{GAS_LIFT_VALVE_NAME}_1": GasLiftValveEquipmentDescription(
-                position=self._get_position_in_well(gas_lift_data["valve_depth"]),
-                diameter=GAS_LIFT_VALVE_DEFAULT_DIAMETER,
-                valve_type=ValveType.CheckValve,
-                delta_p_min=GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN,
-                discharge_coefficient=GAS_LIFT_VALVE_DEFAULT_DISCHARGE,
-            )
-        }
-        return valves
-
     def _convert_pvt_model(self) -> PvtModelsDescription:
         """Create the black-oil fluid for the casings."""
         fluid_data = self.score_input.read_operation_fluid_data()
@@ -334,25 +307,21 @@ class ScoreAlfacaseConverter:
                     split_type=MassInflowSplitType.Pvt,
                 ),
             ),
+            NodeDescription(
+                name=GAS_LIFT_MASS_NODE_NAME,
+                node_type=NodeCellType.MassSource,
+                pvt_model=GAS_LIFT_PVT_TABLE_NAME,
+                mass_source_properties=MassSourceNodePropertiesDescription(
+                    temperature_input_type=MultiInputType.Constant,
+                    source_type=MassSourceType.AllVolumetricFlowRates,
+                    volumetric_flow_rates_std={
+                        FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
+                    },
+                ),
+            ),
         ]
-        operation_input_data = self.score_input.read_operation_data()
-        if operation_input_data["lift_method"] == LiftMethod.GAS_LIFT:
-            nodes.append(
-                NodeDescription(
-                    name=GAS_LIFT_MASS_NODE_NAME,
-                    node_type=NodeCellType.MassSource,
-                    pvt_model=GAS_LIFT_PVT_TABLE_NAME,
-                    mass_source_properties=MassSourceNodePropertiesDescription(
-                        temperature_input_type=MultiInputType.Constant,
-                        source_type=MassSourceType.AllVolumetricFlowRates,
-                        volumetric_flow_rates_std={
-                            FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
-                            FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
-                            FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
-                        },
-                    ),
-                )
-            )
         return nodes
 
     def build_well(self) -> WellDescription:
@@ -363,7 +332,7 @@ class ScoreAlfacaseConverter:
             stagnant_fluid=FLUID_DEFAULT_NAME,
             profile=self._convert_well_trajectory(),
             casing=self._convert_casings(),
-            annulus=self._convert_annulus(),
+            annulus=self.build_annulus(),
             formation=self._convert_formation(),
             top_node=WELLBORE_TOP_NODE_NAME,
             bottom_node=WELLBORE_BOTTOM_NODE_NAME,
@@ -371,7 +340,7 @@ class ScoreAlfacaseConverter:
         )
 
     def build_case_description(self) -> CaseDescription:
-        """ "Create the description for the alfacase."""
+        """Create the description for the alfacase."""
         return CaseDescription(
             name=self.general_data["case_name"],
             physics=self.build_physics(),

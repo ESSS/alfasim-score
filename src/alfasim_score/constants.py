@@ -26,7 +26,7 @@ TUBING_DEFAULT_ROUGHNESS = Scalar(0.05, ROUGHNESS_UNIT)
 
 REFERENCE_VERTICAL_COORDINATE = Scalar(0.0, LENGTH_UNIT, "length")
 
-# This default fluid name for packer and fluid above filler
+# this default fluid name for packer and fluid above filler
 FLUID_DEFAULT_NAME = "fluid_default"
 
 # nodes data

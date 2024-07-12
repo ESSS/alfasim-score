@@ -803,8 +803,7 @@ wells:
         value: 0.1
         unit: mm
   annulus:
-    has_annulus_flow: True
-    pvt_model: gas_lift
+    has_annulus_flow: False
     initial_conditions:
       pressures:
         position_input_type: length
@@ -955,22 +954,6 @@ wells:
             values:
             - 288.6
             unit: K
-    equipment:
-      gas_lift_valves:
-        GAS_LIFT_VALVE_1:
-          position:
-            value: 928.0
-            unit: m
-          diameter:
-            value: 0.25
-            unit: in
-          valve_type: check_valve
-          delta_p_min:
-            value: 0.0
-            unit: psi
-          discharge_coefficient:
-            value: 0.826
-            unit: unitless
     top_node: GAS_LIFT_MASS_NODE
   formation:
     reference_y_coordinate:
