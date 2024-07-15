@@ -206,7 +206,7 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                 pressures=InitialPressuresDescription(
                     position_input_type=TableInputType.length,
                     table_length=PressureContainerDescription(
-                        positions=Array([0.0, well_length], LENGTH_UNIT),
+                        positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
                         pressures=Array(
                             [initial_top_pressure, initial_bottom_pressure], PRESSURE_UNIT
                         ),
@@ -237,7 +237,7 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                 temperatures=InitialTemperaturesDescription(
                     position_input_type=TableInputType.length,
                     table_length=TemperaturesContainerDescription(
-                        positions=Array([well_length], LENGTH_UNIT),
+                        positions=Array([well_length.GetValue()], LENGTH_UNIT),
                         temperatures=Array(
                             [operation_data["flow_initial_temperature"].GetValue(TEMPERATURE_UNIT)],
                             TEMPERATURE_UNIT,

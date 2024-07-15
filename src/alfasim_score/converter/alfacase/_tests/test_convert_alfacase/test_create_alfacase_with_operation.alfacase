@@ -1085,7 +1085,7 @@ wells:
         positions:
           values:
           - 0.0
-          - 5978.79 [m]
+          - 5978.79
           unit: m
         pressures:
           values:
@@ -1208,7 +1208,7 @@ wells:
       table_length:
         positions:
           values:
-          - 5978.79 [m]
+          - 5978.79
           unit: m
         temperatures:
           values:
