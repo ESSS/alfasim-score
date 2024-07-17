@@ -126,7 +126,7 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: mass_source_boundary
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -217,7 +217,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: pressure_boundary
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 9814.11
@@ -298,7 +298,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
-  pvt_model: gas_lift
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -389,7 +389,7 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   stagnant_fluid: fluid_default
   profile:
     x_and_y:
@@ -803,7 +803,8 @@ wells:
         value: 0.1
         unit: mm
   annulus:
-    has_annulus_flow: False
+    has_annulus_flow: True
+    pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
     initial_conditions:
       pressures:
         position_input_type: length
@@ -954,7 +955,23 @@ wells:
             values:
             - 288.6
             unit: K
-    top_node: WELLBORE_ANNULUS_TOP_NODE
+    equipment:
+      gas_lift_valves:
+        GAS_LIFT_VALVE_1:
+          position:
+            value: 928.0
+            unit: m
+          diameter:
+            value: 0.25
+            unit: in
+          valve_type: check_valve
+          delta_p_min:
+            value: 0.0
+            unit: psi
+          discharge_coefficient:
+            value: 0.826
+            unit: unitless
+    top_node: GAS_LIFT_MASS_NODE
   formation:
     reference_y_coordinate:
       value: 0.0

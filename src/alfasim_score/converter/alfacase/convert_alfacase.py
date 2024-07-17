@@ -35,11 +35,10 @@ from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Scalar
 
-from alfasim_score.common import LiftMethod
+from alfasim_score.common import ModelFluidType
 from alfasim_score.common import convert_api_gravity_to_oil_density
 from alfasim_score.common import convert_gas_gravity_to_gas_density
 from alfasim_score.common import convert_quota_to_tvd
-from alfasim_score.constants import ANNULUS_TOP_NODE_NAME
 from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
@@ -58,6 +57,7 @@ from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 
 
@@ -89,6 +89,10 @@ class ScoreAlfacaseConverter:
     def _get_position_in_well(self, position: Scalar) -> Scalar:
         """Get the position relative to the well start position."""
         return position - self.well_start_position
+
+    def get_fluid_model_name(self) -> ModelFluidType:
+        """Get the name of the fluid model used for this operation."""
+        return self.score_input.read_operation_fluid_data()["name"]
 
     def _convert_well_trajectory(self) -> ProfileDescription:
         """
@@ -123,11 +127,9 @@ class ScoreAlfacaseConverter:
             )
         return filter_duplicated_materials(material_descriptions)
 
-    def _convert_annulus(self) -> AnnulusDescription:
-        # TODO PWPA-1937: implement this method
-        # TODO PWPA-1937: Use the GAS_LIFT_MASS_NODE, check for the gas lift presence
-        #                 and set flow rate zero with the flag false for annulus flow.
-        return AnnulusDescription(has_annulus_flow=False, top_node=ANNULUS_TOP_NODE_NAME)
+    def build_annulus(self) -> AnnulusDescription:
+        """Create the description for the annulus."""
+        return AnnulusDescription(has_annulus_flow=False, top_node=GAS_LIFT_MASS_NODE_NAME)
 
     def _convert_formation(self) -> FormationDescription:
         """Create the description for the formations."""
@@ -305,25 +307,21 @@ class ScoreAlfacaseConverter:
                     split_type=MassInflowSplitType.Pvt,
                 ),
             ),
+            NodeDescription(
+                name=GAS_LIFT_MASS_NODE_NAME,
+                node_type=NodeCellType.MassSource,
+                pvt_model=GAS_LIFT_PVT_TABLE_NAME,
+                mass_source_properties=MassSourceNodePropertiesDescription(
+                    temperature_input_type=MultiInputType.Constant,
+                    source_type=MassSourceType.AllVolumetricFlowRates,
+                    volumetric_flow_rates_std={
+                        FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
+                    },
+                ),
+            ),
         ]
-        operation_input_data = self.score_input.read_operation_data()
-        if operation_input_data["lift_method"] == LiftMethod.GAS_LIFT:
-            nodes.append(
-                NodeDescription(
-                    name=GAS_LIFT_MASS_NODE_NAME,
-                    node_type=NodeCellType.MassSource,
-                    pvt_model=GAS_LIFT_PVT_TABLE_NAME,
-                    mass_source_properties=MassSourceNodePropertiesDescription(
-                        temperature_input_type=MultiInputType.Constant,
-                        source_type=MassSourceType.AllVolumetricFlowRates,
-                        volumetric_flow_rates_std={
-                            "gas": NULL_VOLUMETRIC_FLOW_RATE,
-                            "oil": NULL_VOLUMETRIC_FLOW_RATE,
-                            "water": NULL_VOLUMETRIC_FLOW_RATE,
-                        },
-                    ),
-                )
-            )
         return nodes
 
     def build_well(self) -> WellDescription:
@@ -334,7 +332,7 @@ class ScoreAlfacaseConverter:
             stagnant_fluid=FLUID_DEFAULT_NAME,
             profile=self._convert_well_trajectory(),
             casing=self._convert_casings(),
-            annulus=self._convert_annulus(),
+            annulus=self.build_annulus(),
             formation=self._convert_formation(),
             top_node=WELLBORE_TOP_NODE_NAME,
             bottom_node=WELLBORE_BOTTOM_NODE_NAME,
@@ -342,7 +340,7 @@ class ScoreAlfacaseConverter:
         )
 
     def build_case_description(self) -> CaseDescription:
-        """ "Create the description for the alfacase."""
+        """Create the description for the alfacase."""
         return CaseDescription(
             name=self.general_data["case_name"],
             physics=self.build_physics(),
