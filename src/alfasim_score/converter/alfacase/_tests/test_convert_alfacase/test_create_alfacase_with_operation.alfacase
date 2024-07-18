@@ -251,6 +251,26 @@ nodes:
       values: []
       unit: '-'
     split_type: mass_inflow_split_type_pvt
+    mass_fractions:
+      gas:
+        value: 0.5
+        unit: '-'
+      oil:
+        value: 0.5
+        unit: '-'
+      water:
+        value: 0.0
+        unit: '-'
+    volume_fractions:
+      gas:
+        value: 0.5
+        unit: '-'
+      oil:
+        value: 0.5
+        unit: '-'
+      water:
+        value: 0.0
+        unit: '-'
     gas_liquid_ratio:
       value: 0.0
       unit: sm3/sm3
@@ -861,7 +881,7 @@ wells:
             unit: m
           pressures:
             values:
-            - 500.0
+            - 4978.17
             unit: psi
       volume_fractions:
         position_input_type: length
@@ -983,7 +1003,7 @@ wells:
             unit: m
           temperatures:
             values:
-            - 15.0
+            - 60.0
             unit: degC
     equipment:
       gas_lift_valves:
@@ -1000,7 +1020,7 @@ wells:
             unit: psi
           discharge_coefficient:
             value: 0.826
-            unit: unitless
+            unit: '-'
     top_node: GAS_LIFT_MASS_NODE
   formation:
     reference_y_coordinate:
@@ -1085,7 +1105,7 @@ wells:
         positions:
           values:
           - 0.0
-          - 5978.79
+          - 3906.79
           unit: m
         pressures:
           values:
@@ -1208,7 +1228,7 @@ wells:
       table_length:
         positions:
           values:
-          - 5978.79
+          - 3906.79
           unit: m
         temperatures:
           values:

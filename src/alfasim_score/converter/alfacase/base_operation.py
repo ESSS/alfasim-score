@@ -82,7 +82,7 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
         gas_lift_data = self.score_input.read_operation_method_data()
         valves = {
             f"{GAS_LIFT_VALVE_NAME}_1": GasLiftValveEquipmentDescription(
-                position=self._get_position_in_well(gas_lift_data["valve_depth"]),
+                position=self.get_position_in_well(gas_lift_data["valve_depth"]),
                 diameter=GAS_LIFT_VALVE_DEFAULT_DIAMETER,
                 valve_type=ValveType.CheckValve,
                 delta_p_min=GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN,
@@ -93,8 +93,12 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
 
     def build_annulus(self) -> AnnulusDescription:
         """Configure the annulus with data from SCORE operation."""
+        operation_data = self.score_input.read_operation_method_data()
         initial_temperature = Scalar(15.0, TEMPERATURE_UNIT)
-        initial_pressure = Scalar(500.0, PRESSURE_UNIT)
+        initial_pressure = Scalar(5000.0, PRESSURE_UNIT)
+        if self.has_gas_lift():
+            initial_temperature = operation_data["well_head_temperature"]
+            initial_pressure = operation_data["well_head_pressure"]
         return AnnulusDescription(
             has_annulus_flow=self.has_gas_lift(),
             pvt_model=self.get_fluid_model_name(),
@@ -168,6 +172,16 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                     temperature=operation_data["flow_initial_temperature"],
                     pressure=operation_data["flow_initial_pressure"],
                     split_type=MassInflowSplitType.Pvt,
+                    volume_fractions={
+                        FLUID_GAS: Scalar(0.5, FRACTION_UNIT),
+                        FLUID_OIL: Scalar(0.5, FRACTION_UNIT),
+                        FLUID_WATER: Scalar(0.0, FRACTION_UNIT),
+                    },
+                    mass_fractions={
+                        FLUID_GAS: Scalar(0.5, FRACTION_UNIT),
+                        FLUID_OIL: Scalar(0.5, FRACTION_UNIT),
+                        FLUID_WATER: Scalar(0.0, FRACTION_UNIT),
+                    },
                 ),
                 pvt_model=self.get_fluid_model_name(),
             ),
@@ -194,7 +208,7 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
 
     def build_well(self) -> WellDescription:
         """Create the description for the well."""
-        well_length = self.score_input.read_general_data()["final_md"]
+        well_length = self.get_position_in_well(self.score_input.read_general_data()["final_md"])
         operation_data = self.score_input.read_operation_data()
         initial_bottom_pressure = operation_data["flow_initial_pressure"].GetValue(PRESSURE_UNIT)
         # the factor multiplied for the top pressure is arbitrary, just to give a initial value

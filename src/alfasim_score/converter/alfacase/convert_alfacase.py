@@ -91,7 +91,7 @@ class ScoreAlfacaseConverter:
         self.general_data = score_reader.read_general_data()
         self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
 
-    def _get_position_in_well(self, position: Scalar) -> Scalar:
+    def get_position_in_well(self, position: Scalar) -> Scalar:
         """Get the position relative to the well start position."""
         return position - self.well_start_position
 
@@ -184,9 +184,9 @@ class ScoreAlfacaseConverter:
         casing_sections = []
         for casing in self.score_input.read_casings():
             for i, section in enumerate(casing["sections"], 1):
-                hanger_depth = self._get_position_in_well(section["top_md"])
-                settings_depth = self._get_position_in_well(section["base_md"])
-                filler_depth = self._get_position_in_well(casing["top_of_cement"])
+                hanger_depth = self.get_position_in_well(section["top_md"])
+                settings_depth = self.get_position_in_well(section["base_md"])
+                filler_depth = self.get_position_in_well(casing["top_of_cement"])
                 top_of_filler = get_section_top_of_filler(
                     filler_depth, hanger_depth, settings_depth
                 )
@@ -232,7 +232,7 @@ class ScoreAlfacaseConverter:
             packers.append(
                 PackerDescription(
                     name=packer["name"],
-                    position=self._get_position_in_well(packer["position"]),
+                    position=self.get_position_in_well(packer["position"]),
                     # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
                     material_above=FLUID_DEFAULT_NAME,
                 )

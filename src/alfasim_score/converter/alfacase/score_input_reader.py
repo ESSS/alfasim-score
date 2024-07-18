@@ -4,6 +4,7 @@ from typing import List
 from typing import Tuple
 from typing import Union
 
+import csv
 import json
 from barril.units import Array
 from barril.units import Scalar
@@ -312,3 +313,27 @@ class ScoreInputReader:
             "api_gravity": Scalar(fluid_data["api_gravity"], FRACTION_UNIT),
             "gas_gravity": Scalar(fluid_data["gas_gravity"], FRACTION_UNIT),
         }
+
+    def read_output_curves(self) -> Dict[str, Array]:
+        """Get the results from the input file."""
+        result = self.input_content["operation"]["thermal_simulation"]["result"]["0"]
+        # this list is not complete, there are other results recorded in the input file.
+        return {
+            "measured_depth": Array(result["md"], LENGTH_UNIT),
+            "temperature": Array(
+                result["production_tubing"]["temperature"]["final"], TEMPERATURE_UNIT
+            ),
+            "pressure": Array(result["production_tubing"]["pressure"]["final"], PRESSURE_UNIT),
+            "density": Array(result["production_tubing"]["density"]["final"], DENSITY_UNIT),
+            "gas_mass_fraction": Array(
+                result["production_tubing"]["mass_fraction"]["gas"], FRACTION_UNIT
+            ),
+        }
+
+    def export_profile_curve(self, filepath: Path, curve_name: str) -> None:
+        """Export the result of a curve to a file."""
+        curves = self.read_output_curves()
+        with open(filepath, "w", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            for md, value in zip(curves["measured_depth"], curves[curve_name]):
+                writer.writerow([md, value])
