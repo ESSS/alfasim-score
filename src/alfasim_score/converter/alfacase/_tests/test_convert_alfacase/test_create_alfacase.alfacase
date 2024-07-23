@@ -2,7 +2,7 @@ name: Teste Térmico
 physics:
   hydrodynamic_model: hydrodynamic_model_3_layers_gas_oil_water
   simulation_regime: simulation_regime_transient
-  energy_model: no_model
+  energy_model: global_model
   solids_model: no_model
   solids_model_plugin_id:
   initial_condition_strategy: constant
@@ -110,7 +110,9 @@ outputs:
   trends:
     positional_pipe_trends: []
     overall_pipe_trends: []
-    global_trends: []
+    global_trends:
+    - curve_names:
+      - timestep
     equipment_trends: []
     separator_trends: []
     controller_trends: []
@@ -118,7 +120,10 @@ outputs:
     value: 0.1
     unit: s
   automatic_profile_frequency: True
-  profiles: []
+  profiles:
+  - curve_names: []
+    location: main
+    element_name: WELLBORE
   profile_frequency:
     value: 0.1
     unit: s

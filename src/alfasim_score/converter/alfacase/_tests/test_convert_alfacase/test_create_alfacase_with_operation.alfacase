@@ -2,7 +2,7 @@ name: Teste Térmico
 physics:
   hydrodynamic_model: hydrodynamic_model_3_layers_gas_oil_water
   simulation_regime: simulation_regime_transient
-  energy_model: no_model
+  energy_model: global_model
   solids_model: no_model
   solids_model_plugin_id:
   initial_condition_strategy: constant
@@ -110,7 +110,9 @@ outputs:
   trends:
     positional_pipe_trends: []
     overall_pipe_trends: []
-    global_trends: []
+    global_trends:
+    - curve_names:
+      - timestep
     equipment_trends: []
     separator_trends: []
     controller_trends: []
@@ -118,7 +120,27 @@ outputs:
     value: 0.1
     unit: s
   automatic_profile_frequency: True
-  profiles: []
+  profiles:
+  - curve_names:
+    - elevation
+    - flow pattern
+    - gas phase volume fraction
+    - holdup
+    - liquid mass flow rate
+    - liquid volumetric flow rate std
+    - mixture temperature
+    - oil phase volume fraction
+    - pressure
+    - total gas mass flow rate
+    - total gas volumetric flow rate std
+    - total mass flow rate
+    - total oil mass flow rate
+    - total oil volumetric flow rate std
+    - total water mass flow rate
+    - total water volumetric flow rate std
+    - water phase volume fraction
+    location: main
+    element_name: WELLBORE
   profile_frequency:
     value: 0.1
     unit: s
@@ -839,8 +861,8 @@ wells:
             unit: m
           pressures:
             values:
-            - 100000.0
-            unit: Pa
+            - 4978.17
+            unit: psi
       volume_fractions:
         position_input_type: length
         table_x:
@@ -865,11 +887,15 @@ wells:
           fractions:
             gas:
               values:
-              - 0.1
+              - 1.0
               unit: '-'
             oil:
               values:
-              - 0.9
+              - 0.0
+              unit: '-'
+            water:
+              values:
+              - 0.0
               unit: '-'
       tracers_mass_fractions:
         position_input_type: length
@@ -918,11 +944,15 @@ wells:
           velocities:
             gas:
               values:
-              - 1e-08
+              - 0.0
               unit: m/s
             oil:
               values:
-              - 1e-08
+              - 0.0
+              unit: m/s
+            water:
+              values:
+              - 0.0
               unit: m/s
       temperatures:
         position_input_type: length
@@ -953,8 +983,8 @@ wells:
             unit: m
           temperatures:
             values:
-            - 288.6
-            unit: K
+            - 60.0
+            unit: degC
     equipment:
       gas_lift_valves:
         GAS_LIFT_VALVE_1:
@@ -970,7 +1000,7 @@ wells:
             unit: psi
           discharge_coefficient:
             value: 0.826
-            unit: unitless
+            unit: '-'
     top_node: GAS_LIFT_MASS_NODE
   formation:
     reference_y_coordinate:
@@ -1055,11 +1085,13 @@ wells:
         positions:
           values:
           - 0.0
+          - 3906.79
           unit: m
         pressures:
           values:
-          - 100000.0
-          unit: Pa
+          - 5888.466
+          - 9814.11
+          unit: psi
     volume_fractions:
       position_input_type: length
       table_x:
@@ -1089,6 +1121,10 @@ wells:
           oil:
             values:
             - 0.9
+            unit: '-'
+          water:
+            values:
+            - 0.0
             unit: '-'
     tracers_mass_fractions:
       position_input_type: length
@@ -1137,11 +1173,15 @@ wells:
         velocities:
           gas:
             values:
-            - 1e-08
+            - 0.0
             unit: m/s
           oil:
             values:
-            - 1e-08
+            - 0.0
+            unit: m/s
+          water:
+            values:
+            - 0.0
             unit: m/s
     temperatures:
       position_input_type: length
@@ -1169,11 +1209,13 @@ wells:
         positions:
           values:
           - 0.0
+          - 3906.79
           unit: m
         temperatures:
           values:
-          - 288.6
-          unit: K
+          - 4.44
+          - 97.0
+          unit: degC
 materials:
 - name: cement
   material_type: solid
