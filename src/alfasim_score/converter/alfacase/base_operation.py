@@ -172,16 +172,6 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                     temperature=operation_data["flow_initial_temperature"],
                     pressure=operation_data["flow_initial_pressure"],
                     split_type=MassInflowSplitType.Pvt,
-                    volume_fractions={
-                        FLUID_GAS: Scalar(0.5, FRACTION_UNIT),
-                        FLUID_OIL: Scalar(0.5, FRACTION_UNIT),
-                        FLUID_WATER: Scalar(0.0, FRACTION_UNIT),
-                    },
-                    mass_fractions={
-                        FLUID_GAS: Scalar(0.5, FRACTION_UNIT),
-                        FLUID_OIL: Scalar(0.5, FRACTION_UNIT),
-                        FLUID_WATER: Scalar(0.0, FRACTION_UNIT),
-                    },
                 ),
                 pvt_model=self.get_fluid_model_name(),
             ),
@@ -210,8 +200,9 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
         """Create the description for the well."""
         well_length = self.get_position_in_well(self.score_input.read_general_data()["final_md"])
         operation_data = self.score_input.read_operation_data()
+        formation_data = self.score_input.read_formation_temperatures()
         initial_bottom_pressure = operation_data["flow_initial_pressure"].GetValue(PRESSURE_UNIT)
-        # the factor multiplied for the top pressure is arbitrary, just to give a initial value
+        # the factor multiplied for the top pressure is arbitrary, just to set an initial value
         initial_top_pressure = 0.6 * initial_bottom_pressure
         return attr.evolve(
             super().build_well(),
@@ -251,9 +242,14 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                 temperatures=InitialTemperaturesDescription(
                     position_input_type=TableInputType.length,
                     table_length=TemperaturesContainerDescription(
-                        positions=Array([well_length.GetValue()], LENGTH_UNIT),
+                        positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
                         temperatures=Array(
-                            [operation_data["flow_initial_temperature"].GetValue(TEMPERATURE_UNIT)],
+                            [
+                                formation_data["temperatures"].GetValues(TEMPERATURE_UNIT)[0],
+                                operation_data["flow_initial_temperature"].GetValue(
+                                    TEMPERATURE_UNIT
+                                ),
+                            ],
                             TEMPERATURE_UNIT,
                         ),
                     ),

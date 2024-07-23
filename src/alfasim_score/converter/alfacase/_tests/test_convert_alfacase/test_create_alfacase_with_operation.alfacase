@@ -251,26 +251,6 @@ nodes:
       values: []
       unit: '-'
     split_type: mass_inflow_split_type_pvt
-    mass_fractions:
-      gas:
-        value: 0.5
-        unit: '-'
-      oil:
-        value: 0.5
-        unit: '-'
-      water:
-        value: 0.0
-        unit: '-'
-    volume_fractions:
-      gas:
-        value: 0.5
-        unit: '-'
-      oil:
-        value: 0.5
-        unit: '-'
-      water:
-        value: 0.0
-        unit: '-'
     gas_liquid_ratio:
       value: 0.0
       unit: sm3/sm3
@@ -1228,10 +1208,12 @@ wells:
       table_length:
         positions:
           values:
+          - 0.0
           - 3906.79
           unit: m
         temperatures:
           values:
+          - 4.44
           - 97.0
           unit: degC
 materials:

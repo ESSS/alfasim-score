@@ -315,33 +315,43 @@ class ScoreInputReader:
         }
 
     def read_output_curves(self) -> Dict[str, Array]:
-        """Get the results from the input file."""
-        result = self.input_content["operation"]["thermal_simulation"]["result"]["0"]
-        # this list is not complete, there are other results recorded in the input file.
-        return {
-            "measured_depth": Array(result["md"], LENGTH_UNIT),
-            "temperature": Array(
-                result["production_tubing"]["temperature"]["final"], TEMPERATURE_UNIT
-            ),
-            "pressure": Array(result["production_tubing"]["pressure"]["final"], PRESSURE_UNIT),
-            "density": Array(result["production_tubing"]["density"]["final"], DENSITY_UNIT),
-            "gas_mass_fraction": Array(
-                result["production_tubing"]["mass_fraction"]["gas"], FRACTION_UNIT
-            ),
-        }
+        """
+        Get the results from the input file.
+        This parsed output curves are used to check cases results.
+        """
+        if "result" in self.input_content["operation"]["thermal_simulation"]:
+            result = self.input_content["operation"]["thermal_simulation"]["result"]["0"]
+            # this list is not complete, there are other results recorded in the input file.
+            return {
+                "measured_depth": Array(result["md"], LENGTH_UNIT),
+                "temperature": Array(
+                    result["production_tubing"]["temperature"]["final"], TEMPERATURE_UNIT
+                ),
+                "pressure": Array(result["production_tubing"]["pressure"]["final"], PRESSURE_UNIT),
+                "density": Array(result["production_tubing"]["density"]["final"], DENSITY_UNIT),
+                "gas_mass_fraction": Array(
+                    result["production_tubing"]["mass_fraction"]["gas"], FRACTION_UNIT
+                ),
+            }
+        return {}
 
     def export_profile_curve(self, filepath: Path, curve_name: str) -> None:
         """
         Export the result of a curve to a file.
         This function export the measured depth related to the well start positions.
+        The exported output file is used to check cases results.
         """
         curves = self.read_output_curves()
-        general_data = self.read_general_data()
-        start_position = general_data["water_depth"] + general_data["air_gap"]
-        with open(filepath, "w", encoding="utf-8") as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=["measured_depth", curve_name])
-            writer.writeheader()
-            for md, value in zip(curves["measured_depth"], curves[curve_name]):
-                writer.writerow(
-                    {"measured_depth": md - start_position.GetValue(LENGTH_UNIT), curve_name: value}
-                )
+        if len(curves):
+            general_data = self.read_general_data()
+            start_position = general_data["water_depth"] + general_data["air_gap"]
+            with open(filepath, "w", encoding="utf-8") as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=["measured_depth", curve_name])
+                writer.writeheader()
+                for md, value in zip(curves["measured_depth"], curves[curve_name]):
+                    writer.writerow(
+                        {
+                            "measured_depth": md - start_position.GetValue(LENGTH_UNIT),
+                            curve_name: value,
+                        }
+                    )
