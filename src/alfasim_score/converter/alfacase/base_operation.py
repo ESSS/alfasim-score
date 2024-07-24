@@ -149,7 +149,7 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
         )
 
     def build_nodes(self) -> List[NodeDescription]:
-        """ "Configure the nodes with data from SCORE operation."""
+        """Configure the nodes with data from SCORE operation."""
         operation_data = self.score_input.read_operation_data()
         default_nodes = {node.name: node for node in super().build_nodes()}
         configured_nodes = [
@@ -196,6 +196,9 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                     pvt_model=self.get_fluid_model_name(),
                 )
             )
+        else:
+            # just use the original gas lift node with zero flow rate
+            configured_nodes.append(default_nodes.pop(GAS_LIFT_MASS_NODE_NAME))
         return configured_nodes
 
     def build_well(self) -> WellDescription:
