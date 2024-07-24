@@ -9,10 +9,10 @@ from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 def test_output_reader(
     datadir: Path,
     num_regression: NumericRegressionFixture,
-    score_input_example: ScoreInputReader,
+    score_input_gas_lift: ScoreInputReader,
 ) -> None:
     example_exported_filepath = datadir / "pressure_example.csv"
-    score_input_example.export_profile_curve(example_exported_filepath, "pressure")
+    score_input_gas_lift.export_profile_curve(example_exported_filepath, "pressure")
 
     results = pd.read_csv(example_exported_filepath)
     num_regression.check(

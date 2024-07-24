@@ -11,9 +11,9 @@ from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 def test_convert_well_environment(
     data_regression: DataRegressionFixture,
-    score_input_example: ScoreInputReader,
+    score_input_gas_lift: ScoreInputReader,
 ) -> None:
-    builder = ScoreAlfacaseConverter(score_input_example)
+    builder = ScoreAlfacaseConverter(score_input_gas_lift)
     environment = builder._convert_well_environment()
 
     assert environment.thermal_model == PipeThermalModelType.SteadyState

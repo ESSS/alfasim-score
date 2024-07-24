@@ -8,9 +8,9 @@ from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 def test_create_alfacase(
     file_regression: FileRegressionFixture,
-    score_input_example: ScoreInputReader,
+    score_input_gas_lift: ScoreInputReader,
 ) -> None:
-    builder = ScoreAlfacaseConverter(score_input_example)
+    builder = ScoreAlfacaseConverter(score_input_gas_lift)
     case_description = builder.build_case_description()
     file_regression.check(
         convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
@@ -19,9 +19,9 @@ def test_create_alfacase(
 
 def test_create_alfacase_with_operation(
     file_regression: FileRegressionFixture,
-    score_input_example: ScoreInputReader,
+    score_input_gas_lift: ScoreInputReader,
 ) -> None:
-    builder = BaseOperationBuilder(score_input_example)
+    builder = BaseOperationBuilder(score_input_gas_lift)
     case_description = builder.build_case_description()
     file_regression.check(
         convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
