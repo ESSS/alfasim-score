@@ -286,10 +286,12 @@ class ScoreInputReader:
         }
 
     def read_operation_method_data(self) -> Dict[str, Any]:
+        """Read data from the gas lift method."""
         method_data = self.input_content["operation"]["data"]["method_data"]
         lift_method = LiftMethod(self.input_content["operation"]["data"]["method"])
+        data: Dict[str, Any] = {}
         if lift_method == LiftMethod.GAS_LIFT:
-            return {
+            data = {
                 "well_head_pressure": Scalar(method_data["well_head_pressure"], PRESSURE_UNIT),
                 "well_head_temperature": Scalar(
                     method_data["well_head_temperature"], TEMPERATURE_UNIT
@@ -300,8 +302,7 @@ class ScoreInputReader:
                     method_data["well_head_flow"], STD_VOLUMETRIC_FLOW_RATE_UNIT
                 ),
             }
-        # TODO PWPA-1983: need more examples of SCORE files to know the data for the other methods
-        return {}
+        return data
 
     def read_operation_fluid_data(self) -> Dict[str, Any]:
         """Read data for the fluid for the operation registered in SCORE input file."""

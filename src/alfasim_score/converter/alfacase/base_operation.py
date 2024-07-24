@@ -79,6 +79,8 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
 
     def _get_gas_lift_valves(self) -> Dict[str, GasLiftValveEquipmentDescription]:
         """Create the gas lift valves for the annulus."""
+        if not self.has_gas_lift():
+            return {}
         gas_lift_data = self.score_input.read_operation_method_data()
         valves = {
             f"{GAS_LIFT_VALVE_NAME}_1": GasLiftValveEquipmentDescription(
