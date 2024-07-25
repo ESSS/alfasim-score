@@ -8,9 +8,9 @@ from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 def test_convert_materials(
     data_regression: DataRegressionFixture,
-    score_input_example: ScoreInputReader,
+    score_input_gas_lift: ScoreInputReader,
 ) -> None:
-    builder = ScoreAlfacaseConverter(score_input_example)
+    builder = ScoreAlfacaseConverter(score_input_gas_lift)
     materials = builder._convert_materials()
 
     data_regression.check([prepare_for_regression(attr.asdict(material)) for material in materials])

@@ -79,6 +79,8 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
 
     def _get_gas_lift_valves(self) -> Dict[str, GasLiftValveEquipmentDescription]:
         """Create the gas lift valves for the annulus."""
+        if not self.has_gas_lift():
+            return {}
         gas_lift_data = self.score_input.read_operation_method_data()
         valves = {
             f"{GAS_LIFT_VALVE_NAME}_1": GasLiftValveEquipmentDescription(
@@ -147,7 +149,7 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
         )
 
     def build_nodes(self) -> List[NodeDescription]:
-        """ "Configure the nodes with data from SCORE operation."""
+        """Configure the nodes with data from SCORE operation."""
         operation_data = self.score_input.read_operation_data()
         default_nodes = {node.name: node for node in super().build_nodes()}
         configured_nodes = [
@@ -194,6 +196,9 @@ class BaseOperationBuilder(ScoreAlfacaseConverter):
                     pvt_model=self.get_fluid_model_name(),
                 )
             )
+        else:
+            # just use the original gas lift node with zero flow rate
+            configured_nodes.append(default_nodes.pop(GAS_LIFT_MASS_NODE_NAME))
         return configured_nodes
 
     def build_well(self) -> WellDescription:

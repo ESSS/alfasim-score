@@ -27,11 +27,10 @@ class WellItemFunction(str, Enum):
     OPEN = "OPEN"
 
 
-# TODO PWPA-1983: need more examples of SCORE files to know the label for method
-#       the method is in the file tree in the path operation/data/method
+# NOTE: The lift method with pump is not used in the alfasim_score
+#       because the pump is supposed to be out of the well in the sea bed.
 class LiftMethod(str, Enum):
-    # NATURAL_FLOW = "???"
-    # BCS_PUMP = "???"
+    NATURAL_FLOW = "NATURALFLOW"
     GAS_LIFT = "GASLIFT"
 
 

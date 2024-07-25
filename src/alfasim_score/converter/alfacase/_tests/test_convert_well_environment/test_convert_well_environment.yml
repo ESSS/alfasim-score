@@ -1,6 +1,12 @@
-- heat_transfer_coefficient:
+- fluid_velocity:
+    unit: m/s
+    value: 0.0
+  heat_transfer_coefficient:
     unit: W/m2.K
     value: 1000.0
+  overall_heat_transfer_coefficient:
+    unit: W/m2.K
+    value: 0.0
   position:
     unit: m
     value: 2072.0
@@ -8,9 +14,15 @@
     unit: degC
     value: 4.44
   type: walls_and_environment_heat_transfer_coefficient
-- heat_transfer_coefficient:
+- fluid_velocity:
+    unit: m/s
+    value: 0.0
+  heat_transfer_coefficient:
     unit: W/m2.K
     value: 1000.0
+  overall_heat_transfer_coefficient:
+    unit: W/m2.K
+    value: 0.0
   position:
     unit: m
     value: 5735.0
