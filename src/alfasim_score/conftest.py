@@ -27,10 +27,10 @@ def alfacase_natural_flow(score_input_natural_flow: ScoreInputReader) -> ScoreAl
 
 
 @pytest.fixture
-def operation_gas_lift(score_input_gas_lift: ScoreInputReader) -> BaseOperationBuilder:
-    return BaseOperationBuilder(score_input_gas_lift)
+def base_operation_gas_lift(shared_datadir: Path) -> BaseOperationBuilder:
+    return BaseOperationBuilder(shared_datadir / "score_input_gas_lift.json")
 
 
 @pytest.fixture
-def operation_natural_flow(score_input_natural_flow: ScoreInputReader) -> BaseOperationBuilder:
-    return BaseOperationBuilder(score_input_natural_flow)
+def base_operation_natural_flow(shared_datadir: Path) -> BaseOperationBuilder:
+    return BaseOperationBuilder(shared_datadir / "score_input_natural_flow.json")

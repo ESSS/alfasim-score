@@ -12,6 +12,11 @@ from alfasim_sdk import FormationDescription
 from alfasim_sdk import FormationLayerDescription
 from alfasim_sdk import GlobalTrendDescription
 from alfasim_sdk import HydrodynamicModelType
+from alfasim_sdk import InitialConditionsDescription
+from alfasim_sdk import InitialPressuresDescription
+from alfasim_sdk import InitialTemperaturesDescription
+from alfasim_sdk import InitialVelocitiesDescription
+from alfasim_sdk import InitialVolumeFractionsDescription
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
 from alfasim_sdk import MassSourceType
@@ -27,18 +32,24 @@ from alfasim_sdk import PhysicsDescription
 from alfasim_sdk import PipeEnvironmentHeatTransferCoefficientModelType
 from alfasim_sdk import PipeThermalModelType
 from alfasim_sdk import PipeThermalPositionInput
+from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileDescription
 from alfasim_sdk import ProfileOutputDescription
 from alfasim_sdk import PvtModelCorrelationDescription
 from alfasim_sdk import PvtModelsDescription
+from alfasim_sdk import TableInputType
+from alfasim_sdk import TemperaturesContainerDescription
 from alfasim_sdk import TrendsOutputDescription
 from alfasim_sdk import TubingDescription
+from alfasim_sdk import VelocitiesContainerDescription
+from alfasim_sdk import VolumeFractionsContainerDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
 from alfasim_sdk._internal.constants import FLUID_GAS
 from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
+from barril.units import Array
 from barril.units import Scalar
 
 from alfasim_score.common import ModelFluidType
@@ -62,8 +73,11 @@ from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
+from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
+from alfasim_score.units import VELOCITY_UNIT
 
 
 def filter_duplicated_materials(
@@ -283,6 +297,59 @@ class ScoreAlfacaseConverter:
             }
         )
 
+    def build_well_initial_conditions(self) -> InitialConditionsDescription:
+        """Create the well initial conditions default data."""
+        well_length = self.get_position_in_well(self.score_input.read_general_data()["final_md"])
+        operation_data = self.score_input.read_operation_data()
+        formation_data = self.score_input.read_formation_temperatures()
+        initial_bottom_pressure = operation_data["flow_initial_pressure"].GetValue(PRESSURE_UNIT)
+        # the factor multiplied for the top pressure is arbitrary, just to set an initial value
+        initial_top_pressure = 0.6 * initial_bottom_pressure
+        return InitialConditionsDescription(
+            pressures=InitialPressuresDescription(
+                position_input_type=TableInputType.length,
+                table_length=PressureContainerDescription(
+                    positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
+                    pressures=Array([initial_top_pressure, initial_bottom_pressure], PRESSURE_UNIT),
+                ),
+            ),
+            volume_fractions=InitialVolumeFractionsDescription(
+                position_input_type=TableInputType.length,
+                table_length=VolumeFractionsContainerDescription(
+                    positions=Array([0.0], LENGTH_UNIT),
+                    fractions={
+                        FLUID_GAS: Array([0.1], FRACTION_UNIT),
+                        FLUID_OIL: Array([0.9], FRACTION_UNIT),
+                        FLUID_WATER: Array([0.0], FRACTION_UNIT),
+                    },
+                ),
+            ),
+            velocities=InitialVelocitiesDescription(
+                position_input_type=TableInputType.length,
+                table_length=VelocitiesContainerDescription(
+                    positions=Array([0.0], LENGTH_UNIT),
+                    velocities={
+                        FLUID_GAS: Array([0.0], VELOCITY_UNIT),
+                        FLUID_OIL: Array([0.0], VELOCITY_UNIT),
+                        FLUID_WATER: Array([0.0], VELOCITY_UNIT),
+                    },
+                ),
+            ),
+            temperatures=InitialTemperaturesDescription(
+                position_input_type=TableInputType.length,
+                table_length=TemperaturesContainerDescription(
+                    positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
+                    temperatures=Array(
+                        [
+                            formation_data["temperatures"].GetValues(TEMPERATURE_UNIT)[0],
+                            operation_data["flow_initial_temperature"].GetValue(TEMPERATURE_UNIT),
+                        ],
+                        TEMPERATURE_UNIT,
+                    ),
+                ),
+            ),
+        )
+
     def build_outputs(self) -> CaseOutputDescription:
         """Create the outputs for the case."""
         return CaseOutputDescription(
@@ -355,7 +422,7 @@ class ScoreAlfacaseConverter:
         """Create the description for the well."""
         return WellDescription(
             name=WELLBORE_NAME,
-            pvt_model=BASE_PVT_TABLE_NAME,
+            pvt_model=self.get_fluid_model_name(),
             stagnant_fluid=FLUID_DEFAULT_NAME,
             profile=self._convert_well_trajectory(),
             casing=self._convert_casings(),
@@ -364,9 +431,10 @@ class ScoreAlfacaseConverter:
             top_node=WELLBORE_TOP_NODE_NAME,
             bottom_node=WELLBORE_BOTTOM_NODE_NAME,
             environment=self._convert_well_environment(),
+            initial_conditions=self.build_well_initial_conditions(),
         )
 
-    def build_case_description(self) -> CaseDescription:
+    def build_base_alfacase_description(self) -> CaseDescription:
         """Create the description for the alfacase."""
         return CaseDescription(
             name=self.general_data["case_name"],
