@@ -1,3 +1,4 @@
+import attr
 import pytest
 from alfasim_sdk import PipeThermalModelType
 from alfasim_sdk import PipeThermalPositionInput
@@ -23,14 +24,7 @@ def test_convert_well_environment(
     )
     data_regression.check(
         [
-            prepare_for_regression(
-                {
-                    "position": environment.position,
-                    "temperature": environment.temperature,
-                    "type": environment.type,
-                    "heat_transfer_coefficient": environment.heat_transfer_coefficient,
-                }
-            )
+            prepare_for_regression(attr.asdict(environment))
             for environment in environment.tvd_properties_table
         ]
     )
