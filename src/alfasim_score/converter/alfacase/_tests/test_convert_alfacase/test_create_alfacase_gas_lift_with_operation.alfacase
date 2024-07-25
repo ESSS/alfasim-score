@@ -826,7 +826,6 @@ wells:
         unit: mm
   annulus:
     has_annulus_flow: True
-    pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
     initial_conditions:
       pressures:
         position_input_type: length

@@ -394,7 +394,7 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   stagnant_fluid: fluid_default
   profile:
     x_and_y:
@@ -1043,11 +1043,13 @@ wells:
         positions:
           values:
           - 0.0
+          - 3906.79
           unit: m
         pressures:
           values:
-          - 100000.0
-          unit: Pa
+          - 5888.466
+          - 9814.11
+          unit: psi
     volume_fractions:
       position_input_type: length
       table_x:
@@ -1077,6 +1079,10 @@ wells:
           oil:
             values:
             - 0.9
+            unit: '-'
+          water:
+            values:
+            - 0.0
             unit: '-'
     tracers_mass_fractions:
       position_input_type: length
@@ -1125,11 +1131,15 @@ wells:
         velocities:
           gas:
             values:
-            - 1e-08
+            - 0.0
             unit: m/s
           oil:
             values:
-            - 1e-08
+            - 0.0
+            unit: m/s
+          water:
+            values:
+            - 0.0
             unit: m/s
     temperatures:
       position_input_type: length
@@ -1157,11 +1167,13 @@ wells:
         positions:
           values:
           - 0.0
+          - 3906.79
           unit: m
         temperatures:
           values:
-          - 288.6
-          unit: K
+          - 4.44
+          - 97.0
+          unit: degC
 materials:
 - name: cement
   material_type: solid
