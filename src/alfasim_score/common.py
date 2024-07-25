@@ -38,6 +38,12 @@ class LiftMethod(str, Enum):
 #       the model is in the file tree in the path operation/thermal_data/fluid_type
 class ModelFluidType(str, Enum):
     BLACK_OIL = "BLACK_OIL"
+    WATER = "Water"
+
+
+class OperationType(str, Enum):
+    PRODUCTION = "PRODUCTION"
+    INJECTION = "INJECTION"
 
 
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:

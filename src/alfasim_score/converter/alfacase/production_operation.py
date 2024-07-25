@@ -23,6 +23,7 @@ from barril.units import Array
 from barril.units import Scalar
 from pathlib import Path
 
+from alfasim_score.common import OperationType
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
@@ -38,6 +39,11 @@ from alfasim_score.units import VELOCITY_UNIT
 class ProductionOperationBuilder(BaseOperationBuilder):
     def __init__(self, score_filepath: Path):
         super().__init__(score_filepath)
+        assert (
+            self.operation_type == OperationType.PRODUCTION
+        ), f"The created operation is production operation, but the imported operation is configured as {self.operation_type}."
+        # TODO: check exported variables
+        # self.default_output_profiles = []
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:
         """Configure the nodes with data from SCORE operation."""

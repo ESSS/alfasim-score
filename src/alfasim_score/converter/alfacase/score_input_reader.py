@@ -12,6 +12,7 @@ from pathlib import Path
 
 from alfasim_score.common import LiftMethod
 from alfasim_score.common import ModelFluidType
+from alfasim_score.common import OperationType
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import WellItemType
 from alfasim_score.constants import CEMENT_NAME
@@ -273,6 +274,8 @@ class ScoreInputReader:
         """Read data for operation registered in SCORE input file."""
         operation = self.input_content["operation"]["data"]
         return {
+            "name": self.input_content["operation"]["name"],
+            "type": OperationType(self.input_content["operation"]["type"]),
             "lift_method": LiftMethod(operation["method"]),
             "flow_initial_temperature": Scalar(
                 operation["flow_initial_temperature"], TEMPERATURE_UNIT

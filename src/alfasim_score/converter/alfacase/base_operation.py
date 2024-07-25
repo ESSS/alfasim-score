@@ -10,6 +10,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from alfasim_score.common import LiftMethod
+from alfasim_score.common import OperationType
 from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN
 from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DIAMETER
 from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DISCHARGE
@@ -24,6 +25,7 @@ class BaseOperationBuilder:
         self.score_input = ScoreInputReader(score_filepath)
         self.alfacase_converter = ScoreAlfacaseConverter(self.score_input)
         self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()
+        self.operation_type = self.score_input.read_operation_data()["type"]
         self.default_output_profiles = [
             "elevation",
             "flow pattern",
