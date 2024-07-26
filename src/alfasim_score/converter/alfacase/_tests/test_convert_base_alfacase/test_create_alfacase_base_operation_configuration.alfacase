@@ -131,7 +131,7 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: mass_source_boundary
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -222,7 +222,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: pressure_boundary
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -303,7 +303,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
-  pvt_model: gas_lift
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -394,7 +394,6 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   stagnant_fluid: fluid_default
   profile:
     x_and_y:

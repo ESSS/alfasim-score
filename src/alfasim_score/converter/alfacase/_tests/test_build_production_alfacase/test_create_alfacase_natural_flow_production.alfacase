@@ -121,24 +121,7 @@ outputs:
     unit: s
   automatic_profile_frequency: True
   profiles:
-  - curve_names:
-    - elevation
-    - flow pattern
-    - gas phase volume fraction
-    - holdup
-    - liquid mass flow rate
-    - liquid volumetric flow rate std
-    - mixture temperature
-    - oil phase volume fraction
-    - pressure
-    - total gas mass flow rate
-    - total gas volumetric flow rate std
-    - total mass flow rate
-    - total oil mass flow rate
-    - total oil volumetric flow rate std
-    - total water mass flow rate
-    - total water volumetric flow rate std
-    - water phase volume fraction
+  - curve_names: []
     location: main
     element_name: WELLBORE
   profile_frequency:
@@ -320,7 +303,6 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
-  pvt_model: gas_lift
   pressure_properties:
     pressure:
       value: 100000.0
@@ -348,17 +330,7 @@ nodes:
     temperature:
       value: 288.6
       unit: K
-    source_type: mass_source_type_all_volumetric_flow_rates
-    volumetric_flow_rates_std:
-      gas:
-        value: 0.0
-        unit: sm3/d
-      oil:
-        value: 0.0
-        unit: sm3/d
-      water:
-        value: 0.0
-        unit: sm3/d
+    source_type: mass_source_type_mass_flow_rates
     total_mass_flow_rate:
       value: 1.0
       unit: kg/s
@@ -411,7 +383,6 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   stagnant_fluid: fluid_default
   profile:
     x_and_y:

@@ -63,7 +63,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                         FLUID_WATER: -1.0 * operation_data["water_flow_rate"],
                     },
                 ),
-                pvt_model=self.alfacase_converter.get_fluid_model_name(),
+                pvt_model=self._get_fluid_model_name(),
             ),
             attr.evolve(
                 default_nodes.pop(WELLBORE_BOTTOM_NODE_NAME),
@@ -72,7 +72,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                     pressure=operation_data["flow_initial_pressure"],
                     split_type=MassInflowSplitType.Pvt,
                 ),
-                pvt_model=self.alfacase_converter.get_fluid_model_name(),
+                pvt_model=self._get_fluid_model_name(),
             ),
         ]
         if self.has_gas_lift():
@@ -90,7 +90,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                             FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
                         },
                     ),
-                    pvt_model=self.alfacase_converter.get_fluid_model_name(),
+                    pvt_model=self._get_fluid_model_name(),
                 )
             )
         else:

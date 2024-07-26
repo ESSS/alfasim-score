@@ -53,8 +53,6 @@ from barril.units import Array
 from barril.units import Scalar
 
 from alfasim_score.common import ModelFluidType
-from alfasim_score.common import convert_api_gravity_to_oil_density
-from alfasim_score.common import convert_gas_gravity_to_gas_density
 from alfasim_score.common import convert_quota_to_tvd
 from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
@@ -109,10 +107,6 @@ class ScoreAlfacaseConverter:
         """Get the position relative to the well start position."""
         return position - self.well_start_position
 
-    def get_fluid_model_name(self) -> ModelFluidType:
-        """Get the name of the fluid model used for this operation."""
-        return self.score_input.read_operation_fluid_data()["name"]
-
     def _convert_well_trajectory(self) -> ProfileDescription:
         """
         Convert the trajectory for the imported well.
@@ -132,7 +126,6 @@ class ScoreAlfacaseConverter:
             + self.score_input.read_lithology_materials()
             + self.score_input.read_packer_fluid()
         )
-
         for material in material_list:
             material_descriptions.append(
                 MaterialDescription(
@@ -145,10 +138,6 @@ class ScoreAlfacaseConverter:
                 )
             )
         return filter_duplicated_materials(material_descriptions)
-
-    def build_annulus(self) -> AnnulusDescription:
-        """Create the description for the annulus."""
-        return AnnulusDescription(has_annulus_flow=False, top_node=GAS_LIFT_MASS_NODE_NAME)
 
     def _convert_formation(self) -> FormationDescription:
         """Create the description for the formations."""
@@ -282,166 +271,47 @@ class ScoreAlfacaseConverter:
             open_holes=self._convert_open_hole_list(),
         )
 
-    def _convert_pvt_model(self) -> PvtModelsDescription:
-        """Create the black-oil fluid for the casings."""
-        fluid_data = self.score_input.read_operation_fluid_data()
-        return PvtModelsDescription(
-            correlations={
-                fluid_data["name"]: PvtModelCorrelationDescription(
-                    oil_density_std=convert_api_gravity_to_oil_density(fluid_data["api_gravity"]),
-                    gas_density_std=convert_gas_gravity_to_gas_density(fluid_data["gas_gravity"]),
-                    rs_sat=fluid_data["gas_oil_ratio"],
-                    h2s_mol_frac=H2S_MOLAR_FRACTION_DEFAULT,
-                    co2_mol_frac=CO2_MOLAR_FRACTION_DEFAULT,
-                )
-            }
-        )
-
-    def build_well_initial_conditions(self) -> InitialConditionsDescription:
-        """Create the well initial conditions default data."""
-        well_length = self.get_position_in_well(self.score_input.read_general_data()["final_md"])
-        operation_data = self.score_input.read_operation_data()
-        formation_data = self.score_input.read_formation_temperatures()
-        initial_bottom_pressure = operation_data["flow_initial_pressure"].GetValue(PRESSURE_UNIT)
-        # the factor multiplied for the top pressure is arbitrary, just to set an initial value
-        initial_top_pressure = 0.6 * initial_bottom_pressure
-        return InitialConditionsDescription(
-            pressures=InitialPressuresDescription(
-                position_input_type=TableInputType.length,
-                table_length=PressureContainerDescription(
-                    positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
-                    pressures=Array([initial_top_pressure, initial_bottom_pressure], PRESSURE_UNIT),
-                ),
-            ),
-            volume_fractions=InitialVolumeFractionsDescription(
-                position_input_type=TableInputType.length,
-                table_length=VolumeFractionsContainerDescription(
-                    positions=Array([0.0], LENGTH_UNIT),
-                    fractions={
-                        FLUID_GAS: Array([0.1], FRACTION_UNIT),
-                        FLUID_OIL: Array([0.9], FRACTION_UNIT),
-                        FLUID_WATER: Array([0.0], FRACTION_UNIT),
-                    },
-                ),
-            ),
-            velocities=InitialVelocitiesDescription(
-                position_input_type=TableInputType.length,
-                table_length=VelocitiesContainerDescription(
-                    positions=Array([0.0], LENGTH_UNIT),
-                    velocities={
-                        FLUID_GAS: Array([0.0], VELOCITY_UNIT),
-                        FLUID_OIL: Array([0.0], VELOCITY_UNIT),
-                        FLUID_WATER: Array([0.0], VELOCITY_UNIT),
-                    },
-                ),
-            ),
-            temperatures=InitialTemperaturesDescription(
-                position_input_type=TableInputType.length,
-                table_length=TemperaturesContainerDescription(
-                    positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
-                    temperatures=Array(
-                        [
-                            formation_data["temperatures"].GetValues(TEMPERATURE_UNIT)[0],
-                            operation_data["flow_initial_temperature"].GetValue(TEMPERATURE_UNIT),
-                        ],
-                        TEMPERATURE_UNIT,
-                    ),
-                ),
-            ),
-        )
-
-    def build_outputs(self) -> CaseOutputDescription:
-        """Create the outputs for the case."""
-        return CaseOutputDescription(
-            trends=TrendsOutputDescription(
-                global_trends=[GlobalTrendDescription(curve_names=["timestep"])]
-            ),
-            profiles=self.build_output_profiles(),
-        )
-
-    def build_physics(self) -> PhysicsDescription:
-        """Create the description for the physics data."""
-        return PhysicsDescription(
-            hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater,
-            energy_model=EnergyModel.GlobalModel,
-        )
-
-    def build_output_profiles(self) -> List[ProfileOutputDescription]:
-        """Create the output profiles data for the well."""
-        return [
-            ProfileOutputDescription(
-                curve_names=[],
-                location=OutputAttachmentLocation.Main,
-                element_name=WELLBORE_NAME,
-            )
-        ]
-
-    def build_nodes(self) -> List[NodeDescription]:
+    def _build_default_nodes(self) -> List[NodeDescription]:
         """Create the description for the node list."""
         nodes = [
             NodeDescription(
                 name=WELLBORE_TOP_NODE_NAME,
                 node_type=NodeCellType.MassSource,
-                pvt_model=BASE_PVT_TABLE_NAME,
-                mass_source_properties=MassSourceNodePropertiesDescription(
-                    temperature_input_type=MultiInputType.Constant,
-                    source_type=MassSourceType.AllVolumetricFlowRates,
-                    volumetric_flow_rates_std={
-                        FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
-                        FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
-                        FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
-                    },
-                ),
             ),
             NodeDescription(
                 name=WELLBORE_BOTTOM_NODE_NAME,
                 node_type=NodeCellType.Pressure,
-                pvt_model=BASE_PVT_TABLE_NAME,
-                pressure_properties=PressureNodePropertiesDescription(
-                    split_type=MassInflowSplitType.Pvt,
-                ),
             ),
             NodeDescription(
                 name=GAS_LIFT_MASS_NODE_NAME,
                 node_type=NodeCellType.MassSource,
-                pvt_model=GAS_LIFT_PVT_TABLE_NAME,
-                mass_source_properties=MassSourceNodePropertiesDescription(
-                    temperature_input_type=MultiInputType.Constant,
-                    source_type=MassSourceType.AllVolumetricFlowRates,
-                    volumetric_flow_rates_std={
-                        FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
-                        FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
-                        FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
-                    },
-                ),
             ),
         ]
         return nodes
 
-    def build_well(self) -> WellDescription:
+    def _build_default_annulus(self) -> AnnulusDescription:
+        """Create the description for the node list."""
+        return AnnulusDescription(has_annulus_flow=False, top_node=GAS_LIFT_MASS_NODE_NAME)
+
+    def _build_well(self) -> WellDescription:
         """Create the description for the well."""
         return WellDescription(
             name=WELLBORE_NAME,
-            pvt_model=self.get_fluid_model_name(),
             stagnant_fluid=FLUID_DEFAULT_NAME,
             profile=self._convert_well_trajectory(),
             casing=self._convert_casings(),
-            annulus=self.build_annulus(),
+            annulus=self._build_default_annulus(),
             formation=self._convert_formation(),
             top_node=WELLBORE_TOP_NODE_NAME,
             bottom_node=WELLBORE_BOTTOM_NODE_NAME,
             environment=self._convert_well_environment(),
-            initial_conditions=self.build_well_initial_conditions(),
         )
 
     def build_base_alfacase_description(self) -> CaseDescription:
-        """Create the description for the alfacase."""
+        """Create the minimal alfacase description with well geometry/materials and the default nodes."""
         return CaseDescription(
             name=self.general_data["case_name"],
-            physics=self.build_physics(),
-            pvt_models=self._convert_pvt_model(),
-            outputs=self.build_outputs(),
-            nodes=self.build_nodes(),
-            wells=[self.build_well()],
+            nodes=self._build_default_nodes(),
+            wells=[self._build_well()],
             materials=self._convert_materials(),
         )

@@ -1,8 +1,8 @@
 name: Teste Térmico
 physics:
-  hydrodynamic_model: hydrodynamic_model_3_layers_gas_oil_water
+  hydrodynamic_model: hydrodynamic_model_4_fields
   simulation_regime: simulation_regime_transient
-  energy_model: global_model
+  energy_model: no_model
   solids_model: no_model
   solids_model_plugin_id:
   initial_condition_strategy: constant
@@ -83,36 +83,12 @@ numerical_options:
   always_repeat_timestep: False
   enable_fast_compositional: True
 plugins: []
-pvt_models:
-  correlations:
-    DFLT_BLACK_OIL_27.40_230.00_1.17:
-      oil_density_std:
-        value: 889.6209188168658
-        unit: kg/m3
-      gas_density_std:
-        value: 1.43325
-        unit: kg/m3
-      rs_sat:
-        value: 230.0
-        unit: sm3/sm3
-      pvt_correlation_package: pvt_correlation_package_standing
-      h2s_mol_frac:
-        value: 0.0
-        unit: '-'
-      co2_mol_frac:
-        value: 0.0
-        unit: '-'
-      oil_viscosity: Egbogah
-      gas_viscosity: Lee Gonzalez Eakin
-      surface_tension: Baker Swerdloff
 outputs:
   automatic_trend_frequency: True
   trends:
     positional_pipe_trends: []
     overall_pipe_trends: []
-    global_trends:
-    - curve_names:
-      - timestep
+    global_trends: []
     equipment_trends: []
     separator_trends: []
     controller_trends: []
@@ -120,10 +96,7 @@ outputs:
     value: 0.1
     unit: s
   automatic_profile_frequency: True
-  profiles:
-  - curve_names: []
-    location: main
-    element_name: WELLBORE
+  profiles: []
   profile_frequency:
     value: 0.1
     unit: s
@@ -131,7 +104,6 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: mass_source_boundary
-  pvt_model: base
   pressure_properties:
     pressure:
       value: 100000.0
@@ -159,17 +131,7 @@ nodes:
     temperature:
       value: 288.6
       unit: K
-    source_type: mass_source_type_all_volumetric_flow_rates
-    volumetric_flow_rates_std:
-      gas:
-        value: 0.0
-        unit: sm3/d
-      oil:
-        value: 0.0
-        unit: sm3/d
-      water:
-        value: 0.0
-        unit: sm3/d
+    source_type: mass_source_type_mass_flow_rates
     total_mass_flow_rate:
       value: 1.0
       unit: kg/s
@@ -222,7 +184,6 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: pressure_boundary
-  pvt_model: base
   pressure_properties:
     pressure:
       value: 100000.0
@@ -233,7 +194,7 @@ nodes:
     tracer_mass_fraction:
       values: []
       unit: '-'
-    split_type: mass_inflow_split_type_pvt
+    split_type: mass_inflow_split_type_constant_volume_fraction
     gas_liquid_ratio:
       value: 0.0
       unit: sm3/sm3
@@ -303,7 +264,6 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
-  pvt_model: gas_lift
   pressure_properties:
     pressure:
       value: 100000.0
@@ -331,17 +291,7 @@ nodes:
     temperature:
       value: 288.6
       unit: K
-    source_type: mass_source_type_all_volumetric_flow_rates
-    volumetric_flow_rates_std:
-      gas:
-        value: 0.0
-        unit: sm3/d
-      oil:
-        value: 0.0
-        unit: sm3/d
-      water:
-        value: 0.0
-        unit: sm3/d
+    source_type: mass_source_type_mass_flow_rates
     total_mass_flow_rate:
       value: 1.0
       unit: kg/s
@@ -394,7 +344,6 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   stagnant_fluid: fluid_default
   profile:
     x_and_y:
@@ -1043,13 +992,11 @@ wells:
         positions:
           values:
           - 0.0
-          - 3906.79
           unit: m
         pressures:
           values:
-          - 5888.466
-          - 9814.11
-          unit: psi
+          - 100000.0
+          unit: Pa
     volume_fractions:
       position_input_type: length
       table_x:
@@ -1079,10 +1026,6 @@ wells:
           oil:
             values:
             - 0.9
-            unit: '-'
-          water:
-            values:
-            - 0.0
             unit: '-'
     tracers_mass_fractions:
       position_input_type: length
@@ -1131,15 +1074,11 @@ wells:
         velocities:
           gas:
             values:
-            - 0.0
+            - 1e-08
             unit: m/s
           oil:
             values:
-            - 0.0
-            unit: m/s
-          water:
-            values:
-            - 0.0
+            - 1e-08
             unit: m/s
     temperatures:
       position_input_type: length
@@ -1167,13 +1106,11 @@ wells:
         positions:
           values:
           - 0.0
-          - 3906.79
           unit: m
         temperatures:
           values:
-          - 4.44
-          - 97.0
-          unit: degC
+          - 288.6
+          unit: K
 materials:
 - name: cement
   material_type: solid
