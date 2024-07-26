@@ -3,6 +3,7 @@ from pathlib import Path
 
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
+from alfasim_score.converter.alfacase.injection_operation import InjectionOperationBuilder
 from alfasim_score.converter.alfacase.production_operation import ProductionOperationBuilder
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
@@ -45,3 +46,8 @@ def production_operation_gas_lift(shared_datadir: Path) -> ProductionOperationBu
 @pytest.fixture
 def production_operation_natural_flow(shared_datadir: Path) -> ProductionOperationBuilder:
     return ProductionOperationBuilder(shared_datadir / "score_input_natural_flow.json")
+
+
+@pytest.fixture
+def injection_operation(shared_datadir: Path) -> InjectionOperationBuilder:
+    return InjectionOperationBuilder(shared_datadir / "score_input_injection_operation.json")

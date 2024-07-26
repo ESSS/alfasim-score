@@ -1,4 +1,4 @@
-name: Teste Térmico
+name: P27 - 3.0.0 - Teste (1)
 physics:
   hydrodynamic_model: hydrodynamic_model_3_layers_gas_oil_water
   simulation_regime: simulation_regime_transient
@@ -109,7 +109,7 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: mass_source_boundary
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
+  pvt_model: Water
   pressure_properties:
     pressure:
       value: 100000.0
@@ -146,7 +146,7 @@ nodes:
         value: 0.0
         unit: sm3/d
       water:
-        value: 0.0
+        value: 1000.0
         unit: sm3/d
     total_mass_flow_rate:
       value: 1.0
@@ -200,14 +200,14 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: pressure_boundary
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
+  pvt_model: Water
   pressure_properties:
     pressure:
-      value: 100000.0
-      unit: Pa
+      value: 2417.4
+      unit: psi
     temperature:
-      value: 288.6
-      unit: K
+      value: 4.0
+      unit: degC
     tracer_mass_fraction:
       values: []
       unit: '-'
@@ -281,7 +281,6 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -309,17 +308,7 @@ nodes:
     temperature:
       value: 288.6
       unit: K
-    source_type: mass_source_type_all_volumetric_flow_rates
-    volumetric_flow_rates_std:
-      gas:
-        value: 0.0
-        unit: sm3/d
-      oil:
-        value: 0.0
-        unit: sm3/d
-      water:
-        value: 0.0
-        unit: sm3/d
+    source_type: mass_source_type_mass_flow_rates
     total_mass_flow_rate:
       value: 1.0
       unit: kg/s
@@ -378,54 +367,49 @@ wells:
       x:
         values:
         - 0.0
-        - 0.732870828967924
-        - 76.09664781880704
-        - 77.75299298522548
-        - 80.0179032358046
-        - 83.32537729373297
-        - 87.67138551134829
-        - 93.05063294708867
-        - 99.45656581656323
-        - 106.88137947732878
-        - 115.31602793764459
-        - 124.75023487761972
-        - 135.172506169326
-        - 146.5701438806223
-        - 158.92926174562896
-        - 171.9795438608509
-        - 1111.9130083432817
+        - 0.0
         unit: m
       y:
         values:
-        - -2072.0
-        - -2099.987207822019
-        - -3538.0137378686054
-        - -3567.967936785112
-        - -3597.8807902103954
-        - -3627.6963773057687
-        - -3657.3783723710953
-        - -3686.890612467549
-        - -3716.1971414765844
-        - -3745.262253906929
-        - -3774.050538396223
-        - -3802.5269208543127
-        - -3830.6567071956224
-        - -3858.405625608557
-        - -3885.739868310423
-        - -3912.1277131463253
-        - -5733.215438887744
+        - -0.0
+        - -5300.0
         unit: m
   casing:
     casing_sections:
-    - name: CONDUCTOR_DRILLING_1
+    - name: CONDUCTOR_JETTING_1
       hanger_depth:
         value: 0.0
         unit: m
       settings_depth:
-        value: 96.0
+        value: 22.0
         unit: m
       hole_diameter:
-        value: 42.0
+        value: 36.001
+        unit: in
+      outer_diameter:
+        value: 36.0
+        unit: in
+      inner_diameter:
+        value: 33.0
+        unit: in
+      inner_roughness:
+        value: 0.05
+        unit: mm
+      material: X-60
+      top_of_filler:
+        value: 0.0
+        unit: m
+      filler_material: cement
+      material_above_filler: fluid_default
+    - name: CONDUCTOR_JETTING_2
+      hanger_depth:
+        value: 22.0
+        unit: m
+      settings_depth:
+        value: 60.0
+        unit: m
+      hole_diameter:
+        value: 36.001
         unit: in
       outer_diameter:
         value: 36.0
@@ -438,7 +422,7 @@ wells:
         unit: mm
       material: B
       top_of_filler:
-        value: 0.0
+        value: 22.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
@@ -447,10 +431,10 @@ wells:
         value: 0.0
         unit: m
       settings_depth:
-        value: 1418.0
+        value: 1310.0
         unit: m
       hole_diameter:
-        value: 20.0
+        value: 24.0
         unit: in
       outer_diameter:
         value: 18.0
@@ -461,7 +445,7 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: X-80
+      material: P-110
       top_of_filler:
         value: 0.0
         unit: m
@@ -472,7 +456,7 @@ wells:
         value: 0.0
         unit: m
       settings_depth:
-        value: 1000.0
+        value: 1700.0
         unit: m
       hole_diameter:
         value: 14.75
@@ -486,18 +470,18 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: N-80
+      material: C-125 HC
       top_of_filler:
-        value: 1000.0
+        value: 1700.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
     - name: PRODUCTION_CASING_2
       hanger_depth:
-        value: 1000.0
+        value: 1700.0
         unit: m
       settings_depth:
-        value: 3369.0
+        value: 2655.0
         unit: m
       hole_diameter:
         value: 14.75
@@ -511,18 +495,18 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: C-110 HC
+      material: HCSS/110KSI
       top_of_filler:
-        value: 2833.0
+        value: 2270.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
     - name: PRODUCTION_CASING_3
       hanger_depth:
-        value: 3369.0
+        value: 2655.0
         unit: m
       settings_depth:
-        value: 3535.0
+        value: 2820.0
         unit: m
       hole_diameter:
         value: 14.75
@@ -538,14 +522,14 @@ wells:
         unit: mm
       material: SDSS/125KSI
       top_of_filler:
-        value: 3369.0
+        value: 2655.0
         unit: m
       filler_material: cement
       material_above_filler: fluid_default
     tubings:
     - name: TUBING_1
       length:
-        value: 40.210000000000036
+        value: 17.71999999999889
         unit: m
       outer_diameter:
         value: 5.5
@@ -556,10 +540,10 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: CR13/95KSI
     - name: TUBING_2
       length:
-        value: 732.9000000000001
+        value: 12.0
         unit: m
       outer_diameter:
         value: 6.625
@@ -573,21 +557,21 @@ wells:
       material: SDSS/125KSI
     - name: TUBING_3
       length:
-        value: 56.40000000000009
+        value: 771.0
         unit: m
       outer_diameter:
-        value: 5.5
+        value: 7.625
         unit: in
       inner_diameter:
-        value: 4.67
+        value: 6.625
         unit: in
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: J-55
     - name: TUBING_4
       length:
-        value: 48.90000000000009
+        value: 0.8000000000001819
         unit: m
       outer_diameter:
         value: 6.625
@@ -601,7 +585,7 @@ wells:
       material: SDSS/125KSI
     - name: TUBING_5
       length:
-        value: 54.90000000000009
+        value: 45.01000000000022
         unit: m
       outer_diameter:
         value: 5.5
@@ -612,10 +596,10 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: CR13/95KSI
     - name: TUBING_6
       length:
-        value: 2400.9
+        value: 12.0
         unit: m
       outer_diameter:
         value: 6.625
@@ -629,27 +613,27 @@ wells:
       material: SDSS/125KSI
     - name: TUBING_7
       length:
-        value: 158.97000000000025
+        value: 276.5
         unit: m
       outer_diameter:
-        value: 5.5
+        value: 7.625
         unit: in
       inner_diameter:
-        value: 4.67
+        value: 6.625
         unit: in
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: J-55
     - name: TUBING_8
       length:
-        value: 31.039999999999964
+        value: 0.8000000000001819
         unit: m
       outer_diameter:
-        value: 4.5
+        value: 6.625
         unit: in
       inner_diameter:
-        value: 3.92
+        value: 5.791
         unit: in
       inner_roughness:
         value: 0.05
@@ -657,7 +641,7 @@ wells:
       material: SDSS/125KSI
     - name: TUBING_9
       length:
-        value: 24.899999999999636
+        value: 59.59999999999991
         unit: m
       outer_diameter:
         value: 5.5
@@ -668,16 +652,16 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: CR13/95KSI
     - name: TUBING_10
       length:
-        value: 21.670000000000073
+        value: 12.0
         unit: m
       outer_diameter:
-        value: 4.5
+        value: 6.625
         unit: in
       inner_diameter:
-        value: 3.92
+        value: 5.791
         unit: in
       inner_roughness:
         value: 0.05
@@ -685,27 +669,27 @@ wells:
       material: SDSS/125KSI
     - name: TUBING_11
       length:
-        value: 20.23999999999978
+        value: 442.57000000000016
         unit: m
       outer_diameter:
-        value: 5.5
+        value: 7.625
         unit: in
       inner_diameter:
-        value: 4.67
+        value: 6.625
         unit: in
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: J-55
     - name: TUBING_12
       length:
-        value: 27.420000000000073
+        value: 996.23
         unit: m
       outer_diameter:
-        value: 4.5
+        value: 6.625
         unit: in
       inner_diameter:
-        value: 3.92
+        value: 5.791
         unit: in
       inner_roughness:
         value: 0.05
@@ -713,7 +697,7 @@ wells:
       material: SDSS/125KSI
     - name: TUBING_13
       length:
-        value: 132.89999999999964
+        value: 99.13000000000011
         unit: m
       outer_diameter:
         value: 5.5
@@ -724,10 +708,10 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: CR13/95KSI
     - name: TUBING_14
       length:
-        value: 21.670000000000073
+        value: 66.75
         unit: m
       outer_diameter:
         value: 4.5
@@ -738,10 +722,10 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: CR13/95KSI
     - name: TUBING_15
       length:
-        value: 20.23999999999978
+        value: 7.890000000000327
         unit: m
       outer_diameter:
         value: 5.5
@@ -752,34 +736,20 @@ wells:
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_16
-      length:
-        value: 31.859999999999673
-        unit: m
-      outer_diameter:
-        value: 4.5
-        unit: in
-      inner_diameter:
-        value: 3.92
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
+      material: CR13/95KSI
     packers:
     - name: 'Packer (Hidráulico) #1'
       position:
-        value: 3493.1800000000003
+        value: 2675.0
         unit: m
       material_above: fluid_default
     open_holes:
     - name: OPEN_HOLE_1
       length:
-        value: 371.0
+        value: 155.0
         unit: m
       diameter:
-        value: 9.5
+        value: 8.5
         unit: in
       inner_roughness:
         value: 0.1
@@ -944,9 +914,44 @@ wells:
     layers:
     - name: formation_1
       start:
-        value: 2072.0
+        value: 2325.0
         unit: m
       material: Folhelho
+    - name: formation_2
+      start:
+        value: 2744.67
+        unit: m
+      material: Arenito
+    - name: formation_3
+      start:
+        value: 2836.64
+        unit: m
+      material: Folhelho
+    - name: formation_4
+      start:
+        value: 3001.42
+        unit: m
+      material: Arenito
+    - name: formation_5
+      start:
+        value: 3024.41
+        unit: m
+      material: Folhelho
+    - name: formation_6
+      start:
+        value: 3535.0
+        unit: m
+      material: Halita
+    - name: formation_7
+      start:
+        value: 5145.0
+        unit: m
+      material: Calcario
+    - name: formation_8
+      start:
+        value: 5515.0
+        unit: m
+      material: Coquina
   top_node: WELLBORE_TOP_NODE
   bottom_node: WELLBORE_BOTTOM_NODE
   environment:
@@ -958,10 +963,10 @@ wells:
     md_properties_table: []
     tvd_properties_table:
     - position:
-        value: 2072.0
+        value: 2325.0
         unit: m
       temperature:
-        value: 4.44
+        value: 4.0
         unit: degC
       type: walls_and_environment_heat_transfer_coefficient
       heat_transfer_coefficient:
@@ -974,10 +979,42 @@ wells:
         value: 0.0
         unit: m/s
     - position:
-        value: 5735.0
+        value: 3535.0
         unit: m
       temperature:
-        value: 106.04
+        value: 44.9
+        unit: degC
+      type: walls_and_environment_heat_transfer_coefficient
+      heat_transfer_coefficient:
+        value: 1000.0
+        unit: W/m2.K
+      overall_heat_transfer_coefficient:
+        value: 0.0
+        unit: W/m2.K
+      fluid_velocity:
+        value: 0.0
+        unit: m/s
+    - position:
+        value: 5145.0
+        unit: m
+      temperature:
+        value: 64.3
+        unit: degC
+      type: walls_and_environment_heat_transfer_coefficient
+      heat_transfer_coefficient:
+        value: 1000.0
+        unit: W/m2.K
+      overall_heat_transfer_coefficient:
+        value: 0.0
+        unit: W/m2.K
+      fluid_velocity:
+        value: 0.0
+        unit: m/s
+    - position:
+        value: 5575.0
+        unit: m
+      temperature:
+        value: 76.5
         unit: degC
       type: walls_and_environment_heat_transfer_coefficient
       heat_transfer_coefficient:
@@ -1020,11 +1057,13 @@ wells:
         positions:
           values:
           - 0.0
+          - 2975.0
           unit: m
         pressures:
           values:
-          - 100000.0
-          unit: Pa
+          - 1450.44
+          - 2417.4
+          unit: psi
     volume_fractions:
       position_input_type: length
       table_x:
@@ -1054,6 +1093,10 @@ wells:
           oil:
             values:
             - 0.9
+            unit: '-'
+          water:
+            values:
+            - 0.0
             unit: '-'
     tracers_mass_fractions:
       position_input_type: length
@@ -1102,11 +1145,15 @@ wells:
         velocities:
           gas:
             values:
-            - 1e-08
+            - 0.0
             unit: m/s
           oil:
             values:
-            - 1e-08
+            - 0.0
+            unit: m/s
+          water:
+            values:
+            - 0.0
             unit: m/s
     temperatures:
       position_input_type: length
@@ -1134,11 +1181,13 @@ wells:
         positions:
           values:
           - 0.0
+          - 2975.0
           unit: m
         temperatures:
           values:
-          - 288.6
-          unit: K
+          - 4.0
+          - 76.5
+          unit: degC
 materials:
 - name: cement
   material_type: solid
@@ -1159,6 +1208,29 @@ materials:
     unit: '-'
   expansion:
     value: 1e-06
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: X-60
+  material_type: solid
+  density:
+    value: 65.5035
+    unit: kg/m3
+  thermal_conductivity:
+    value: 45.345257
+    unit: W/m.K
+  heat_capacity:
+    value: 460.9
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 1.2e-05
     unit: 1/K
   viscosity:
     value: 0.0
@@ -1186,7 +1258,7 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
-- name: X-80
+- name: P-110
   material_type: solid
   density:
     value: 65.5035
@@ -1209,7 +1281,7 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
-- name: N-80
+- name: C-125 HC
   material_type: solid
   density:
     value: 65.5035
@@ -1232,7 +1304,7 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
-- name: C-110 HC
+- name: HCSS/110KSI
   material_type: solid
   density:
     value: 65.5035
@@ -1278,7 +1350,145 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
+- name: CR13/95KSI
+  material_type: solid
+  density:
+    value: 65.5035
+    unit: kg/m3
+  thermal_conductivity:
+    value: 45.345257
+    unit: W/m.K
+  heat_capacity:
+    value: 460.9
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 1.2e-05
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: J-55
+  material_type: solid
+  density:
+    value: 65.5035
+    unit: kg/m3
+  thermal_conductivity:
+    value: 45.345257
+    unit: W/m.K
+  heat_capacity:
+    value: 460.9
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 1.2e-05
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
 - name: Folhelho
+  material_type: solid
+  density:
+    value: 1.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 50.0
+    unit: W/m.K
+  heat_capacity:
+    value: 5.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: Arenito
+  material_type: solid
+  density:
+    value: 1.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 50.0
+    unit: W/m.K
+  heat_capacity:
+    value: 5.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: Halita
+  material_type: solid
+  density:
+    value: 3.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 2.0
+    unit: W/m.K
+  heat_capacity:
+    value: 4.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: Calcario
+  material_type: solid
+  density:
+    value: 1.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 50.0
+    unit: W/m.K
+  heat_capacity:
+    value: 5.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: Coquina
   material_type: solid
   density:
     value: 1.0

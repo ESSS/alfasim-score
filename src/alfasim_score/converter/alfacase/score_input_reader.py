@@ -10,6 +10,7 @@ from barril.units import Array
 from barril.units import Scalar
 from pathlib import Path
 
+from alfasim_score.common import FluidType
 from alfasim_score.common import LiftMethod
 from alfasim_score.common import ModelFluidType
 from alfasim_score.common import OperationType
@@ -270,12 +271,22 @@ class ScoreInputReader:
             ),
         }
 
-    def read_operation_data(self) -> Dict[str, Any]:
-        """Read data for operation registered in SCORE input file."""
+    def read_operation_type(self) -> OperationType:
+        """Read only the operation type in SCORE input file."""
+        return OperationType(self.input_content["operation"]["type"])
+
+    def read_fluid_name(self) -> str:
+        """Read only the fluid name for the operation in SCORE input file."""
+        return self.input_content["operation"]["data"]["fluid_type"]
+
+    def read_production_operation_data(self) -> Dict[str, Any]:
+        """Read data for production operation registered in SCORE input file."""
         operation = self.input_content["operation"]["data"]
         return {
             "name": self.input_content["operation"]["name"],
-            "type": OperationType(self.input_content["operation"]["type"]),
+            "type": self.read_operation_type(),
+            "fluid_type": FluidType(operation["fluid"]),
+            "fluid": self.read_fluid_name(),
             "lift_method": LiftMethod(operation["method"]),
             "flow_initial_temperature": Scalar(
                 operation["flow_initial_temperature"], TEMPERATURE_UNIT
@@ -286,6 +297,22 @@ class ScoreInputReader:
             "gas_oil_ratio": Scalar(operation["gor"], GAS_OIL_RATIO_UNIT),
             "flow_rate": Scalar(operation["flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
             "water_flow_rate": Scalar(operation["water_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
+        }
+
+    def read_injection_operation_data(self) -> Dict[str, Any]:
+        """Read data for injection operation registered in SCORE input file."""
+        operation = self.input_content["operation"]["data"]
+        return {
+            "name": self.input_content["operation"]["name"],
+            "type": self.read_operation_type(),
+            "fluid_type": FluidType(operation["fluid"]),
+            "fluid": self.read_fluid_name(),
+            "flow_initial_temperature": Scalar(
+                operation["flow_initial_temperature"], TEMPERATURE_UNIT
+            ),
+            "flow_initial_pressure": Scalar(operation["flow_initial_pressure"], PRESSURE_UNIT),
+            "perforation_base_depth": Scalar(operation["perforation_base_depth"], LENGTH_UNIT),
+            "flow_rate": Scalar(operation["flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
         }
 
     def read_operation_method_data(self) -> Dict[str, Any]:
