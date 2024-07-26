@@ -9,6 +9,7 @@ from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
 from alfasim_sdk import MassSourceType
 from alfasim_sdk import MultiInputType
+from alfasim_sdk import NodeCellType
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import TableInputType
@@ -43,8 +44,6 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         assert (
             self.operation_type == score_operation_type
         ), f"The created operation is injection, but the imported operation is configured as {score_operation_type}."
-        # TODO: check exported variables
-        # self.default_output_profiles = []
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
@@ -105,32 +104,36 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         """Configure the nodes with data from SCORE operation."""
         operation_data = self.score_input.read_injection_operation_data()
         default_nodes = {node.name: node for node in alfacase.nodes}
-        # TODO: review the fractions depending on injected fluid, in case of gas (or oil?)
-        # TODO: review the nodes top, bottom in the pressure/mass type regard
         configured_nodes = [
             attr.evolve(
                 default_nodes.pop(WELLBORE_TOP_NODE_NAME),
-                mass_source_properties=MassSourceNodePropertiesDescription(
-                    temperature_input_type=MultiInputType.Constant,
-                    source_type=MassSourceType.AllVolumetricFlowRates,
-                    volumetric_flow_rates_std={
-                        FLUID_GAS: NULL_VOLUMETRIC_FLOW_RATE,
-                        FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
-                        FLUID_WATER: (
-                            operation_data["flow_rate"]
-                            if operation_data["fluid_type"] == FluidType.WATER
-                            else NULL_VOLUMETRIC_FLOW_RATE
-                        ),
-                    },
+                node_type=NodeCellType.Pressure,
+                pressure_properties=PressureNodePropertiesDescription(
+                    temperature=operation_data["flow_initial_temperature"],
+                    pressure=operation_data["flow_initial_pressure"],
+                    split_type=MassInflowSplitType.Pvt,
                 ),
                 pvt_model=self._get_fluid_model_name(),
             ),
             attr.evolve(
                 default_nodes.pop(WELLBORE_BOTTOM_NODE_NAME),
-                pressure_properties=PressureNodePropertiesDescription(
-                    temperature=operation_data["flow_initial_temperature"],
-                    pressure=operation_data["flow_initial_pressure"],
-                    split_type=MassInflowSplitType.Pvt,
+                node_type=NodeCellType.MassSource,
+                mass_source_properties=MassSourceNodePropertiesDescription(
+                    temperature_input_type=MultiInputType.Constant,
+                    source_type=MassSourceType.AllVolumetricFlowRates,
+                    volumetric_flow_rates_std={
+                        FLUID_GAS: (
+                            -1.0 * operation_data["flow_rate"]
+                            if operation_data["fluid_type"] == FluidType.GAS
+                            else NULL_VOLUMETRIC_FLOW_RATE
+                        ),
+                        FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
+                        FLUID_WATER: (
+                            -1.0 * operation_data["flow_rate"]
+                            if operation_data["fluid_type"] == FluidType.WATER
+                            else NULL_VOLUMETRIC_FLOW_RATE
+                        ),
+                    },
                 ),
                 pvt_model=self._get_fluid_model_name(),
             ),

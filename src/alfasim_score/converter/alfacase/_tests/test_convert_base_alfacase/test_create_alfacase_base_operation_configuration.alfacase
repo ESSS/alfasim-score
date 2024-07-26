@@ -99,7 +99,13 @@ outputs:
     unit: s
   automatic_profile_frequency: True
   profiles:
-  - curve_names: []
+  - curve_names:
+    - elevation
+    - holdup
+    - liquid volumetric flow rate std
+    - mixture temperature
+    - pressure
+    - environment temperature
     location: main
     element_name: WELLBORE
   profile_frequency:

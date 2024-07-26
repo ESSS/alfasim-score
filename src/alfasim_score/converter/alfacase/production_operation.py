@@ -59,8 +59,6 @@ class ProductionOperationBuilder(BaseOperationBuilder):
         assert (
             self.operation_type == score_operation_type
         ), f"The created operation is production, but the imported operation is configured as {score_operation_type}."
-        # TODO: check exported variables
-        # self.default_output_profiles = []
 
     def has_gas_lift(self) -> bool:
         """Check the operation has gas lift."""

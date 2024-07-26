@@ -53,22 +53,11 @@ class BaseOperationBuilder:
         self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()
         self.default_output_profiles = [
             "elevation",
-            "flow pattern",
-            "gas phase volume fraction",
             "holdup",
-            "liquid mass flow rate",
             "liquid volumetric flow rate std",
             "mixture temperature",
-            "oil phase volume fraction",
             "pressure",
-            "total gas mass flow rate",
-            "total gas volumetric flow rate std",
-            "total mass flow rate",
-            "total oil mass flow rate",
-            "total oil volumetric flow rate std",
-            "total water mass flow rate",
-            "total water volumetric flow rate std",
-            "water phase volume fraction",
+            "environment temperature",
         ]
 
     def _get_fluid_model_name(self) -> str:
@@ -87,7 +76,7 @@ class BaseOperationBuilder:
             ),
             profiles=[
                 ProfileOutputDescription(
-                    curve_names=[],
+                    curve_names=self.default_output_profiles,
                     location=OutputAttachmentLocation.Main,
                     element_name=WELLBORE_NAME,
                 )

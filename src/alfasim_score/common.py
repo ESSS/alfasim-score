@@ -45,6 +45,7 @@ class ModelFluidType(str, Enum):
 class FluidType(str, Enum):
     OIL = "OIL"
     WATER = "WATER"
+    GAS = "GAS"
 
 
 class OperationType(str, Enum):

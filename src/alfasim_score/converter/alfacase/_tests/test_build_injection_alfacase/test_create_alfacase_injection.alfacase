@@ -99,7 +99,13 @@ outputs:
     unit: s
   automatic_profile_frequency: True
   profiles:
-  - curve_names: []
+  - curve_names:
+    - elevation
+    - holdup
+    - liquid volumetric flow rate std
+    - mixture temperature
+    - pressure
+    - environment temperature
     location: main
     element_name: WELLBORE
   profile_frequency:
@@ -108,19 +114,19 @@ outputs:
 pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
-  node_type: mass_source_boundary
+  node_type: pressure_boundary
   pvt_model: Water
   pressure_properties:
     pressure:
-      value: 100000.0
-      unit: Pa
+      value: 2417.4
+      unit: psi
     temperature:
-      value: 288.6
-      unit: K
+      value: 4.0
+      unit: degC
     tracer_mass_fraction:
       values: []
       unit: '-'
-    split_type: mass_inflow_split_type_constant_volume_fraction
+    split_type: mass_inflow_split_type_pvt
     gas_liquid_ratio:
       value: 0.0
       unit: sm3/sm3
@@ -137,17 +143,7 @@ nodes:
     temperature:
       value: 288.6
       unit: K
-    source_type: mass_source_type_all_volumetric_flow_rates
-    volumetric_flow_rates_std:
-      gas:
-        value: 0.0
-        unit: sm3/d
-      oil:
-        value: 0.0
-        unit: sm3/d
-      water:
-        value: 1000.0
-        unit: sm3/d
+    source_type: mass_source_type_mass_flow_rates
     total_mass_flow_rate:
       value: 1.0
       unit: kg/s
@@ -199,19 +195,19 @@ nodes:
       max_value: 1e+50
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
-  node_type: pressure_boundary
+  node_type: mass_source_boundary
   pvt_model: Water
   pressure_properties:
     pressure:
-      value: 2417.4
-      unit: psi
+      value: 100000.0
+      unit: Pa
     temperature:
-      value: 4.0
-      unit: degC
+      value: 288.6
+      unit: K
     tracer_mass_fraction:
       values: []
       unit: '-'
-    split_type: mass_inflow_split_type_pvt
+    split_type: mass_inflow_split_type_constant_volume_fraction
     gas_liquid_ratio:
       value: 0.0
       unit: sm3/sm3
@@ -228,7 +224,17 @@ nodes:
     temperature:
       value: 288.6
       unit: K
-    source_type: mass_source_type_mass_flow_rates
+    source_type: mass_source_type_all_volumetric_flow_rates
+    volumetric_flow_rates_std:
+      gas:
+        value: 0.0
+        unit: sm3/d
+      oil:
+        value: 0.0
+        unit: sm3/d
+      water:
+        value: -1000.0
+        unit: sm3/d
     total_mass_flow_rate:
       value: 1.0
       unit: kg/s
