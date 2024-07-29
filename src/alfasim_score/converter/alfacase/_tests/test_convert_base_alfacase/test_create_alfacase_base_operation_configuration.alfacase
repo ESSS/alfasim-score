@@ -1061,6 +1061,10 @@ wells:
             values:
             - 0.9
             unit: '-'
+          water:
+            values:
+            - 0.0
+            unit: '-'
     tracers_mass_fractions:
       position_input_type: length
       table_x:
@@ -1108,11 +1112,15 @@ wells:
         velocities:
           gas:
             values:
-            - 1e-08
+            - 0.0
             unit: m/s
           oil:
             values:
-            - 1e-08
+            - 0.0
+            unit: m/s
+          water:
+            values:
+            - 0.0
             unit: m/s
     temperatures:
       position_input_type: length

@@ -28,10 +28,10 @@ from alfasim_sdk._internal.constants import FLUID_GAS
 from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Array
+from barril.units import Scalar
 from copy import deepcopy
 from pathlib import Path
 
-from alfasim_score.common import ModelFluidType
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
@@ -64,6 +64,45 @@ class BaseOperationBuilder:
         """Get the name of the fluid model used for this operation."""
         return self.score_input.read_fluid_name()
 
+    def create_well_initial_pressures(
+        self, top_pressure: Scalar, bottom_pressure: Scalar
+    ) -> InitialPressuresDescription:
+        """Create the initial pressures description."""
+        well_length = self.alfacase_converter.get_position_in_well(
+            self.score_input.read_general_data()["final_md"]
+        )
+        return InitialPressuresDescription(
+            position_input_type=TableInputType.length,
+            table_length=PressureContainerDescription(
+                positions=Array([0.0, well_length.GetValue(LENGTH_UNIT)], LENGTH_UNIT),
+                pressures=Array(
+                    [top_pressure.GetValue(PRESSURE_UNIT), bottom_pressure.GetValue(PRESSURE_UNIT)],
+                    PRESSURE_UNIT,
+                ),
+            ),
+        )
+
+    def create_well_initial_temperatures(
+        self, top_temperature: Scalar, bottom_temperature: Scalar
+    ) -> InitialTemperaturesDescription:
+        """Create the initial temperatures description."""
+        well_length = self.alfacase_converter.get_position_in_well(
+            self.score_input.read_general_data()["final_md"]
+        )
+        return InitialTemperaturesDescription(
+            position_input_type=TableInputType.length,
+            table_length=TemperaturesContainerDescription(
+                positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
+                temperatures=Array(
+                    [
+                        top_temperature.GetValue(TEMPERATURE_UNIT),
+                        bottom_temperature.GetValue(TEMPERATURE_UNIT),
+                    ],
+                    TEMPERATURE_UNIT,
+                ),
+            ),
+        )
+
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
         """Configure the pvt fluid for the model."""
         pass
@@ -85,7 +124,30 @@ class BaseOperationBuilder:
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
-        pass
+        alfacase.wells[0].initial_conditions = InitialConditionsDescription(
+            volume_fractions=InitialVolumeFractionsDescription(
+                position_input_type=TableInputType.length,
+                table_length=VolumeFractionsContainerDescription(
+                    positions=Array([0.0], LENGTH_UNIT),
+                    fractions={
+                        FLUID_GAS: Array([0.1], FRACTION_UNIT),
+                        FLUID_OIL: Array([0.9], FRACTION_UNIT),
+                        FLUID_WATER: Array([0.0], FRACTION_UNIT),
+                    },
+                ),
+            ),
+            velocities=InitialVelocitiesDescription(
+                position_input_type=TableInputType.length,
+                table_length=VelocitiesContainerDescription(
+                    positions=Array([0.0], LENGTH_UNIT),
+                    velocities={
+                        FLUID_GAS: Array([0.0], VELOCITY_UNIT),
+                        FLUID_OIL: Array([0.0], VELOCITY_UNIT),
+                        FLUID_WATER: Array([0.0], VELOCITY_UNIT),
+                    },
+                ),
+            ),
+        )
 
     # TODO PWPA-1996: review the configurations done here.
     def configure_physics(self, alfacase: CaseDescription) -> None:

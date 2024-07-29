@@ -143,7 +143,17 @@ nodes:
     temperature:
       value: 288.6
       unit: K
-    source_type: mass_source_type_mass_flow_rates
+    source_type: mass_source_type_all_volumetric_flow_rates
+    volumetric_flow_rates_std:
+      gas:
+        value: 0.0
+        unit: sm3/d
+      oil:
+        value: 0.0
+        unit: sm3/d
+      water:
+        value: 0.0
+        unit: sm3/d
     total_mass_flow_rate:
       value: 1.0
       unit: kg/s
@@ -207,7 +217,7 @@ nodes:
     tracer_mass_fraction:
       values: []
       unit: '-'
-    split_type: mass_inflow_split_type_constant_volume_fraction
+    split_type: mass_inflow_split_type_pvt
     gas_liquid_ratio:
       value: 0.0
       unit: sm3/sm3
@@ -287,6 +297,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
+  pvt_model: Water
   pressure_properties:
     pressure:
       value: 100000.0
@@ -314,7 +325,17 @@ nodes:
     temperature:
       value: 288.6
       unit: K
-    source_type: mass_source_type_mass_flow_rates
+    source_type: mass_source_type_all_volumetric_flow_rates
+    volumetric_flow_rates_std:
+      gas:
+        value: 0.0
+        unit: sm3/d
+      oil:
+        value: 0.0
+        unit: sm3/d
+      water:
+        value: 0.0
+        unit: sm3/d
     total_mass_flow_rate:
       value: 1.0
       unit: kg/s
@@ -1067,8 +1088,8 @@ wells:
           unit: m
         pressures:
           values:
-          - 1450.44
           - 2417.4
+          - 2900.88
           unit: psi
     volume_fractions:
       position_input_type: length

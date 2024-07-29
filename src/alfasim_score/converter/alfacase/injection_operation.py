@@ -1,25 +1,15 @@
 import attr
 from alfasim_sdk import CaseDescription
-from alfasim_sdk import InitialConditionsDescription
-from alfasim_sdk import InitialPressuresDescription
-from alfasim_sdk import InitialTemperaturesDescription
-from alfasim_sdk import InitialVelocitiesDescription
-from alfasim_sdk import InitialVolumeFractionsDescription
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
 from alfasim_sdk import MassSourceType
 from alfasim_sdk import MultiInputType
 from alfasim_sdk import NodeCellType
-from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
-from alfasim_sdk import TableInputType
-from alfasim_sdk import TemperaturesContainerDescription
-from alfasim_sdk import VelocitiesContainerDescription
-from alfasim_sdk import VolumeFractionsContainerDescription
 from alfasim_sdk._internal.constants import FLUID_GAS
 from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
-from barril.units import Array
+from barril.units import Scalar
 from pathlib import Path
 
 from alfasim_score.common import FluidType
@@ -47,61 +37,25 @@ class InjectionOperationBuilder(BaseOperationBuilder):
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
-        well_length = self.alfacase_converter.get_position_in_well(
-            self.score_input.read_general_data()["final_md"]
-        )
+        super().configure_well_initial_conditions(alfacase)
         operation_data = self.score_input.read_injection_operation_data()
         formation_data = self.score_input.read_formation_temperatures()
-        initial_bottom_pressure = operation_data["flow_initial_pressure"].GetValue(PRESSURE_UNIT)
-        # the factor multiplied for the top pressure is arbitrary, just to set an initial value
-        initial_top_pressure = 0.6 * initial_bottom_pressure
-        alfacase.wells[0].initial_conditions = InitialConditionsDescription(
-            pressures=InitialPressuresDescription(
-                position_input_type=TableInputType.length,
-                table_length=PressureContainerDescription(
-                    positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
-                    pressures=Array([initial_top_pressure, initial_bottom_pressure], PRESSURE_UNIT),
-                ),
+        alfacase.wells[0].initial_conditions = attr.evolve(
+            alfacase.wells[0].initial_conditions,
+            # the factor multiplied for the top pressure is arbitrary, just to set an initial value
+            pressures=self.create_well_initial_pressures(
+                operation_data["flow_initial_pressure"],
+                1.2 * operation_data["flow_initial_pressure"],
             ),
-            volume_fractions=InitialVolumeFractionsDescription(
-                position_input_type=TableInputType.length,
-                table_length=VolumeFractionsContainerDescription(
-                    positions=Array([0.0], LENGTH_UNIT),
-                    fractions={
-                        FLUID_GAS: Array([0.1], FRACTION_UNIT),
-                        FLUID_OIL: Array([0.9], FRACTION_UNIT),
-                        FLUID_WATER: Array([0.0], FRACTION_UNIT),
-                    },
-                ),
-            ),
-            velocities=InitialVelocitiesDescription(
-                position_input_type=TableInputType.length,
-                table_length=VelocitiesContainerDescription(
-                    positions=Array([0.0], LENGTH_UNIT),
-                    velocities={
-                        FLUID_GAS: Array([0.0], VELOCITY_UNIT),
-                        FLUID_OIL: Array([0.0], VELOCITY_UNIT),
-                        FLUID_WATER: Array([0.0], VELOCITY_UNIT),
-                    },
-                ),
-            ),
-            temperatures=InitialTemperaturesDescription(
-                position_input_type=TableInputType.length,
-                table_length=TemperaturesContainerDescription(
-                    positions=Array([0.0, well_length.GetValue()], LENGTH_UNIT),
-                    temperatures=Array(
-                        [
-                            operation_data["flow_initial_temperature"].GetValue(TEMPERATURE_UNIT),
-                            formation_data["temperatures"].GetValues(TEMPERATURE_UNIT)[-1],
-                        ],
-                        TEMPERATURE_UNIT,
-                    ),
-                ),
+            temperatures=self.create_well_initial_temperatures(
+                operation_data["flow_initial_temperature"],
+                Scalar(formation_data["temperatures"][-1], TEMPERATURE_UNIT),
             ),
         )
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:
         """Configure the nodes with data from SCORE operation."""
+        super().configure_nodes(alfacase)
         operation_data = self.score_input.read_injection_operation_data()
         default_nodes = {node.name: node for node in alfacase.nodes}
         configured_nodes = [
