@@ -18,11 +18,6 @@ def score_input_gas_lift(shared_datadir: Path) -> ScoreInputReader:
 
 
 @pytest.fixture
-def score_input_natural_flow(shared_datadir: Path) -> ScoreInputReader:
-    return ScoreInputReader(shared_datadir / SCORE_NATURAL_FLOW_EXAMPLE_FILENAME)
-
-
-@pytest.fixture
 def alfacase_gas_lift(score_input_gas_lift: ScoreInputReader) -> ScoreAlfacaseConverter:
     return ScoreAlfacaseConverter(score_input_gas_lift)
 
