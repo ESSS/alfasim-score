@@ -1,10 +1,13 @@
 from typing import Dict
 
 import attr
+import numpy as np
 from alfasim_sdk import AnnulusEquipmentDescription
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import GasLiftValveEquipmentDescription
+from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import InitialConditionsDescription
+from alfasim_sdk import InitialConditionStrategyType
 from alfasim_sdk import InitialPressuresDescription
 from alfasim_sdk import InitialTemperaturesDescription
 from alfasim_sdk import InitialVelocitiesDescription
@@ -17,6 +20,7 @@ from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import PvtModelCorrelationDescription
 from alfasim_sdk import PvtModelsDescription
+from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk import TableInputType
 from alfasim_sdk import TemperaturesContainerDescription
 from alfasim_sdk import ValveType
@@ -118,6 +122,31 @@ class ProductionOperationBuilder(BaseOperationBuilder):
             temperatures=self.create_well_initial_temperatures(
                 Scalar(formation_data["temperatures"][0], TEMPERATURE_UNIT),
                 operation_data["flow_initial_temperature"],
+            ),
+        )
+
+    def configure_physics(self, alfacase: CaseDescription) -> None:
+        """Configure the description for the physics data."""
+        super().configure_physics(alfacase)
+        operation_data = self.score_input.read_production_operation_data()
+        transient_regime = self.has_gas_lift()
+        alfacase.physics = attr.evolve(
+            alfacase.physics,
+            hydrodynamic_model=(
+                HydrodynamicModelType.FourFields
+                if np.isclose(operation_data["water_flow_rate"].GetValue(), 0.0)
+                else HydrodynamicModelType.ThreeLayersGasOilWater
+            ),
+            simulation_regime=(
+                SimulationRegimeType.Transient
+                if transient_regime
+                else SimulationRegimeType.SteadyState
+            ),
+            # TODO: check if this is right
+            initial_condition_strategy=(
+                InitialConditionStrategyType.Constant
+                if transient_regime
+                else InitialConditionStrategyType.SteadyState
             ),
         )
 

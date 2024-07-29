@@ -29,7 +29,7 @@ class WellItemFunction(str, Enum):
 
 
 # NOTE: The lift method with pump is not used in the alfasim_score
-#       because the pump is supposed to be out of the well in the sea bed.
+#       because the pump is supposed to be out of the well on the sea bed.
 class LiftMethod(str, Enum):
     NATURAL_FLOW = "NATURALFLOW"
     GAS_LIFT = "GASLIFT"

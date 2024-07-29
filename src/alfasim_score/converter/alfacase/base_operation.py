@@ -154,7 +154,6 @@ class BaseOperationBuilder:
             ),
         )
 
-    # TODO PWPA-1996: review the configurations done here.
     def configure_physics(self, alfacase: CaseDescription) -> None:
         """Configure the description for the physics data."""
         alfacase.physics = PhysicsDescription(
