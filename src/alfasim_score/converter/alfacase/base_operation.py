@@ -51,6 +51,7 @@ class BaseOperationBuilder:
         self.score_input = ScoreInputReader(score_filepath)
         self.alfacase_converter = ScoreAlfacaseConverter(self.score_input)
         self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()
+        self.general_data = self.score_input.read_operation_data()
         self.default_output_profiles = [
             "elevation",
             "holdup",
@@ -61,8 +62,8 @@ class BaseOperationBuilder:
         ]
 
     def _get_fluid_model_name(self) -> str:
-        """Get the name of the fluid model used for this operation."""
-        return self.score_input.read_fluid_name()
+        """Get the name of the fluid model configured for this operation."""
+        return self.general_data["fluid"]
 
     def create_well_initial_pressures(
         self, top_pressure: Scalar, bottom_pressure: Scalar

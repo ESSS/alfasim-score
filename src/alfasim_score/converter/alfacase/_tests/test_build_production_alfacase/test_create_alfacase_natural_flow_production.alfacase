@@ -1,11 +1,11 @@
 name: Teste Térmico
 physics:
-  hydrodynamic_model: hydrodynamic_model_3_layers_gas_oil_water
-  simulation_regime: simulation_regime_transient
+  hydrodynamic_model: hydrodynamic_model_4_fields
+  simulation_regime: simulation_regime_steady_state
   energy_model: global_model
   solids_model: no_model
   solids_model_plugin_id:
-  initial_condition_strategy: constant
+  initial_condition_strategy: steady_state
   keep_former_results: False
   emulsion_model_enabled: True
   emulsion_relative_viscosity_model: model_default

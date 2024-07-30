@@ -59,25 +59,25 @@ class ProductionOperationBuilder(BaseOperationBuilder):
     def __init__(self, score_filepath: Path):
         super().__init__(score_filepath)
         self.operation_type = OperationType.PRODUCTION
-        score_operation_type = self.score_input.read_operation_type()
+        self.lift_method_data = self.score_input.read_operation_method_data()
+        self.produced_fluid_data = self.score_input.read_operation_fluid_data()
         assert (
-            self.operation_type == score_operation_type
-        ), f"The created operation is production, but the imported operation is configured as {score_operation_type}."
+            self.general_data["type"] == self.operation_type
+        ), f"The created operation is production, but the imported operation is configured as {self.general_data['type']}."
 
     def has_gas_lift(self) -> bool:
         """Check the operation has gas lift."""
-        return (
-            self.score_input.read_production_operation_data()["lift_method"] == LiftMethod.GAS_LIFT
-        )
+        return self.general_data["lift_method"] == LiftMethod.GAS_LIFT
 
     def _get_gas_lift_valves(self) -> Dict[str, GasLiftValveEquipmentDescription]:
         """Create the gas lift valves for the annulus."""
         if not self.has_gas_lift():
             return {}
-        gas_lift_data = self.score_input.read_operation_method_data()
         valves = {
             f"{GAS_LIFT_VALVE_NAME}_1": GasLiftValveEquipmentDescription(
-                position=self.alfacase_converter.get_position_in_well(gas_lift_data["valve_depth"]),
+                position=self.alfacase_converter.get_position_in_well(
+                    self.lift_method_data["valve_depth"]
+                ),
                 diameter=GAS_LIFT_VALVE_DEFAULT_DIAMETER,
                 valve_type=ValveType.CheckValve,
                 delta_p_min=GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN,
@@ -89,13 +89,16 @@ class ProductionOperationBuilder(BaseOperationBuilder):
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
         """Configure the black-oil fluid for the model."""
         super().configure_pvt_model(alfacase)
-        fluid_data = self.score_input.read_operation_fluid_data()
         alfacase.pvt_models = PvtModelsDescription(
             correlations={
-                fluid_data["name"]: PvtModelCorrelationDescription(
-                    oil_density_std=convert_api_gravity_to_oil_density(fluid_data["api_gravity"]),
-                    gas_density_std=convert_gas_gravity_to_gas_density(fluid_data["gas_gravity"]),
-                    rs_sat=fluid_data["gas_oil_ratio"],
+                self.produced_fluid_data["name"]: PvtModelCorrelationDescription(
+                    oil_density_std=convert_api_gravity_to_oil_density(
+                        self.produced_fluid_data["api_gravity"]
+                    ),
+                    gas_density_std=convert_gas_gravity_to_gas_density(
+                        self.produced_fluid_data["gas_gravity"]
+                    ),
+                    rs_sat=self.produced_fluid_data["gas_oil_ratio"],
                     h2s_mol_frac=H2S_MOLAR_FRACTION_DEFAULT,
                     co2_mol_frac=CO2_MOLAR_FRACTION_DEFAULT,
                 )
@@ -105,14 +108,13 @@ class ProductionOperationBuilder(BaseOperationBuilder):
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
         super().configure_well_initial_conditions(alfacase)
-        operation_data = self.score_input.read_production_operation_data()
         formation_data = self.score_input.read_formation_temperatures()
         alfacase.wells[0].initial_conditions = attr.evolve(
             alfacase.wells[0].initial_conditions,
             # the factor multiplied for the top pressure is arbitrary, just to set an initial value
             pressures=self.create_well_initial_pressures(
-                0.6 * operation_data["flow_initial_pressure"],
-                operation_data["flow_initial_pressure"],
+                0.6 * self.general_data["flow_initial_pressure"],
+                self.general_data["flow_initial_pressure"],
             ),
             volume_fractions=self.create_well_initial_volume_fractions(
                 Scalar(0.9, FRACTION_UNIT),
@@ -121,20 +123,19 @@ class ProductionOperationBuilder(BaseOperationBuilder):
             ),
             temperatures=self.create_well_initial_temperatures(
                 Scalar(formation_data["temperatures"][0], TEMPERATURE_UNIT),
-                operation_data["flow_initial_temperature"],
+                self.general_data["flow_initial_temperature"],
             ),
         )
 
     def configure_physics(self, alfacase: CaseDescription) -> None:
         """Configure the description for the physics data."""
         super().configure_physics(alfacase)
-        operation_data = self.score_input.read_production_operation_data()
         transient_regime = self.has_gas_lift()
         alfacase.physics = attr.evolve(
             alfacase.physics,
             hydrodynamic_model=(
                 HydrodynamicModelType.FourFields
-                if np.isclose(operation_data["water_flow_rate"].GetValue(), 0.0)
+                if np.isclose(self.general_data["water_flow_rate"].GetValue(), 0.0)
                 else HydrodynamicModelType.ThreeLayersGasOilWater
             ),
             simulation_regime=(
@@ -153,7 +154,6 @@ class ProductionOperationBuilder(BaseOperationBuilder):
     def configure_nodes(self, alfacase: CaseDescription) -> None:
         """Configure the nodes with data from SCORE operation."""
         super().configure_nodes(alfacase)
-        operation_data = self.score_input.read_production_operation_data()
         default_nodes = {node.name: node for node in alfacase.nodes}
         configured_nodes = [
             attr.evolve(
@@ -163,10 +163,10 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
                         FLUID_GAS: -1.0
-                        * operation_data["gas_oil_ratio"].GetValue()
-                        * operation_data["oil_flow_rate"],
-                        FLUID_OIL: -1.0 * operation_data["oil_flow_rate"],
-                        FLUID_WATER: -1.0 * operation_data["water_flow_rate"],
+                        * self.general_data["gas_oil_ratio"].GetValue()
+                        * self.general_data["oil_flow_rate"],
+                        FLUID_OIL: -1.0 * self.general_data["oil_flow_rate"],
+                        FLUID_WATER: -1.0 * self.general_data["water_flow_rate"],
                     },
                 ),
                 pvt_model=self._get_fluid_model_name(),
@@ -174,8 +174,8 @@ class ProductionOperationBuilder(BaseOperationBuilder):
             attr.evolve(
                 default_nodes.pop(WELLBORE_BOTTOM_NODE_NAME),
                 pressure_properties=PressureNodePropertiesDescription(
-                    temperature=operation_data["flow_initial_temperature"],
-                    pressure=operation_data["flow_initial_pressure"],
+                    temperature=self.general_data["flow_initial_temperature"],
+                    pressure=self.general_data["flow_initial_pressure"],
                     split_type=MassInflowSplitType.Pvt,
                 ),
                 pvt_model=self._get_fluid_model_name(),
@@ -183,15 +183,14 @@ class ProductionOperationBuilder(BaseOperationBuilder):
         ]
         gas_lift_node = default_nodes.pop(GAS_LIFT_MASS_NODE_NAME)
         if self.has_gas_lift():
-            gas_lift_data = self.score_input.read_operation_method_data()
             gas_lift_node = attr.evolve(
                 gas_lift_node,
                 mass_source_properties=MassSourceNodePropertiesDescription(
                     temperature_input_type=MultiInputType.Constant,
-                    temperature=gas_lift_data["well_head_temperature"],
+                    temperature=self.lift_method_data["well_head_temperature"],
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
-                        FLUID_GAS: gas_lift_data["well_head_flow"],
+                        FLUID_GAS: self.lift_method_data["well_head_flow"],
                         FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
                         FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
                     },
@@ -207,9 +206,8 @@ class ProductionOperationBuilder(BaseOperationBuilder):
         initial_temperature = Scalar(15.0, TEMPERATURE_UNIT)
         initial_pressure = Scalar(5000.0, PRESSURE_UNIT)
         if self.has_gas_lift():
-            operation_data = self.score_input.read_operation_method_data()
-            initial_pressure = operation_data["well_head_pressure"]
-            initial_temperature = operation_data["well_head_temperature"]
+            initial_pressure = self.lift_method_data["well_head_pressure"]
+            initial_temperature = self.lift_method_data["well_head_temperature"]
         alfacase.wells[0].annulus = attr.evolve(
             alfacase.wells[0].annulus,
             has_annulus_flow=self.has_gas_lift(),

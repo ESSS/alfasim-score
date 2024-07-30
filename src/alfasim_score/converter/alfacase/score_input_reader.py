@@ -23,6 +23,7 @@ from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import GAS_OIL_RATIO_UNIT
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import OPERATION_DURATION_UNIT
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
 from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
@@ -271,42 +272,16 @@ class ScoreInputReader:
             ),
         }
 
-    def read_operation_type(self) -> OperationType:
-        """Read only the operation type in SCORE input file."""
-        return OperationType(self.input_content["operation"]["type"])
-
-    def read_fluid_name(self) -> str:
-        """Read only the fluid name for the operation in SCORE input file."""
-        return self.input_content["operation"]["data"]["fluid_type"]
-
-    def read_production_operation_data(self) -> Dict[str, Any]:
+    def read_operation_data(self) -> Dict[str, Any]:
         """Read data for production operation registered in SCORE input file."""
         operation = self.input_content["operation"]["data"]
-        return {
+        operation_type = OperationType(self.input_content["operation"]["type"])
+        operation_data = {
             "name": self.input_content["operation"]["name"],
-            "type": self.read_operation_type(),
+            "type": operation_type,
             "fluid_type": FluidType(operation["fluid"]),
-            "fluid": self.read_fluid_name(),
-            "lift_method": LiftMethod(operation["method"]),
-            "flow_initial_temperature": Scalar(
-                operation["flow_initial_temperature"], TEMPERATURE_UNIT
-            ),
-            "flow_initial_pressure": Scalar(operation["flow_initial_pressure"], PRESSURE_UNIT),
-            "perforation_base_depth": Scalar(operation["perforation_base_depth"], LENGTH_UNIT),
-            "oil_flow_rate": Scalar(operation["oil_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
-            "gas_oil_ratio": Scalar(operation["gor"], GAS_OIL_RATIO_UNIT),
-            "flow_rate": Scalar(operation["flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
-            "water_flow_rate": Scalar(operation["water_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
-        }
-
-    def read_injection_operation_data(self) -> Dict[str, Any]:
-        """Read data for injection operation registered in SCORE input file."""
-        operation = self.input_content["operation"]["data"]
-        return {
-            "name": self.input_content["operation"]["name"],
-            "type": self.read_operation_type(),
-            "fluid_type": FluidType(operation["fluid"]),
-            "fluid": self.read_fluid_name(),
+            "fluid": operation["fluid_type"],
+            "duration": Scalar(operation["duration"], OPERATION_DURATION_UNIT),
             "flow_initial_temperature": Scalar(
                 operation["flow_initial_temperature"], TEMPERATURE_UNIT
             ),
@@ -314,6 +289,20 @@ class ScoreInputReader:
             "perforation_base_depth": Scalar(operation["perforation_base_depth"], LENGTH_UNIT),
             "flow_rate": Scalar(operation["flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT),
         }
+        if operation_type == OperationType.PRODUCTION:
+            operation_data.update(
+                {
+                    "lift_method": LiftMethod(operation["method"]),
+                    "oil_flow_rate": Scalar(
+                        operation["oil_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT
+                    ),
+                    "gas_oil_ratio": Scalar(operation["gor"], GAS_OIL_RATIO_UNIT),
+                    "water_flow_rate": Scalar(
+                        operation["water_flow_rate"], STD_VOLUMETRIC_FLOW_RATE_UNIT
+                    ),
+                }
+            )
+        return operation_data
 
     def read_operation_method_data(self) -> Dict[str, Any]:
         """Read data from the gas lift method."""
