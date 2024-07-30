@@ -1113,17 +1113,17 @@ wells:
           - 0.0
           unit: m
         fractions:
-          gas:
-            values:
-            - 0.1
-            unit: '-'
           oil:
             values:
-            - 0.9
+            - 0.0
+            unit: '-'
+          gas:
+            values:
+            - 0.0
             unit: '-'
           water:
             values:
-            - 0.0
+            - 1.0
             unit: '-'
     tracers_mass_fractions:
       position_input_type: length

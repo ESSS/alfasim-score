@@ -1061,10 +1061,6 @@ wells:
             values:
             - 0.9
             unit: '-'
-          water:
-            values:
-            - 0.0
-            unit: '-'
     tracers_mass_fractions:
       position_input_type: length
       table_x:

@@ -40,12 +40,21 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         super().configure_well_initial_conditions(alfacase)
         operation_data = self.score_input.read_injection_operation_data()
         formation_data = self.score_input.read_formation_temperatures()
+        # once the simulation is configured as steady state regime for injection,
+        # the expected value of injected phase is 1.0 when the steady state is reached
+        gas_fraction = 1.0 if operation_data["fluid_type"] == FluidType.GAS else 0.0
+        water_fraction = 1.0 if operation_data["fluid_type"] == FluidType.WATER else 0.0
         alfacase.wells[0].initial_conditions = attr.evolve(
             alfacase.wells[0].initial_conditions,
             # the factor multiplied for the top pressure is arbitrary, just to set an initial value
             pressures=self.create_well_initial_pressures(
                 operation_data["flow_initial_pressure"],
                 1.2 * operation_data["flow_initial_pressure"],
+            ),
+            volume_fractions=self.create_well_initial_volume_fractions(
+                Scalar(0.0, FRACTION_UNIT),
+                Scalar(gas_fraction, FRACTION_UNIT),
+                Scalar(water_fraction, FRACTION_UNIT),
             ),
             temperatures=self.create_well_initial_temperatures(
                 operation_data["flow_initial_temperature"],

@@ -103,6 +103,22 @@ class BaseOperationBuilder:
             ),
         )
 
+    def create_well_initial_volume_fractions(
+        self, oil_fraction: Scalar, gas_fraction: Scalar, water_fraction: Scalar
+    ) -> InitialVolumeFractionsDescription:
+        """Create the initial volume fractions description."""
+        return InitialVolumeFractionsDescription(
+            position_input_type=TableInputType.length,
+            table_length=VolumeFractionsContainerDescription(
+                positions=Array([0.0], LENGTH_UNIT),
+                fractions={
+                    FLUID_OIL: Array([oil_fraction.GetValue(FRACTION_UNIT)], FRACTION_UNIT),
+                    FLUID_GAS: Array([gas_fraction.GetValue(FRACTION_UNIT)], FRACTION_UNIT),
+                    FLUID_WATER: Array([water_fraction.GetValue(FRACTION_UNIT)], FRACTION_UNIT),
+                },
+            ),
+        )
+
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
         """Configure the pvt fluid for the model."""
         pass
@@ -125,17 +141,6 @@ class BaseOperationBuilder:
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
         alfacase.wells[0].initial_conditions = InitialConditionsDescription(
-            volume_fractions=InitialVolumeFractionsDescription(
-                position_input_type=TableInputType.length,
-                table_length=VolumeFractionsContainerDescription(
-                    positions=Array([0.0], LENGTH_UNIT),
-                    fractions={
-                        FLUID_GAS: Array([0.1], FRACTION_UNIT),
-                        FLUID_OIL: Array([0.9], FRACTION_UNIT),
-                        FLUID_WATER: Array([0.0], FRACTION_UNIT),
-                    },
-                ),
-            ),
             velocities=InitialVelocitiesDescription(
                 position_input_type=TableInputType.length,
                 table_length=VelocitiesContainerDescription(

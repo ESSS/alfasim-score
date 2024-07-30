@@ -1101,13 +1101,13 @@ wells:
           - 0.0
           unit: m
         fractions:
-          gas:
-            values:
-            - 0.1
-            unit: '-'
           oil:
             values:
             - 0.9
+            unit: '-'
+          gas:
+            values:
+            - 0.1
             unit: '-'
           water:
             values:

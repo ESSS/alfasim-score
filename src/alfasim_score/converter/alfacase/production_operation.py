@@ -110,6 +110,11 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                 0.6 * operation_data["flow_initial_pressure"],
                 operation_data["flow_initial_pressure"],
             ),
+            volume_fractions=self.create_well_initial_volume_fractions(
+                Scalar(0.9, FRACTION_UNIT),
+                Scalar(0.1, FRACTION_UNIT),
+                Scalar(0.0, FRACTION_UNIT),
+            ),
             temperatures=self.create_well_initial_temperatures(
                 Scalar(formation_data["temperatures"][0], TEMPERATURE_UNIT),
                 operation_data["flow_initial_temperature"],
