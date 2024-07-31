@@ -5,7 +5,7 @@ physics:
   energy_model: global_model
   solids_model: no_model
   solids_model_plugin_id:
-  initial_condition_strategy: steady_state
+  initial_condition_strategy: constant
   keep_former_results: False
   emulsion_model_enabled: True
   emulsion_relative_viscosity_model: model_default
@@ -50,17 +50,17 @@ time_options:
     value: 0.0
     unit: s
   final_time:
-    value: 10.0
-    unit: s
+    value: 60.0
+    unit: min
   initial_timestep:
-    value: 0.0001
-    unit: s
-  minimum_timestep:
-    value: 1e-12
-    unit: s
-  maximum_timestep:
     value: 0.1
-    unit: s
+    unit: min
+  minimum_timestep:
+    value: 0.0001
+    unit: min
+  maximum_timestep:
+    value: 2.0
+    unit: min
   restart_autosave_frequency:
     value: 1.0
     unit: h
@@ -69,9 +69,9 @@ time_options:
     unit: s
 numerical_options:
   nonlinear_solver_type: nonlinear_solver_alfasim_quasi_newton
-  tolerance: 0.0001
+  tolerance: 0.001
   maximum_iterations: 5
-  maximum_timestep_change_factor: 2.0
+  maximum_timestep_change_factor: 1.2
   maximum_cfl_value: 1.0
   relaxed_tolerance: 0.0
   divergence_tolerance: -1.0

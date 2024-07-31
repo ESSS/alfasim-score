@@ -1,5 +1,6 @@
 import attr
 from alfasim_sdk import CaseDescription
+from alfasim_sdk import InitialConditionStrategyType
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
 from alfasim_sdk import MassSourceType
@@ -41,7 +42,7 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         water_fraction = 1.0 if operation_data["fluid_type"] == FluidType.WATER else 0.0
         alfacase.wells[0].initial_conditions = attr.evolve(
             alfacase.wells[0].initial_conditions,
-            # the factor multiplied for the top pressure is arbitrary, just to set an initial value
+            # the factor multiplied by the bottom pressure is arbitrary, just to set an initial value
             pressures=self.create_well_initial_pressures(
                 self.general_data["flow_initial_pressure"],
                 1.2 * self.general_data["flow_initial_pressure"],
@@ -62,10 +63,8 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         super().configure_physics(alfacase)
         alfacase.physics = attr.evolve(
             alfacase.physics,
-            # TODO: check the hydrodynamics_model that should be used here
-            simulation_regime=SimulationRegimeType.Transient,
-            # TODO: check the conditionstrategytype
-            # initial_condition_strategy=
+            simulation_regime=SimulationRegimeType.SteadyState,
+            initial_condition_strategy=InitialConditionStrategyType.Constant,
         )
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:

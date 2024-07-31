@@ -111,7 +111,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
         formation_data = self.score_input.read_formation_temperatures()
         alfacase.wells[0].initial_conditions = attr.evolve(
             alfacase.wells[0].initial_conditions,
-            # the factor multiplied for the top pressure is arbitrary, just to set an initial value
+            # the factor multiplied by the top pressure is arbitrary, just to set an initial value
             pressures=self.create_well_initial_pressures(
                 0.6 * self.general_data["flow_initial_pressure"],
                 self.general_data["flow_initial_pressure"],
@@ -130,9 +130,9 @@ class ProductionOperationBuilder(BaseOperationBuilder):
     def configure_physics(self, alfacase: CaseDescription) -> None:
         """Configure the description for the physics data."""
         super().configure_physics(alfacase)
-        transient_regime = self.has_gas_lift()
         alfacase.physics = attr.evolve(
             alfacase.physics,
+            # TODO: check here if does not have water if it should consider (initial condition 0.1 of water!)
             hydrodynamic_model=(
                 HydrodynamicModelType.FourFields
                 if np.isclose(self.general_data["water_flow_rate"].GetValue(), 0.0)
@@ -140,15 +140,10 @@ class ProductionOperationBuilder(BaseOperationBuilder):
             ),
             simulation_regime=(
                 SimulationRegimeType.Transient
-                if transient_regime
+                if self.has_gas_lift()
                 else SimulationRegimeType.SteadyState
             ),
-            # TODO: check if this is right
-            initial_condition_strategy=(
-                InitialConditionStrategyType.Constant
-                if transient_regime
-                else InitialConditionStrategyType.SteadyState
-            ),
+            initial_condition_strategy=InitialConditionStrategyType.Constant,
         )
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:
