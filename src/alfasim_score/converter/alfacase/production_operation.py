@@ -130,12 +130,18 @@ class ProductionOperationBuilder(BaseOperationBuilder):
     def configure_physics(self, alfacase: CaseDescription) -> None:
         """Configure the description for the physics data."""
         super().configure_physics(alfacase)
+        no_inlet_water = np.isclose(self.general_data["water_flow_rate"].GetValue(), 0.0)
+        no_initial_water = np.allclose(
+            alfacase.wells[0].initial_conditions.volume_fractions.table_length.fractions.get(
+                FLUID_WATER, 0.0
+            ),
+            0.0,
+        )
         alfacase.physics = attr.evolve(
             alfacase.physics,
-            # TODO: check here if does not have water if it should consider (initial condition 0.1 of water!)
             hydrodynamic_model=(
                 HydrodynamicModelType.FourFields
-                if np.isclose(self.general_data["water_flow_rate"].GetValue(), 0.0)
+                if no_inlet_water and no_initial_water
                 else HydrodynamicModelType.ThreeLayersGasOilWater
             ),
             simulation_regime=(
