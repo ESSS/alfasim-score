@@ -272,10 +272,14 @@ class ScoreInputReader:
             ),
         }
 
+    def read_operation_type(self) -> OperationType:
+        """Read data for the operation type configured in SCORE input file."""
+        return OperationType(self.input_content["operation"]["type"])
+
     def read_operation_data(self) -> Dict[str, Any]:
         """Read data for production operation registered in SCORE input file."""
         operation = self.input_content["operation"]["data"]
-        operation_type = OperationType(self.input_content["operation"]["type"])
+        operation_type = self.read_operation_type()
         operation_data = {
             "name": self.input_content["operation"]["name"],
             "type": operation_type,
