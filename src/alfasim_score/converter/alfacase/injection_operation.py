@@ -21,6 +21,7 @@ from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
+from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 
 
@@ -38,8 +39,8 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         formation_data = self.score_input.read_formation_temperatures()
         # once the simulation is configured as steady state regime for injection,
         # the expected value of injected phase is 1.0 when the steady state is reached
-        gas_fraction = 1.0 if operation_data["fluid_type"] == FluidType.GAS else 0.0
-        water_fraction = 1.0 if operation_data["fluid_type"] == FluidType.WATER else 0.0
+        gas_fraction = 1.0 if self.general_data["fluid_type"] == FluidType.GAS else 0.0
+        water_fraction = 1.0 if self.general_data["fluid_type"] == FluidType.WATER else 0.0
         alfacase.wells[0].initial_conditions = attr.evolve(
             alfacase.wells[0].initial_conditions,
             # the factor multiplied by the bottom pressure is arbitrary, just to set an initial value
