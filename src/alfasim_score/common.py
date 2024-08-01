@@ -17,6 +17,7 @@ from alfasim_score.units import LENGTH_UNIT
 class WellItemType(str, Enum):
     DRILLING = "DRILLING"
     CASING = "CASING"
+    JETTING = "JETTING"
     NONE = "NONE"
 
 
@@ -38,6 +39,18 @@ class LiftMethod(str, Enum):
 #       the model is in the file tree in the path operation/thermal_data/fluid_type
 class ModelFluidType(str, Enum):
     BLACK_OIL = "BLACK_OIL"
+    WATER = "Water"
+
+
+class FluidType(str, Enum):
+    OIL = "OIL"
+    WATER = "WATER"
+    GAS = "GAS"
+
+
+class OperationType(str, Enum):
+    PRODUCTION = "PRODUCTION"
+    INJECTION = "INJECTION"
 
 
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:

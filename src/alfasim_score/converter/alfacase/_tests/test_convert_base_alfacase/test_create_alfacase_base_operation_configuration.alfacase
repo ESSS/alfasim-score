@@ -83,28 +83,6 @@ numerical_options:
   always_repeat_timestep: False
   enable_fast_compositional: True
 plugins: []
-pvt_models:
-  correlations:
-    DFLT_BLACK_OIL_27.40_230.00_1.17:
-      oil_density_std:
-        value: 889.6209188168658
-        unit: kg/m3
-      gas_density_std:
-        value: 1.43325
-        unit: kg/m3
-      rs_sat:
-        value: 230.0
-        unit: sm3/sm3
-      pvt_correlation_package: pvt_correlation_package_standing
-      h2s_mol_frac:
-        value: 0.0
-        unit: '-'
-      co2_mol_frac:
-        value: 0.0
-        unit: '-'
-      oil_viscosity: Egbogah
-      gas_viscosity: Lee Gonzalez Eakin
-      surface_tension: Baker Swerdloff
 outputs:
   automatic_trend_frequency: True
   trends:
@@ -121,7 +99,13 @@ outputs:
     unit: s
   automatic_profile_frequency: True
   profiles:
-  - curve_names: []
+  - curve_names:
+    - elevation
+    - holdup
+    - liquid volumetric flow rate std
+    - mixture temperature
+    - pressure
+    - environment temperature
     location: main
     element_name: WELLBORE
   profile_frequency:
@@ -131,7 +115,7 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: mass_source_boundary
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -222,7 +206,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: pressure_boundary
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -303,7 +287,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
-  pvt_model: gas_lift
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   pressure_properties:
     pressure:
       value: 100000.0
@@ -394,7 +378,6 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
-  pvt_model: base
   stagnant_fluid: fluid_default
   profile:
     x_and_y:
@@ -1125,11 +1108,15 @@ wells:
         velocities:
           gas:
             values:
-            - 1e-08
+            - 0.0
             unit: m/s
           oil:
             values:
-            - 1e-08
+            - 0.0
+            unit: m/s
+          water:
+            values:
+            - 0.0
             unit: m/s
     temperatures:
       position_input_type: length

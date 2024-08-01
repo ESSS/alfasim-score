@@ -1,9 +1,9 @@
 - name: WELLBORE_TOP_NODE
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   type: mass_source_boundary
 - name: WELLBORE_BOTTOM_NODE
-  pvt_model: base
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   type: pressure_boundary
 - name: GAS_LIFT_MASS_NODE
-  pvt_model: gas_lift
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   type: mass_source_boundary

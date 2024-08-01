@@ -1,21 +1,19 @@
-import attr
-from alfasim_sdk import NodeCellType
+from copy import copy
 from pytest_regressions.data_regression import DataRegressionFixture
 
-from alfasim_score.common import prepare_for_regression
+from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
-from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 
 def test_convert_nodes(
     data_regression: DataRegressionFixture,
-    score_input_gas_lift: ScoreInputReader,
+    base_operation_gas_lift: BaseOperationBuilder,
 ) -> None:
-    builder = ScoreAlfacaseConverter(score_input_gas_lift)
-    nodes = builder.build_nodes()
+    base_alfacase = copy(base_operation_gas_lift.base_alfacase)
+    base_operation_gas_lift.configure_nodes(base_alfacase)
     data_regression.check(
         [
             {"name": node.name, "type": node.node_type.value, "pvt_model": node.pvt_model}
-            for node in nodes
+            for node in base_alfacase.nodes
         ]
     )
