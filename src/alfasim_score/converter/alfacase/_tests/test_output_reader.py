@@ -21,3 +21,12 @@ def test_output_reader(
             "pressure": results["pressure"],
         }
     )
+
+
+def test_score_without_result(
+    datadir: Path,
+    num_regression: NumericRegressionFixture,
+    score_input_gas_lift: ScoreInputReader,
+) -> None:
+    score_input_gas_lift.input_content["operation"]["thermal_simulation"].pop("result")
+    assert len(score_input_gas_lift.read_output_curves()) == 0
