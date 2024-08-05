@@ -1,13 +1,12 @@
 import attr
+import numpy as np
 from alfasim_sdk import CaseDescription
-from alfasim_sdk import InitialConditionStrategyType
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
 from alfasim_sdk import MassSourceType
 from alfasim_sdk import MultiInputType
 from alfasim_sdk import NodeCellType
 from alfasim_sdk import PressureNodePropertiesDescription
-from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk._internal.constants import FLUID_GAS
 from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
@@ -32,6 +31,34 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         assert (
             self.general_data["type"] == self.operation_type
         ), f"The created operation is injection, but the imported operation is configured as {self.general_data['type']}."
+
+    def is_injecting_water(self, alfacase: CaseDescription) -> bool:
+        """Check if the operation has water in the well."""
+        has_inlet_flow = self.general_data["flow_rate"].GetValue() > 0.0
+        has_initial_water = np.any(
+            np.array(
+                alfacase.wells[0].initial_conditions.volume_fractions.table_length.fractions.get(
+                    FLUID_WATER, 0.0
+                )
+            )
+            > 0.0
+        )
+        is_injected_fluid_water = self.general_data["fluid_type"] == FluidType.WATER
+        return (has_initial_water or has_inlet_flow) and is_injected_fluid_water
+
+    def is_injecting_gas(self, alfacase: CaseDescription) -> bool:
+        """Check if the operation has gas in the well."""
+        has_inlet_flow = self.general_data["flow_rate"].GetValue() > 0.0
+        has_initial_water = np.any(
+            np.array(
+                alfacase.wells[0].initial_conditions.volume_fractions.table_length.fractions.get(
+                    FLUID_GAS, 0.0
+                )
+            )
+            > 0.0
+        )
+        is_injected_fluid_gas = self.general_data["fluid_type"] == FluidType.GAS
+        return (has_initial_water or has_inlet_flow) and is_injected_fluid_gas
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
@@ -59,15 +86,6 @@ class InjectionOperationBuilder(BaseOperationBuilder):
             ),
         )
 
-    def configure_physics(self, alfacase: CaseDescription) -> None:
-        """Configure the description for the physics data."""
-        super().configure_physics(alfacase)
-        alfacase.physics = attr.evolve(
-            alfacase.physics,
-            simulation_regime=SimulationRegimeType.SteadyState,
-            initial_condition_strategy=InitialConditionStrategyType.Constant,
-        )
-
     def configure_nodes(self, alfacase: CaseDescription) -> None:
         """Configure the nodes with data from SCORE operation."""
         super().configure_nodes(alfacase)
@@ -92,13 +110,13 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                     volumetric_flow_rates_std={
                         FLUID_GAS: (
                             -1.0 * self.general_data["flow_rate"]
-                            if self.general_data["fluid_type"] == FluidType.GAS
+                            if self.is_injecting_gas(alfacase)
                             else NULL_VOLUMETRIC_FLOW_RATE
                         ),
                         FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
                         FLUID_WATER: (
                             -1.0 * self.general_data["flow_rate"]
-                            if self.general_data["fluid_type"] == FluidType.WATER
+                            if self.is_injecting_water(alfacase)
                             else NULL_VOLUMETRIC_FLOW_RATE
                         ),
                     },

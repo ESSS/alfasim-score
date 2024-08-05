@@ -66,8 +66,19 @@ class ProductionOperationBuilder(BaseOperationBuilder):
         ), f"The created operation is production, but the imported operation is configured as {self.general_data['type']}."
 
     def has_gas_lift(self) -> bool:
-        """Check the operation has gas lift."""
+        """Check if the operation has gas lift."""
         return self.general_data["lift_method"] == LiftMethod.GAS_LIFT
+
+    def has_water(self, alfacase: CaseDescription) -> bool:
+        """Check if the operation has water in the well."""
+        has_inlet_water = self.general_data["water_flow_rate"].GetValue() > 0.0
+        has_initial_water = np.any(
+            alfacase.wells[0].initial_conditions.volume_fractions.table_length.fractions.get(
+                FLUID_WATER, 0.0
+            )
+            > 0.0
+        )
+        return has_inlet_water or has_initial_water
 
     def _get_gas_lift_valves(self) -> Dict[str, GasLiftValveEquipmentDescription]:
         """Create the gas lift valves for the annulus."""
@@ -130,26 +141,18 @@ class ProductionOperationBuilder(BaseOperationBuilder):
     def configure_physics(self, alfacase: CaseDescription) -> None:
         """Configure the description for the physics data."""
         super().configure_physics(alfacase)
-        no_inlet_water = np.isclose(self.general_data["water_flow_rate"].GetValue(), 0.0)
-        no_initial_water = np.allclose(
-            alfacase.wells[0].initial_conditions.volume_fractions.table_length.fractions.get(
-                FLUID_WATER, 0.0
-            ),
-            0.0,
-        )
         alfacase.physics = attr.evolve(
             alfacase.physics,
             hydrodynamic_model=(
-                HydrodynamicModelType.FourFields
-                if no_inlet_water and no_initial_water
-                else HydrodynamicModelType.ThreeLayersGasOilWater
+                HydrodynamicModelType.ThreeLayersGasOilWater
+                if self.has_water(alfacase)
+                else HydrodynamicModelType.FourFields
             ),
             simulation_regime=(
                 SimulationRegimeType.Transient
                 if self.has_gas_lift()
                 else SimulationRegimeType.SteadyState
             ),
-            initial_condition_strategy=InitialConditionStrategyType.Constant,
         )
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:

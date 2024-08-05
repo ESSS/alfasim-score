@@ -1,7 +1,7 @@
 name: Teste Térmico
 physics:
   hydrodynamic_model: hydrodynamic_model_3_layers_gas_oil_water
-  simulation_regime: simulation_regime_transient
+  simulation_regime: simulation_regime_steady_state
   energy_model: global_model
   solids_model: no_model
   solids_model_plugin_id:

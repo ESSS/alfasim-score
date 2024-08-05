@@ -4,6 +4,7 @@ from alfasim_sdk import EnergyModel
 from alfasim_sdk import GlobalTrendDescription
 from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import InitialConditionsDescription
+from alfasim_sdk import InitialConditionStrategyType
 from alfasim_sdk import InitialPressuresDescription
 from alfasim_sdk import InitialTemperaturesDescription
 from alfasim_sdk import InitialVelocitiesDescription
@@ -20,6 +21,7 @@ from alfasim_sdk import PhysicsDescription
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileOutputDescription
+from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk import TableInputType
 from alfasim_sdk import TemperaturesContainerDescription
 from alfasim_sdk import TimeOptionsDescription
@@ -167,6 +169,8 @@ class BaseOperationBuilder:
         alfacase.physics = PhysicsDescription(
             hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater,
             energy_model=EnergyModel.GlobalModel,
+            simulation_regime=SimulationRegimeType.SteadyState,
+            initial_condition_strategy=InitialConditionStrategyType.Constant,
         )
 
     def configure_time_options(self, alfacase: CaseDescription) -> None:

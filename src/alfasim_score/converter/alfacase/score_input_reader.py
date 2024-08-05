@@ -23,13 +23,13 @@ from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import GAS_OIL_RATIO_UNIT
 from alfasim_score.units import LENGTH_UNIT
-from alfasim_score.units import OPERATION_DURATION_UNIT
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
 from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
+from alfasim_score.units import TIME_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
 
 
@@ -281,7 +281,7 @@ class ScoreInputReader:
             "type": operation_type,
             "fluid_type": FluidType(operation["fluid"]),
             "fluid": operation["fluid_type"],
-            "duration": Scalar(operation["duration"], OPERATION_DURATION_UNIT),
+            "duration": Scalar(operation["duration"], TIME_UNIT),
             "flow_initial_temperature": Scalar(
                 operation["flow_initial_temperature"], TEMPERATURE_UNIT
             ),

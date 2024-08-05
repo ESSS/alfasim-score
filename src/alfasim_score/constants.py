@@ -6,10 +6,10 @@ from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import HEAT_TRANSFER_COEFFICIENT_UNIT
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import MASS_FLOW_RATE_UNIT
-from alfasim_score.units import OPERATION_DURATION_UNIT
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import ROUGHNESS_UNIT
 from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
+from alfasim_score.units import TIME_UNIT
 
 WELLBORE_NAME = "WELLBORE"
 WELLBORE_TOP_NODE_NAME = "WELLBORE_TOP_NODE"
@@ -50,6 +50,6 @@ GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN = Scalar(0.0, PRESSURE_UNIT)
 # numerical and time options default values
 MAXIMUM_TIMESTEP_CHANGE_FACTOR = 1.2
 NUMERICAL_TOLERANCE = 1.0e-3
-INITIAL_TIMESTEP = Scalar(0.1, OPERATION_DURATION_UNIT)
-MINIMUM_TIMESTEP = Scalar(1.0e-4, OPERATION_DURATION_UNIT)
-MAXIMUM_TIMESTEP = Scalar(2.0, OPERATION_DURATION_UNIT)
+INITIAL_TIMESTEP = Scalar(0.1, TIME_UNIT)
+MINIMUM_TIMESTEP = Scalar(1.0e-4, TIME_UNIT)
+MAXIMUM_TIMESTEP = Scalar(2.0, TIME_UNIT)
