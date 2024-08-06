@@ -54,13 +54,13 @@ time_options:
     unit: min
   initial_timestep:
     value: 0.1
-    unit: min
+    unit: s
   minimum_timestep:
     value: 0.0001
-    unit: min
+    unit: s
   maximum_timestep:
     value: 2.0
-    unit: min
+    unit: s
   restart_autosave_frequency:
     value: 1.0
     unit: h

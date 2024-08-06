@@ -32,33 +32,10 @@ class InjectionOperationBuilder(BaseOperationBuilder):
             self.general_data["type"] == self.operation_type
         ), f"The created operation is injection, but the imported operation is configured as {self.general_data['type']}."
 
-    def is_injecting_water(self, alfacase: CaseDescription) -> bool:
-        """Check if the operation has water in the well."""
+    def is_injecting(self, fluid_type: FluidType) -> bool:
+        """Check if the operation has water or gas injected into the well."""
         has_inlet_flow = self.general_data["flow_rate"].GetValue() > 0.0
-        has_initial_water = np.any(
-            np.array(
-                alfacase.wells[0].initial_conditions.volume_fractions.table_length.fractions.get(
-                    FLUID_WATER, 0.0
-                )
-            )
-            > 0.0
-        )
-        is_injected_fluid_water = self.general_data["fluid_type"] == FluidType.WATER
-        return (has_initial_water or has_inlet_flow) and is_injected_fluid_water
-
-    def is_injecting_gas(self, alfacase: CaseDescription) -> bool:
-        """Check if the operation has gas in the well."""
-        has_inlet_flow = self.general_data["flow_rate"].GetValue() > 0.0
-        has_initial_water = np.any(
-            np.array(
-                alfacase.wells[0].initial_conditions.volume_fractions.table_length.fractions.get(
-                    FLUID_GAS, 0.0
-                )
-            )
-            > 0.0
-        )
-        is_injected_fluid_gas = self.general_data["fluid_type"] == FluidType.GAS
-        return (has_initial_water or has_inlet_flow) and is_injected_fluid_gas
+        return has_inlet_flow and self.general_data["fluid_type"] == fluid_type
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
@@ -66,8 +43,8 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         formation_data = self.score_input.read_formation_temperatures()
         # once the simulation is configured as steady state regime for injection,
         # the expected value of injected phase is 1.0 when the steady state is reached
-        gas_fraction = 1.0 if self.general_data["fluid_type"] == FluidType.GAS else 0.0
-        water_fraction = 1.0 if self.general_data["fluid_type"] == FluidType.WATER else 0.0
+        gas_fraction = 1.0 if self.is_injecting(FluidType.GAS) else 0.0
+        water_fraction = 1.0 if self.is_injecting(FluidType.WATER) else 0.0
         alfacase.wells[0].initial_conditions = attr.evolve(
             alfacase.wells[0].initial_conditions,
             # the factor multiplied by the bottom pressure is arbitrary, just to set an initial value
@@ -110,13 +87,13 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                     volumetric_flow_rates_std={
                         FLUID_GAS: (
                             -1.0 * self.general_data["flow_rate"]
-                            if self.is_injecting_gas(alfacase)
+                            if self.is_injecting(FluidType.GAS)
                             else NULL_VOLUMETRIC_FLOW_RATE
                         ),
                         FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
                         FLUID_WATER: (
                             -1.0 * self.general_data["flow_rate"]
-                            if self.is_injecting_water(alfacase)
+                            if self.is_injecting(FluidType.WATER)
                             else NULL_VOLUMETRIC_FLOW_RATE
                         ),
                     },
