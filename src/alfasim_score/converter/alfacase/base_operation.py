@@ -4,6 +4,7 @@ from alfasim_sdk import EnergyModel
 from alfasim_sdk import GlobalTrendDescription
 from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import InitialConditionsDescription
+from alfasim_sdk import InitialConditionStrategyType
 from alfasim_sdk import InitialPressuresDescription
 from alfasim_sdk import InitialTemperaturesDescription
 from alfasim_sdk import InitialVelocitiesDescription
@@ -14,13 +15,16 @@ from alfasim_sdk import MassSourceType
 from alfasim_sdk import MultiInputType
 from alfasim_sdk import NodeCellType
 from alfasim_sdk import NodeDescription
+from alfasim_sdk import NumericalOptionsDescription
 from alfasim_sdk import OutputAttachmentLocation
 from alfasim_sdk import PhysicsDescription
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileOutputDescription
+from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk import TableInputType
 from alfasim_sdk import TemperaturesContainerDescription
+from alfasim_sdk import TimeOptionsDescription
 from alfasim_sdk import TrendsOutputDescription
 from alfasim_sdk import VelocitiesContainerDescription
 from alfasim_sdk import VolumeFractionsContainerDescription
@@ -33,7 +37,12 @@ from copy import deepcopy
 from pathlib import Path
 
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
+from alfasim_score.constants import INITIAL_TIMESTEP
+from alfasim_score.constants import MAXIMUM_TIMESTEP
+from alfasim_score.constants import MAXIMUM_TIMESTEP_CHANGE_FACTOR
+from alfasim_score.constants import MINIMUM_TIMESTEP
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
+from alfasim_score.constants import NUMERICAL_TOLERANCE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
@@ -51,6 +60,7 @@ class BaseOperationBuilder:
         self.score_input = ScoreInputReader(score_filepath)
         self.alfacase_converter = ScoreAlfacaseConverter(self.score_input)
         self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()
+        self.general_data = self.score_input.read_operation_data()
         self.default_output_profiles = [
             "elevation",
             "holdup",
@@ -61,8 +71,8 @@ class BaseOperationBuilder:
         ]
 
     def _get_fluid_model_name(self) -> str:
-        """Get the name of the fluid model used for this operation."""
-        return self.score_input.read_fluid_name()
+        """Get the name of the fluid model configured for this operation."""
+        return self.general_data["fluid"]
 
     def create_well_initial_pressures(
         self, top_pressure: Scalar, bottom_pressure: Scalar
@@ -154,12 +164,29 @@ class BaseOperationBuilder:
             ),
         )
 
-    # TODO PWPA-1996: review the configurations done here.
     def configure_physics(self, alfacase: CaseDescription) -> None:
         """Configure the description for the physics data."""
         alfacase.physics = PhysicsDescription(
             hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater,
             energy_model=EnergyModel.GlobalModel,
+            simulation_regime=SimulationRegimeType.SteadyState,
+            initial_condition_strategy=InitialConditionStrategyType.Constant,
+        )
+
+    def configure_time_options(self, alfacase: CaseDescription) -> None:
+        """Configure the description for the time options data."""
+        alfacase.time_options = TimeOptionsDescription(
+            final_time=self.general_data["duration"],
+            initial_timestep=INITIAL_TIMESTEP,
+            minimum_timestep=MINIMUM_TIMESTEP,
+            maximum_timestep=MAXIMUM_TIMESTEP,
+        )
+
+    def configure_numerical_options(self, alfacase: CaseDescription) -> None:
+        """Configure the description for the numerical options data."""
+        alfacase.numerical_options = NumericalOptionsDescription(
+            maximum_timestep_change_factor=MAXIMUM_TIMESTEP_CHANGE_FACTOR,
+            tolerance=NUMERICAL_TOLERANCE,
         )
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:
@@ -214,6 +241,8 @@ class BaseOperationBuilder:
         """Generate the configured node with data of the current operation."""
         alfacase_configured = deepcopy(self.base_alfacase)
         self.configure_physics(alfacase_configured)
+        self.configure_time_options(alfacase_configured)
+        self.configure_numerical_options(alfacase_configured)
         self.configure_pvt_model(alfacase_configured)
         self.configure_outputs(alfacase_configured)
         self.configure_nodes(alfacase_configured)
