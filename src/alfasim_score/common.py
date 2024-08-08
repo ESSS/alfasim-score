@@ -52,6 +52,11 @@ class OperationType(str, Enum):
     PRODUCTION = "PRODUCTION"
     INJECTION = "INJECTION"
 
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        available = ", ".join([repr(m.value) for m in cls])
+        raise ValueError(f"{value} is not a valid {cls.__name__}. Valid types: {available}")
+
 
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:
     """Prepare Scalar and Array to the be used in regression test."""
