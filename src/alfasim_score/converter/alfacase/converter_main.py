@@ -16,7 +16,7 @@ def convert_score_to_alfacase_description(score_filepath: Path) -> CaseDescripti
     builder: BaseOperationBuilder
     if operation_type == OperationType.PRODUCTION:
         builder = ProductionOperationBuilder(score_filepath)
-    elif operation_type == OperationType.INJECTION:
+    else:  # OperationType.INJECTION
         builder = InjectionOperationBuilder(score_filepath)
     return builder.generate_operation_alfacase_description()
 
