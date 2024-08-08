@@ -1,5 +1,4 @@
 import pytest
-from alfasim_sdk import convert_description_to_alfacase
 from pathlib import Path
 from pytest_regressions.file_regression import FileRegressionFixture
 

@@ -1,8 +1,8 @@
 import pandas as pd
+import pytest
 from pathlib import Path
 from pytest_regressions.num_regression import NumericRegressionFixture
 
-from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 
@@ -24,9 +24,13 @@ def test_output_reader(
 
 
 def test_score_without_result(
-    datadir: Path,
-    num_regression: NumericRegressionFixture,
     score_input_gas_lift: ScoreInputReader,
 ) -> None:
     score_input_gas_lift.input_content["operation"]["thermal_simulation"].pop("result")
     assert len(score_input_gas_lift.read_output_curves()) == 0
+
+
+def test_read_wrong_operation_type(score_input_gas_lift: ScoreInputReader) -> None:
+    score_input_gas_lift.input_content["operation"]["type"] = "UNKNOWN_OPERATION_TYPE"
+    with pytest.raises(ValueError):
+        score_input_gas_lift.read_operation_type()
