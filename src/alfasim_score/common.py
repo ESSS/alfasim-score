@@ -5,7 +5,9 @@ import numpy as np
 from barril.curve.curve import Curve
 from barril.units import Array
 from barril.units import Scalar
+from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 
 from alfasim_score.constants import AIR_DENSITY_STANDARD
 from alfasim_score.constants import WATER_DENSITY_STANDARD
@@ -104,3 +106,51 @@ def convert_gas_gravity_to_gas_density(gas_gravity: Scalar) -> Scalar:
     return Scalar(
         AIR_DENSITY_STANDARD.GetValue(DENSITY_UNIT) * gas_gravity.GetValue(), DENSITY_UNIT
     )
+
+
+# TODO: maybe this should go in the plugin
+class FluidModelType(str, Enum):
+    PVT = "PVT"
+    ZAMORA = "ZAMORA"
+
+
+@dataclass
+class FluidModelZamora:
+    name: str
+    a_1: Scalar
+    a_2: Scalar
+    b_1: Scalar
+    b_2: Scalar
+    c_1: Scalar
+    c_2: Scalar
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "name": self.name,
+            "a1_zamora": self.a_1,
+            "a2_zamora": self.a_2,
+            "b1_zamora": self.b_1,
+            "b2_zamora": self.b_2,
+            "c1_zamora": self.c_1,
+            "c2_zamora": self.c_2,
+            "pvt_table_content": Path(""),
+        }
+
+
+# TODO: maybe this should go in the plugin
+@dataclass
+class FluidModelPvt:
+    name: str
+    file_path: Path
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "name": self.name,
+            "a1_zamora": Scalar(0.0, "lbm/galUS"),
+            "a2_zamora": Scalar(0.0, "-"),
+            "b1_zamora": Scalar(0.0, "-"),
+            "b2_zamora": Scalar(0.0, "-"),
+            "c1_zamora": Scalar(0.0, "-"),
+            "c2_zamora": Scalar(0.0, "-"),
+            "pvt_table_content": self.file_path,
+        }
