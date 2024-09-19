@@ -90,7 +90,7 @@ class Annulus:
     is_active: bool = False
     mode_type: AnnulusModeType = AnnulusModeType.UNDISTURBED
     initial_top_pressure: Scalar = Scalar(0.0, "Pa")
-    is_opensea: bool = False
+    is_open_sea: bool = False
     annulus_table: AnnulusTable = AnnulusTable()
     has_fluid_return: bool = False
     initial_leakoff: Scalar = Scalar(0.0, "m3")
@@ -102,10 +102,10 @@ class Annulus:
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         plugin_key_names = {
-            "is_active": "active_annulus",
+            "is_active": "is_active",
             "mode_type": "mode_type",
             "initial_top_pressure": "initial_top_pressure",
-            "is_opensea": "opensea",
+            "is_open_sea": "open_sea",
             "has_fluid_return": "fluid_return",
             "initial_leakoff": "initial_leakoff",
             "has_relief_pressure": "relief_pressure_check",
