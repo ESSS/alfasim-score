@@ -23,10 +23,17 @@ from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 class ScoreAPBPluginConverter:
     def __init__(self, score_reader: ScoreInputReader):
         self.score_input = score_reader
-        # self.general_data = score_reader.read_general_data()
-        # self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
+        self.general_data = score_reader.read_general_data()
+        self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
+
+    def get_position_in_well(self, position: Scalar) -> Scalar:
+        """Get the position relative to the well start position."""
+        return position - self.well_start_position
 
     def _convert_annuli(self) -> Annuli:
+        casing = self.score_input.read_casings()
+        annuli = self.score_input.read_operation_annuli_data()
+        # TODO: remember to use the get_position_in_well
         return Annuli(Annulus())
 
     def _convert_fluids_pvt_data(self) -> List[Union[FluidModelZamora, FluidModelPvt]]:

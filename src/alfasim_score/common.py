@@ -17,6 +17,8 @@ from alfasim_score.constants import WATER_DENSITY_STANDARD
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import PRESSURE_UNIT
+from alfasim_score.units import VOLUME_UNIT
 
 
 class WellItemType(str, Enum):
@@ -142,11 +144,11 @@ class Annuli:
 class Annulus:
     is_active: bool = False
     mode_type: AnnulusModeType = AnnulusModeType.UNDISTURBED
-    initial_top_pressure: Scalar = Scalar(0.0, "Pa")
+    initial_top_pressure: Scalar = Scalar(0.0, PRESSURE_UNIT)
     is_open_seabed: bool = False
     annulus_table: AnnulusTable = AnnulusTable()
     has_fluid_return: bool = False
-    initial_leakoff: Scalar = Scalar(0.0, "m3")
+    initial_leakoff: Scalar = Scalar(0.0, VOLUME_UNIT)
     has_relief_pressure: bool = False
     # None for the annulus A
     relief_pressure: Union[None, Scalar] = None
@@ -159,6 +161,7 @@ class Annulus:
             "mode_type": "mode_type",
             "initial_top_pressure": "initial_top_pressure",
             "is_open_seabed": "open_sea",
+            "annulus_table": "annulus_table",
             "has_fluid_return": "fluid_return",
             "initial_leakoff": "initial_leakoff",
             "has_relief_pressure": "relief_pressure_check",
@@ -175,9 +178,9 @@ class Annulus:
 
 @dataclass
 class AnnulusTable:
-    fluid_id: list[int] = []
-    initial_depth: Array = Array([], "m")
-    final_depth: Array = Array([], "m")
+    fluid_id: list[str] = []
+    initial_depth: Array = Array([], LENGTH_UNIT)
+    final_depth: Array = Array([], LENGTH_UNIT)
 
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""

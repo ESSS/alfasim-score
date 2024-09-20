@@ -30,6 +30,7 @@ from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
 from alfasim_score.units import TIME_UNIT
+from alfasim_score.units import VOLUME_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
 
 
@@ -177,6 +178,17 @@ class ScoreInputReader:
                         "final_md": Scalar(item["final_md"], LENGTH_UNIT, "length"),
                         "top_of_cement": Scalar(item["toc_md"], LENGTH_UNIT, "length"),
                         "hole_diameter": Scalar(item["hole_size"], DIAMETER_UNIT, "diameter"),
+                        "annular_fluids": {
+                            "fluid": item["annular_fluids"]["fluid"],
+                            "top": Scalar(item["annular_fluids"]["top"], LENGTH_UNIT, "length"),
+                            "base": Scalar(item["annular_fluids"]["base"], LENGTH_UNIT, "length"),
+                        },
+                        "relief_pressure": {
+                            "is_active": item["pressure_relief"].get("active", False),
+                            "position": item["pressure_relief"].get(
+                                "depth", Scalar(0.0, LENGTH_UNIT)
+                            ),
+                        },
                         "sections": [
                             {
                                 "material": section["pipe"]["grade"]["name"],
@@ -337,6 +349,24 @@ class ScoreInputReader:
             "api_gravity": Scalar(fluid_data["api_gravity"], FRACTION_UNIT),
             "gas_gravity": Scalar(fluid_data["gas_gravity"], FRACTION_UNIT),
         }
+
+    def read_operation_annuli_data(self) -> List[Dict[str, Any]]:
+        """Read data for the annuli for the operation registered in SCORE input file."""
+        annuli_data = []
+        for annulus in self.input_content["operation"]["thermal_data"]["annuli_data"]:
+            has_relief_pressure = not annulus["apb_relief_mechanism"] == "NONE"
+            relief_pressure = annulus["apb_max_pressure"] if annulus["apb_max_pressure"] else 0.0
+            leakoff_volume = annulus["apb_bled_volume"] if annulus["apb_bled_volume"] else 0.0
+            annuli_data.append(
+                {
+                    "name": annulus["fluid"],
+                    "leakoff_volume": Scalar(leakoff_volume, VOLUME_UNIT),
+                    "initial_top_pressure": Scalar(annulus["initial_top_pressure"], VOLUME_UNIT),
+                    "has_relief_pressure": has_relief_pressure,
+                    "relief_pressure": Scalar(relief_pressure, PRESSURE_UNIT),
+                }
+            )
+        return annuli_data
 
     def read_output_curves(self) -> Dict[str, Array]:
         """
