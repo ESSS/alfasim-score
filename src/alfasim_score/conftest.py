@@ -69,12 +69,11 @@ class FluidType(Enum):
 @pytest.fixture
 def annulus_data() -> Annuli:
     return Annuli(
-        name="Annulus Data Model",
         annulus_A=Annulus(
             is_active=True,
             mode_type=AnnulusModeType.UNDISTURBED,
             initial_top_pressure=Scalar(2121.0, "Pa"),
-            is_open_sea=False,
+            is_open_seabed=False,
             annulus_table=AnnulusTable(
                 initial_depth=Array([212.0, 321.0], "m"),
                 final_depth=Array([2121.0, 2121.0], "m"),
@@ -88,7 +87,7 @@ def annulus_data() -> Annuli:
             is_active=True,
             mode_type=AnnulusModeType.UNDISTURBED,
             initial_top_pressure=Scalar(121.0, "Pa"),
-            is_open_sea=False,
+            is_open_seabed=False,
             annulus_table=AnnulusTable(
                 initial_depth=Array([1.0], "m"),
                 final_depth=Array([2.0], "m"),
@@ -104,7 +103,7 @@ def annulus_data() -> Annuli:
             is_active=True,
             mode_type=AnnulusModeType.DRILLING,
             initial_top_pressure=Scalar(1562.0, "Pa"),
-            is_open_sea=True,
+            is_open_seabed=True,
             annulus_table=AnnulusTable(
                 initial_depth=Array([15151.0], "m"),
                 final_depth=Array([16526262.0], "m"),
@@ -120,7 +119,7 @@ def annulus_data() -> Annuli:
             is_active=True,
             mode_type=AnnulusModeType.UNDISTURBED,
             initial_top_pressure=Scalar(0.0, "bar"),
-            is_open_sea=False,
+            is_open_seabed=False,
             annulus_table=AnnulusTable(),
             has_fluid_return=False,
             initial_leakoff=Scalar(0.0, "m3"),
@@ -132,7 +131,7 @@ def annulus_data() -> Annuli:
             is_active=True,
             mode_type=AnnulusModeType.UNDISTURBED,
             initial_top_pressure=Scalar(0.0, "bar"),
-            is_open_sea=False,
+            is_open_seabed=False,
             annulus_table=AnnulusTable(),
             has_fluid_return=False,
             initial_leakoff=Scalar(0.0, "m3"),
@@ -179,19 +178,21 @@ def material_data() -> list[Material]:
 
 @pytest.fixture
 def apb_plugin_description(
-    annulus_data: dict[str, Any],
-    fluid_data: list[dict[str, Any]],
-    material_data: list[dict[str, Any]],
-) -> PluginDescription:
+    annuli_data: Annuli,
+    fluids_data: list[Union[FluidModelZamora, FluidModelPvt]],
+    materials_data: list[Material],
+) -> None:
+    annuli = annuli_data.to_dict()
+    annuli["name"] = "Annulus Data Model"
     gui_models = {
-        "AnnulusDataModel": {"name": "Annulus Data Model", **annulus_data},
+        "AnnulusDataModel": annuli,
         "FluidContainer": {
             "name": "Annulus Fluids Container",
-            "_children_list": fluid_data,
+            "_children_list": [fluid.to_dict() for fluid in fluids_data],
         },
         "MechanicalContainer": {
             "name": "Mechanical Properties",
-            "_children_list": material_data,
+            "_children_list": [material.to_dict() for material in materials_data],
         },
     }
     return PluginDescription(

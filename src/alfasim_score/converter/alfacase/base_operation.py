@@ -52,6 +52,7 @@ from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
+from alfasim_score.converter.alfacase.plugin_data import ScoreAPBPluginConverter
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.plugin_data import Annuli
 from alfasim_score.plugin_data import Annulus
@@ -69,6 +70,7 @@ class BaseOperationBuilder:
     def __init__(self, score_filepath: Path):
         self.score_input = ScoreInputReader(score_filepath)
         self.alfacase_converter = ScoreAlfacaseConverter(self.score_input)
+        self.apb_plugin_converter = ScoreAPBPluginConverter(self.score_input)
         self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()
         self.general_data = self.score_input.read_operation_data()
         self.default_output_profiles = [
@@ -250,32 +252,12 @@ class BaseOperationBuilder:
     def configure_apb_plugin_description(
         self,
         alfacase: CaseDescription,
-        annuli_data: Annuli,
-        fluids_data: list[Union[FluidModelZamora, FluidModelPvt]],
-        materials_data: list[Material],
     ) -> None:
-        """Configure the data from the apb plugin in the case."""
-        gui_models = {
-            "AnnulusDataModel": annuli_data.to_dict(),
-            "FluidContainer": {
-                "name": "Annulus Fluids Container",
-                "_children_list": [fluid.to_dict() for fluid in fluids_data],
-            },
-            "MechanicalContainer": {
-                "name": "Mechanical Properties",
-                "_children_list": [material.to_dict() for material in materials_data],
-            },
-        }
-        alfacase.plugins.append(
-            PluginDescription(
-                name="apb",
-                gui_models=gui_models,
-                is_enabled=True,
-            )
-        )
+        """Configure the data for the apb plugin in the case description."""
+        alfacase.plugins.append(self.apb_plugin_converter.build_plugin_description())
 
     def generate_operation_alfacase_description(self) -> CaseDescription:
-        """Generate the configured node with data of the current operation."""
+        """Generate the configured alfacase description for the current operation."""
         alfacase_configured = deepcopy(self.base_alfacase)
         self.configure_physics(alfacase_configured)
         self.configure_time_options(alfacase_configured)
@@ -285,8 +267,5 @@ class BaseOperationBuilder:
         self.configure_nodes(alfacase_configured)
         self.configure_well_initial_conditions(alfacase_configured)
         self.configure_annulus(alfacase_configured)
-        # TODO: check how to pass these parameters here
-        self.configure_apb_plugin_description(
-            alfacase_configured, Annuli(name="", annulus_A=Annulus()), [], []
-        )
+        self.configure_apb_plugin_description(alfacase_configured)
         return alfacase_configured
