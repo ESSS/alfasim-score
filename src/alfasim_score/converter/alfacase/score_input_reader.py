@@ -178,15 +178,23 @@ class ScoreInputReader:
                         "final_md": Scalar(item["final_md"], LENGTH_UNIT, "length"),
                         "top_of_cement": Scalar(item["toc_md"], LENGTH_UNIT, "length"),
                         "hole_diameter": Scalar(item["hole_size"], DIAMETER_UNIT, "diameter"),
-                        "annular_fluids": {
-                            "fluid": item["annular_fluids"]["fluid"],
-                            "top": Scalar(item["annular_fluids"]["top"], LENGTH_UNIT, "length"),
-                            "base": Scalar(item["annular_fluids"]["base"], LENGTH_UNIT, "length"),
-                        },
-                        "relief_pressure": {
+                        "annular_fluids": [
+                            {
+                                "name": fluid_data["fluid"],
+                                "top_md": Scalar(fluid_data["top"], LENGTH_UNIT, "length"),
+                                "base_md": Scalar(fluid_data["base"], LENGTH_UNIT, "length"),
+                                "extension": Scalar(fluid_data["extension"], LENGTH_UNIT, "length"),
+                            }
+                            for fluid_data in item["annular_fluids"]
+                        ],
+                        "pressure_relief": {
                             "is_active": item["pressure_relief"].get("active", False),
-                            "position": item["pressure_relief"].get(
-                                "depth", Scalar(0.0, LENGTH_UNIT)
+                            "pressure": Scalar(
+                                item["pressure_relief"].get("depth", 0.0), LENGTH_UNIT
+                            ),
+                            "position": Scalar(
+                                item["pressure_relief"].get("considered_pressure", 0.0),
+                                PRESSURE_UNIT,
                             ),
                         },
                         "sections": [
@@ -354,19 +362,29 @@ class ScoreInputReader:
         """Read data for the annuli for the operation registered in SCORE input file."""
         annuli_data = []
         for annulus in self.input_content["operation"]["thermal_data"]["annuli_data"]:
-            has_relief_pressure = not annulus["apb_relief_mechanism"] == "NONE"
-            relief_pressure = annulus["apb_max_pressure"] if annulus["apb_max_pressure"] else 0.0
             leakoff_volume = annulus["apb_bled_volume"] if annulus["apb_bled_volume"] else 0.0
             annuli_data.append(
                 {
                     "name": annulus["fluid"],
+                    "string_name": annulus["string_name"],
                     "leakoff_volume": Scalar(leakoff_volume, VOLUME_UNIT),
-                    "initial_top_pressure": Scalar(annulus["initial_top_pressure"], VOLUME_UNIT),
-                    "has_relief_pressure": has_relief_pressure,
-                    "relief_pressure": Scalar(relief_pressure, PRESSURE_UNIT),
+                    "initial_top_pressure": Scalar(annulus["initial_top_pressure"], PRESSURE_UNIT),
                 }
             )
         return annuli_data
+
+    def read_tubing_fluid_data(self) -> List[Dict[str, Any]]:
+        """Read data for the fluid associated to tubing in SCORE input file."""
+        tubing_string = self.input_content["operation"]["tubing_string"]
+        return [
+            {
+                "name": fluid_data["fluid"],
+                "top_md": Scalar(fluid_data["top"], LENGTH_UNIT, "length"),
+                "base_md": Scalar(fluid_data["base"], LENGTH_UNIT, "length"),
+                "extension": Scalar(fluid_data["extension"], LENGTH_UNIT, "length"),
+            }
+            for fluid_data in tubing_string["annular_fluids"]
+        ]
 
     def read_output_curves(self) -> Dict[str, Array]:
         """

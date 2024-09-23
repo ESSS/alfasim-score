@@ -53,3 +53,10 @@ NUMERICAL_TOLERANCE = 1.0e-3
 INITIAL_TIMESTEP = Scalar(0.1, "s")
 MINIMUM_TIMESTEP = Scalar(1.0e-4, "s")
 MAXIMUM_TIMESTEP = Scalar(2.0, "s")
+
+# tolerance of depth to be considered an active annulus
+ANNULUS_DEPTH_TOLERANCE = Scalar(10.0, LENGTH_UNIT)
+
+# set default value for annulus for the plugin APB
+# there is no such option in the SCORE input so use this default value
+HAS_FLUID_RETURN = True
