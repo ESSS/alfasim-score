@@ -52,13 +52,8 @@ from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
-from alfasim_score.converter.alfacase.plugin_data import ScoreAPBPluginConverter
+from alfasim_score.converter.alfacase.convert_plugin_data import ScoreAPBPluginConverter
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
-from alfasim_score.plugin_data import Annuli
-from alfasim_score.plugin_data import Annulus
-from alfasim_score.plugin_data import FluidModelPvt
-from alfasim_score.plugin_data import FluidModelZamora
-from alfasim_score.plugin_data import Material
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import PRESSURE_UNIT

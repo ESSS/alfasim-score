@@ -59,7 +59,11 @@ class ScoreAlfacaseConverter:
         self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
 
     def get_position_in_well(self, position: Scalar) -> Scalar:
-        """Get the position relative to the well start position."""
+        """
+        Get the position relative to the well start position.
+        This method is a helper function to convert SCORE measured positions to the reference in well head
+        because this is the reference ALFAsim uses for well.
+        """
         return position - self.well_start_position
 
     def _convert_well_trajectory(self) -> ProfileDescription:

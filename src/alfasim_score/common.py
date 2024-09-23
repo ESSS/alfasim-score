@@ -9,6 +9,7 @@ from barril.units import Array
 from barril.units import Scalar
 from dataclasses import asdict
 from dataclasses import dataclass
+from dataclasses import field
 from enum import Enum
 from pathlib import Path
 
@@ -31,6 +32,7 @@ class WellItemType(str, Enum):
 class WellItemFunction(str, Enum):
     CONDUCTOR = "CONDUCTOR"
     SURFACE = "SURFACE"
+    INTERMEDIATE = "INTERMEDIATE"
     PRODUCTION = "PRODUCTION"
     OPEN = "OPEN"
 
@@ -125,19 +127,14 @@ class SolidMechanicalProperties:
 
 
 @dataclass
-class Annuli:
-    annulus_A: Annulus
-    annulus_B: Annulus = Annulus()
-    annulus_C: Annulus = Annulus()
-    annulus_D: Annulus = Annulus()
-    annulus_E: Annulus = Annulus()
+class AnnulusTable:
+    fluids: List[str] = field(default_factory=lambda: [])
+    initial_depths: Array = Array([], LENGTH_UNIT)
+    final_depths: Array = Array([], LENGTH_UNIT)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
-        data = {}
-        for annulus_type in "ABCDE":
-            data.update(getattr(self, f"annulus_{annulus_type}").to_dict())
-        return data
+        return {"columns": {f"{key}_{annulus_type}": value for key, value in asdict(self).items()}}
 
 
 @dataclass
@@ -150,9 +147,8 @@ class Annulus:
     has_fluid_return: bool = False
     initial_leakoff: Scalar = Scalar(0.0, VOLUME_UNIT)
     has_relief_pressure: bool = False
-    # None for the annulus A
-    relief_pressure: Union[None, Scalar] = None
-    relief_position: Union[None, Scalar] = None
+    relief_pressure: Scalar = Scalar(0.0, PRESSURE_UNIT)
+    relief_position: Scalar = Scalar(0.0, LENGTH_UNIT)
 
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
@@ -168,23 +164,33 @@ class Annulus:
             "relief_pressure": "pressure_relief",
             "relief_position": "relief_position",
         }
-        return {
+        output = {
             f"{plugin_key_names[key]}_{annulus_type}": (
                 value.to_dict(annulus_type) if isinstance(value, AnnulusTable) else value
             )
             for key, value in asdict(self).items()
         }
+        # the annular A doesn't have these parameters in plugin
+        if annulus_type == "A":
+            output.pop("pressure_relief")
+            output.pop("relief_position")
+        return output
 
 
 @dataclass
-class AnnulusTable:
-    fluid_id: list[str] = []
-    initial_depth: Array = Array([], LENGTH_UNIT)
-    final_depth: Array = Array([], LENGTH_UNIT)
+class Annuli:
+    annulus_A: Annulus
+    annulus_B: Annulus = Annulus()
+    annulus_C: Annulus = Annulus()
+    annulus_D: Annulus = Annulus()
+    annulus_E: Annulus = Annulus()
 
-    def to_dict(self, annulus_type: str) -> Dict[str, Any]:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
-        return {"columns": {f"{key}_{annulus_type}": value for key, value in asdict(self).items()}}
+        data = {}
+        for annulus_type in "ABCDE":
+            data.update(getattr(self, f"annulus_{annulus_type}").to_dict())
+        return data
 
 
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:

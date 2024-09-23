@@ -8,18 +8,18 @@ from barril.units import Scalar
 from enum import Enum
 from pathlib import Path
 
+from alfasim_score.common import Annuli
+from alfasim_score.common import Annulus
+from alfasim_score.common import AnnulusModeType
+from alfasim_score.common import AnnulusTable
+from alfasim_score.common import FluidModelPvt
+from alfasim_score.common import FluidModelZamora
+from alfasim_score.common import SolidMechanicalProperties
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
 from alfasim_score.converter.alfacase.injection_operation import InjectionOperationBuilder
 from alfasim_score.converter.alfacase.production_operation import ProductionOperationBuilder
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
-from alfasim_score.converter.plugin_data import Annuli
-from alfasim_score.converter.plugin_data import Annulus
-from alfasim_score.converter.plugin_data import AnnulusModeType
-from alfasim_score.converter.plugin_data import AnnulusTable
-from alfasim_score.converter.plugin_data import FluidModelPvt
-from alfasim_score.converter.plugin_data import FluidModelZamora
-from alfasim_score.converter.plugin_data import Material
 
 SCORE_GAS_LIFT_EXAMPLE_FILENAME = "score_input_gas_lift.json"
 SCORE_NATURAL_FLOW_EXAMPLE_FILENAME = "score_input_natural_flow.json"
@@ -75,9 +75,9 @@ def annulus_data() -> Annuli:
             initial_top_pressure=Scalar(2121.0, "Pa"),
             is_open_seabed=False,
             annulus_table=AnnulusTable(
-                initial_depth=Array([212.0, 321.0], "m"),
-                final_depth=Array([2121.0, 2121.0], "m"),
-                fluid_id=Array([1.0, 2.0], "-"),
+                initial_depths=Array([212.0, 321.0], "m"),
+                final_depths=Array([2121.0, 2121.0], "m"),
+                fluids=Array([1.0, 2.0], "-"),
             ),
             has_fluid_return=False,
             initial_leakoff=Scalar(121.0, "m3"),
@@ -89,9 +89,9 @@ def annulus_data() -> Annuli:
             initial_top_pressure=Scalar(121.0, "Pa"),
             is_open_seabed=False,
             annulus_table=AnnulusTable(
-                initial_depth=Array([1.0], "m"),
-                final_depth=Array([2.0], "m"),
-                fluid_id=Array([2.0], "-"),
+                initial_depths=Array([1.0], "m"),
+                final_depths=Array([2.0], "m"),
+                fluids=Array([2.0], "-"),
             ),
             has_fluid_return=False,
             initial_leakoff=Scalar(121.0, "m3"),
@@ -105,9 +105,9 @@ def annulus_data() -> Annuli:
             initial_top_pressure=Scalar(1562.0, "Pa"),
             is_open_seabed=True,
             annulus_table=AnnulusTable(
-                initial_depth=Array([15151.0], "m"),
-                final_depth=Array([16526262.0], "m"),
-                fluid_id=Array([1.0], "-"),
+                initial_depths=Array([15151.0], "m"),
+                final_depths=Array([16526262.0], "m"),
+                fluids=Array([1.0], "-"),
             ),
             has_fluid_return=True,
             initial_leakoff=Scalar(26262.0, "m3"),
@@ -154,20 +154,20 @@ def fluid_data(shared_datadir: Path) -> list[Union[FluidModelZamora, FluidModelP
             Scalar(5.12e-08, "-"),
             Scalar(-5.58e-13, "-"),
         ),
-        FluidModelPvt(shared_datadir / "3phase_constant.tab"),
+        FluidModelPvt("Table", shared_datadir / "3phase_constant.tab"),
     ]
 
 
 @pytest.fixture
-def material_data() -> list[Material]:
+def material_data() -> list[SolidMechanicalProperties]:
     return [
-        Material(
+        SolidMechanicalProperties(
             "Carbon Steel",
             Scalar(140.0, "GPa"),
             Scalar(0.29, "-"),
             Scalar(1.1e-05, "1/K"),
         ),
-        Material(
+        SolidMechanicalProperties(
             "Cement",
             Scalar(50.0, "GPa"),
             Scalar(0.2, "-"),
@@ -180,7 +180,7 @@ def material_data() -> list[Material]:
 def apb_plugin_description(
     annuli_data: Annuli,
     fluids_data: list[Union[FluidModelZamora, FluidModelPvt]],
-    materials_data: list[Material],
+    materials_data: list[SolidMechanicalProperties],
 ) -> None:
     annuli = annuli_data.to_dict()
     annuli["name"] = "Annulus Data Model"
