@@ -100,21 +100,19 @@ class ProductionOperationBuilder(BaseOperationBuilder):
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
         """Configure the black-oil fluid for the model."""
         super().configure_pvt_model(alfacase)
-        alfacase.pvt_models = PvtModelsDescription(
-            correlations={
-                self.produced_fluid_data["name"]: PvtModelCorrelationDescription(
-                    oil_density_std=convert_api_gravity_to_oil_density(
-                        self.produced_fluid_data["api_gravity"]
-                    ),
-                    gas_density_std=convert_gas_gravity_to_gas_density(
-                        self.produced_fluid_data["gas_gravity"]
-                    ),
-                    rs_sat=self.produced_fluid_data["gas_oil_ratio"],
-                    h2s_mol_frac=H2S_MOLAR_FRACTION_DEFAULT,
-                    co2_mol_frac=CO2_MOLAR_FRACTION_DEFAULT,
-                )
-            }
-        )
+        alfacase.pvt_models.correlations = {
+            self.produced_fluid_data["name"]: PvtModelCorrelationDescription(
+                oil_density_std=convert_api_gravity_to_oil_density(
+                    self.produced_fluid_data["api_gravity"]
+                ),
+                gas_density_std=convert_gas_gravity_to_gas_density(
+                    self.produced_fluid_data["gas_gravity"]
+                ),
+                rs_sat=self.produced_fluid_data["gas_oil_ratio"],
+                h2s_mol_frac=H2S_MOLAR_FRACTION_DEFAULT,
+                co2_mol_frac=CO2_MOLAR_FRACTION_DEFAULT,
+            )
+        }
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""

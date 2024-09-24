@@ -78,6 +78,18 @@ class AnnulusModeType(str, Enum):
 
 
 @dataclass
+class FluidModelPvt:
+    name: str
+
+    def to_dict(self) -> Dict[str, Union[str, Scalar]]:
+        """Convert data to dict in order to write data to the alfacase."""
+        return {
+            "name": self.name,
+            "fluid_type": FluidModelType.PVT.value,
+        }
+
+
+@dataclass
 class FluidModelZamora:
     name: str
     a_1: Scalar
@@ -91,6 +103,7 @@ class FluidModelZamora:
         """Convert data to dict in order to write data to the alfacase."""
         return {
             "name": self.name,
+            "fluid_type": FluidModelType.ZAMORA.value,
             "a1_zamora": self.a_1,
             "a2_zamora": self.a_2,
             "b1_zamora": self.b_1,
@@ -101,26 +114,12 @@ class FluidModelZamora:
 
 
 @dataclass
-class FluidModelPvt:
-    name: str
-    file_path: Path
-
-    def to_dict(self) -> Dict[str, Union[str, Path]]:
-        """Convert data to dict in order to write data to the alfacase."""
-        return {
-            "name": self.name,
-            "pvt_table_content": self.file_path,
-        }
-
-
-@dataclass
 class SolidMechanicalProperties:
     name: str
     young_modulus: Scalar
     poisson_ratio: Scalar
     thermal_expansion_coefficient: Scalar
 
-    # TODO: remember to create a material with same name
     def to_dict(self) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         return asdict(self)
@@ -134,7 +133,12 @@ class AnnulusTable:
 
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
-        return {"columns": {f"{key}_{annulus_type}": value for key, value in asdict(self).items()}}
+        columns = {
+            f"fluid_id_{annulus_type}": self.fluids,
+            f"initial_depth_{annulus_type}": self.initial_depths,
+            f"final_depth_{annulus_type}": self.final_depths,
+        }
+        return {"columns": columns}
 
 
 @dataclass
@@ -152,6 +156,7 @@ class Annulus:
 
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
+        # TODO PWPA-2152: make sure all names match (plugin and converter) than remove this mapped names
         plugin_key_names = {
             "is_active": "is_active",
             "mode_type": "mode_type",
@@ -166,7 +171,7 @@ class Annulus:
         }
         output = {
             f"{plugin_key_names[key]}_{annulus_type}": (
-                value.to_dict(annulus_type) if isinstance(value, AnnulusTable) else value
+                self.annulus_table.to_dict(annulus_type) if key == "annulus_table" else value
             )
             for key, value in asdict(self).items()
         }

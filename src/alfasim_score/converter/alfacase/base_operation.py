@@ -25,6 +25,7 @@ from alfasim_sdk import PluginDescription
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileOutputDescription
+from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk import TableInputType
 from alfasim_sdk import TemperaturesContainerDescription
@@ -138,7 +139,14 @@ class BaseOperationBuilder:
 
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
         """Configure the pvt fluid for the model."""
-        pass
+        operation_fluid = self._get_fluid_model_name()
+        tables = {"base": Path(f"{operation_fluid}.tab")}
+        fluid_names = self.apb_plugin_converter.get_all_annular_fluid_names()
+        tables.update({name: Path(f"{name}.tab") for name in fluid_names})
+        alfacase.pvt_models = PvtModelsDescription(
+            default_model="base",
+            tables=tables,
+        )
 
     def configure_outputs(self, alfacase: CaseDescription) -> None:
         """Configure the outputs for the case."""

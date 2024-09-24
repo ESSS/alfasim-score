@@ -1,4 +1,5 @@
 from typing import Any
+from typing import List
 from typing import Union
 
 import pytest
@@ -143,18 +144,11 @@ def annulus_data() -> Annuli:
 
 
 @pytest.fixture
-def fluid_data(shared_datadir: Path) -> list[Union[FluidModelZamora, FluidModelPvt]]:
+def fluid_data(shared_datadir: Path) -> List[FluidModelPvt]:
     return [
-        FluidModelZamora(
-            "D2 Mexico",
-            Scalar(7.0465, "kg/m3"),
-            Scalar(0.00325, "-"),
-            Scalar(2.98e-10, "-"),
-            Scalar(-0.00263, "-"),
-            Scalar(5.12e-08, "-"),
-            Scalar(-5.58e-13, "-"),
-        ),
-        FluidModelPvt("Table", shared_datadir / "3phase_constant.tab"),
+        FluidModelPvt("Brine_860"),
+        FluidModelPvt("DFLT_FCBA_9.03"),
+        FluidModelPvt("DFLT_FPBA_BARITE_8.60_35000"),
     ]
 
 
@@ -179,7 +173,7 @@ def material_data() -> list[SolidMechanicalProperties]:
 @pytest.fixture
 def apb_plugin_description(
     annuli_data: Annuli,
-    fluids_data: list[Union[FluidModelZamora, FluidModelPvt]],
+    fluids_data: list[FluidModelZamora],
     materials_data: list[SolidMechanicalProperties],
 ) -> None:
     annuli = annuli_data.to_dict()
