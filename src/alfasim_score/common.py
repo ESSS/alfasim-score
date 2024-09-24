@@ -127,14 +127,15 @@ class SolidMechanicalProperties:
 
 @dataclass
 class AnnulusTable:
-    fluids: List[str] = field(default_factory=lambda: [])
+    fluid_names: List[str] = field(default_factory=lambda: [])
+    fluid_ids: List[float] = field(default_factory=lambda: [])
     initial_depths: Array = Array([], LENGTH_UNIT)
     final_depths: Array = Array([], LENGTH_UNIT)
 
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         columns = {
-            f"fluid_id_{annulus_type}": self.fluids,
+            f"fluid_id_{annulus_type}": self.fluid_ids,
             f"initial_depth_{annulus_type}": self.initial_depths,
             f"final_depth_{annulus_type}": self.final_depths,
         }

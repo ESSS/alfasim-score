@@ -96,7 +96,7 @@ plugins:
       annulus_table_A:
         columns:
           fluid_id_A:
-          - DFLT_FCBA_9.80
+          - 1.0
           initial_depth_A:
             values:
             - 0.0
@@ -119,7 +119,7 @@ plugins:
       annulus_table_B:
         columns:
           fluid_id_B:
-          - DFLT_FPBA_BARITE_11.50_311300
+          - 2.0
           initial_depth_B:
             values:
             - 0.0

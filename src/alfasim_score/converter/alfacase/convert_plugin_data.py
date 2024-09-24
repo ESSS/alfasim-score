@@ -48,20 +48,32 @@ class ScoreAPBPluginConverter:
                 all_fluids.add(fluid["name"])
         return sorted(all_fluids)
 
+    def get_fluid_id(self, fluid_name: str) -> int:
+        """
+        Get the fluid id.
+        This method is used because the fluids need to have an id number because the fluid in the
+        plugin is identified by this number instead of its name.
+        """
+        return self.get_all_annular_fluid_names().index(fluid_name)
+
     def _build_annular_fluid_table(self, fluids_data: List[Dict[str, Any]]) -> AnnulusTable:
         """Build the table with fluids in the annular."""
-        fluids = []
+        fluid_names = []
+        fluid_ids = []
         initial_depths = []
         final_depths = []
         for fluid in fluids_data:
             # in the SCORE input file when top and base measured distance are equal means that there is no fluid there
             if fluid["top_md"] < fluid["base_md"]:
-                # TODO: atention here because it needs numbers instead of str as entries in table
-                fluids.append(fluid["name"])
+                fluid_names.append(fluid["name"])
+                fluid_ids.append(float(self.get_fluid_id(fluid["name"])))
                 initial_depths.append(self.get_position_in_well(fluid["top_md"]).GetValue())
                 final_depths.append(self.get_position_in_well(fluid["base_md"]).GetValue())
         return AnnulusTable(
-            fluids, Array(initial_depths, LENGTH_UNIT), Array(final_depths, LENGTH_UNIT)
+            fluid_names,
+            fluid_ids,
+            Array(initial_depths, LENGTH_UNIT),
+            Array(final_depths, LENGTH_UNIT),
         )
 
     def _has_annular_fluid(self, fluids_data: List[Dict[str, Any]]) -> bool:
