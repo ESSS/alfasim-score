@@ -172,14 +172,14 @@ class Annulus:
         }
         # the annular A doesn't have these parameters in plugin
         if annulus_type == "A":
-            output.pop("pressure_relief")
-            output.pop("relief_position")
+            output.pop("pressure_relief_A")
+            output.pop("relief_position_A")
         return output
 
 
 @dataclass
 class Annuli:
-    annulus_A: Annulus
+    annulus_A: Annulus = Annulus()
     annulus_B: Annulus = Annulus()
     annulus_C: Annulus = Annulus()
     annulus_D: Annulus = Annulus()
@@ -189,7 +189,7 @@ class Annuli:
         """Convert data to dict in order to write data to the alfacase."""
         data = {}
         for annulus_type in "ABCDE":
-            data.update(getattr(self, f"annulus_{annulus_type}").to_dict())
+            data.update(getattr(self, f"annulus_{annulus_type}").to_dict(annulus_type))
         return data
 
 

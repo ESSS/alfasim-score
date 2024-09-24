@@ -72,14 +72,14 @@ class ScoreAPBPluginConverter:
         """
         # the annulus A uses data from tubing_strings section of SCORE file
         annuli_data = self.score_input.read_operation_annuli_data().copy()
-        annuli = Annuli(Annulus())
+        initial_conditions_data = self.score_input.read_initial_condition()
+        annuli = Annuli()
         if annuli_data:
             annulus_data = annuli_data.pop(0)
             tubing_fluids = self.score_input.read_tubing_fluid_data()
             annuli.annulus_A = Annulus(
                 is_active=True,
-                # TODO: get from initial conditions reference
-                mode_type=AnnulusModeType.UNDISTURBED,
+                mode_type=initial_conditions_data["mode"],
                 initial_top_pressure=annulus_data["initial_top_pressure"],
                 is_open_seabed=False,
                 annulus_table=self._build_annular_fluid_table(tubing_fluids),
@@ -87,9 +87,7 @@ class ScoreAPBPluginConverter:
                 initial_leakoff=annulus_data["leakoff_volume"],
             )
 
-        # It uses the data in list in the operation/thermal_data/annuli_data to define the A, B, C, D, E annulus.
-        # It iterates the data in that section and use it to check correspondent annulus iterating over the casings
-        # in order to check which of them are active by checking there is annular fluid.
+        # create a list with the casings that are in the SCORE file
         casings_data = {casing["function"]: casing for casing in self.score_input.read_casings()}
         all_casing_types = [
             WellItemFunction.CONDUCTOR,
@@ -102,8 +100,10 @@ class ScoreAPBPluginConverter:
             for casing_type in all_casing_types
             if casing_type in casings_data
         ]
-        annuli_labels = ["B", "C", "D", "E"][: len(annuli_data)]
-        for annulus_label, annulus_data in zip(annuli_labels, annuli_data):
+        # It uses the data in list in the operation/thermal_data/annuli_data to define the A, B, C, D, E annulus.
+        # It iterates the data in that section and use it to check correspondent annulus iterating over the casings
+        # in order to check which of them are active by checking there is annular fluid.
+        for annulus_label, annulus_data in zip(["B", "C", "D", "E"], annuli_data):
             while casings:
                 casing = casings.pop()
                 if self._has_annular_fluid(casing["annular_fluids"]):
@@ -113,8 +113,7 @@ class ScoreAPBPluginConverter:
                         f"annulus_{annulus_label}",
                         Annulus(
                             is_active=True,
-                            # TODO: get from initial conditions reference
-                            mode_type=AnnulusModeType.UNDISTURBED,
+                            mode_type=initial_conditions_data["mode"],
                             initial_top_pressure=annulus_data["initial_top_pressure"],
                             is_open_seabed=is_open_seabed,
                             annulus_table=self._build_annular_fluid_table(casing["annular_fluids"]),

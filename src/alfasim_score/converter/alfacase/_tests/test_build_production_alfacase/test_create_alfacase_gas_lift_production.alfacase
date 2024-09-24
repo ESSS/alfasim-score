@@ -82,7 +82,373 @@ numerical_options:
   caching_atol: 0.0001
   always_repeat_timestep: False
   enable_fast_compositional: True
-plugins: []
+plugins:
+- name: apb
+  gui_models:
+    AnnulusDataModel:
+      name: Annulus Data Model
+      is_active_A: True
+      mode_type_A: Undisturbed
+      initial_top_pressure_A:
+        value: 3178.0
+        unit: psi
+      open_sea_A: False
+      annulus_table_A:
+        fluids:
+        - DFLT_FCBA_9.00
+        initial_depths:
+          values:
+          - 0 [m]
+          unit: m
+        final_depths:
+          values:
+          - 3493.18 [m]
+          unit: m
+      fluid_return_A: True
+      initial_leakoff_A:
+        value: 0.0
+        unit: m3
+      relief_pressure_check_A: False
+      is_active_B: True
+      mode_type_B: Undisturbed
+      initial_top_pressure_B:
+        value: 3036.984013361966
+        unit: psi
+      open_sea_B: False
+      annulus_table_B:
+        fluids:
+        - DFLT_FPBA_BARITE_8.60_35000
+        initial_depths:
+          values:
+          - 0 [m]
+          unit: m
+        final_depths:
+          values:
+          - 2833 [m]
+          unit: m
+      fluid_return_B: True
+      initial_leakoff_B:
+        value: 0.0
+        unit: m3
+      relief_pressure_check_B: False
+      pressure_relief_B:
+        value: 3490.0
+        unit: psi
+      relief_position_B:
+        value: -2072.0
+        unit: m
+      is_active_C: False
+      mode_type_C: Undisturbed
+      initial_top_pressure_C:
+        value: 0.0
+        unit: psi
+      open_sea_C: False
+      annulus_table_C:
+        fluids: []
+        initial_depths:
+          values: []
+          unit: m
+        final_depths:
+          values: []
+          unit: m
+      fluid_return_C: False
+      initial_leakoff_C:
+        value: 0.0
+        unit: m3
+      relief_pressure_check_C: False
+      pressure_relief_C:
+        value: 0.0
+        unit: psi
+      relief_position_C:
+        value: 0.0
+        unit: m
+      is_active_D: False
+      mode_type_D: Undisturbed
+      initial_top_pressure_D:
+        value: 0.0
+        unit: psi
+      open_sea_D: False
+      annulus_table_D:
+        fluids: []
+        initial_depths:
+          values: []
+          unit: m
+        final_depths:
+          values: []
+          unit: m
+      fluid_return_D: False
+      initial_leakoff_D:
+        value: 0.0
+        unit: m3
+      relief_pressure_check_D: False
+      pressure_relief_D:
+        value: 0.0
+        unit: psi
+      relief_position_D:
+        value: 0.0
+        unit: m
+      is_active_E: False
+      mode_type_E: Undisturbed
+      initial_top_pressure_E:
+        value: 0.0
+        unit: psi
+      open_sea_E: False
+      annulus_table_E:
+        fluids: []
+        initial_depths:
+          values: []
+          unit: m
+        final_depths:
+          values: []
+          unit: m
+      fluid_return_E: False
+      initial_leakoff_E:
+        value: 0.0
+        unit: m3
+      relief_pressure_check_E: False
+      pressure_relief_E:
+        value: 0.0
+        unit: psi
+      relief_position_E:
+        value: 0.0
+        unit: m
+    FluidContainer:
+      name: Annulus Fluids Container
+      _children_list: []
+    MechanicalContainer:
+      name: Mechanical Properties
+      _children_list:
+      - name: cement
+        young_modulus:
+          value: 1500000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1e-06
+          unit: 1/K
+      - name: B
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: X-80
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: N-80
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: C-110 HC
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: SDSS/125KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.3
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
+      - name: Folhelho
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+  is_enabled: True
 pvt_models:
   correlations:
     DFLT_BLACK_OIL_27.40_230.00_1.17:
