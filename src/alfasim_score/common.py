@@ -90,30 +90,6 @@ class FluidModelPvt:
 
 
 @dataclass
-class FluidModelZamora:
-    name: str
-    a_1: Scalar
-    a_2: Scalar
-    b_1: Scalar
-    b_2: Scalar
-    c_1: Scalar
-    c_2: Scalar
-
-    def to_dict(self) -> Dict[str, Union[str, Scalar]]:
-        """Convert data to dict in order to write data to the alfacase."""
-        return {
-            "name": self.name,
-            "fluid_type": FluidModelType.ZAMORA.value,
-            "a1_zamora": self.a_1,
-            "a2_zamora": self.a_2,
-            "b1_zamora": self.b_1,
-            "b2_zamora": self.b_2,
-            "c1_zamora": self.c_1,
-            "c2_zamora": self.c_2,
-        }
-
-
-@dataclass
 class SolidMechanicalProperties:
     name: str
     young_modulus: Scalar
@@ -129,8 +105,8 @@ class SolidMechanicalProperties:
 class AnnulusTable:
     fluid_names: List[str] = field(default_factory=lambda: [])
     fluid_ids: List[float] = field(default_factory=lambda: [])
-    initial_depths: Array = Array([], LENGTH_UNIT)
-    final_depths: Array = Array([], LENGTH_UNIT)
+    initial_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
+    final_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
 
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
@@ -148,7 +124,7 @@ class Annulus:
     mode_type: AnnulusModeType = AnnulusModeType.UNDISTURBED
     initial_top_pressure: Scalar = Scalar(0.0, PRESSURE_UNIT)
     is_open_seabed: bool = False
-    annulus_table: AnnulusTable = AnnulusTable()
+    annulus_table: AnnulusTable = field(default_factory=lambda: AnnulusTable())
     has_fluid_return: bool = False
     initial_leakoff: Scalar = Scalar(0.0, VOLUME_UNIT)
     has_relief_pressure: bool = False
@@ -157,7 +133,7 @@ class Annulus:
 
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
-        # TODO PWPA-2152: make sure all names match (plugin and converter) than remove this mapped names
+        # TODO PWPA-2152: make sure all names match (plugin and converter) then remove this mapped names
         plugin_key_names = {
             "is_active": "is_active",
             "mode_type": "mode_type",
@@ -185,11 +161,11 @@ class Annulus:
 
 @dataclass
 class Annuli:
-    annulus_A: Annulus = Annulus()
-    annulus_B: Annulus = Annulus()
-    annulus_C: Annulus = Annulus()
-    annulus_D: Annulus = Annulus()
-    annulus_E: Annulus = Annulus()
+    annulus_A: Annulus = field(default_factory=lambda: Annulus())
+    annulus_B: Annulus = field(default_factory=lambda: Annulus())
+    annulus_C: Annulus = field(default_factory=lambda: Annulus())
+    annulus_D: Annulus = field(default_factory=lambda: Annulus())
+    annulus_E: Annulus = field(default_factory=lambda: Annulus())
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""

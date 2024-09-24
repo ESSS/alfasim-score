@@ -16,7 +16,6 @@ from alfasim_score.common import Annulus
 from alfasim_score.common import AnnulusModeType
 from alfasim_score.common import AnnulusTable
 from alfasim_score.common import FluidModelPvt
-from alfasim_score.common import FluidModelZamora
 from alfasim_score.common import SolidMechanicalProperties
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import filter_duplicated_materials_by_name
@@ -167,7 +166,7 @@ class ScoreAPBPluginConverter:
             )
         return solid_materials
 
-    def _convert_fluids(self) -> List[Union[FluidModelPvt, FluidModelZamora]]:
+    def _convert_fluids(self) -> List[FluidModelPvt]:
         """Convert the fluids used in the annuli."""
         # NOTE: for now the converter only uses PVT table model
         return [FluidModelPvt(name) for name in self.get_all_annular_fluid_names()]
