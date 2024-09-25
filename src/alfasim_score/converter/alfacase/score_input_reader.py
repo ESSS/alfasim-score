@@ -80,7 +80,7 @@ class ScoreInputReader:
         return tubing_data
 
     def read_casing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
-        """Read the data for the casing from SCORE input file."""
+        """Read geometric data for the casing and annulus data associated to the casing from SCORE input file."""
         casing_data = []
         for item in self.input_content["operation"]["thermal_simulation"]["well_strings"]:
             for section in item["string_sections"]:
@@ -360,7 +360,7 @@ class ScoreInputReader:
         }
 
     def read_operation_annuli_data(self) -> List[Dict[str, Any]]:
-        """Read data for the annuli for the operation registered in SCORE input file."""
+        """Read annuli data defined in operation in SCORE input file."""
         annuli_data = []
         for annulus in self.input_content["operation"]["thermal_data"]["annuli_data"]:
             leakoff_volume = annulus["apb_bled_volume"] if annulus["apb_bled_volume"] else 0.0
@@ -374,7 +374,7 @@ class ScoreInputReader:
         return annuli_data
 
     def read_tubing_fluid_data(self) -> List[Dict[str, Any]]:
-        """Read data for the fluid associated to tubing in SCORE input file."""
+        """Read data for the annulus fluid associated to tubing in SCORE input file."""
         tubing_string_data = self.input_content["operation"]["tubing_string"]
         return [
             {
