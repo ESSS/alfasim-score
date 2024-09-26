@@ -19,6 +19,7 @@ from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import PRESSURE_UNIT
+from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import VOLUME_UNIT
 
 
@@ -102,7 +103,7 @@ class SolidMechanicalProperties:
 
 
 @dataclass
-class AnnulusTable:
+class AnnulusDepthTable:
     fluid_names: List[str] = field(default_factory=lambda: [])
     fluid_ids: List[float] = field(default_factory=lambda: [])
     initial_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
@@ -112,8 +113,22 @@ class AnnulusTable:
         """Convert data to dict in order to write data to the alfacase."""
         columns = {
             f"fluid_id_{annulus_type}": self.fluid_ids,
-            f"initial_depth_{annulus_type}": self.initial_depths,
-            f"final_depth_{annulus_type}": self.final_depths,
+            f"fluid_initial_measured_depth_{annulus_type}": self.initial_depths,
+            f"fluid_final_measured_depth_{annulus_type}": self.final_depths,
+        }
+        return {"columns": columns}
+
+
+@dataclass
+class AnnulusTemperatureTable:
+    depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
+    temperatures: Array = field(default_factory=lambda: Array([], TEMPERATURE_UNIT))
+
+    def to_dict(self, annulus_type: str) -> Dict[str, Any]:
+        """Convert data to dict in order to write data to the alfacase."""
+        columns = {
+            f"temperature_depth_{annulus_type}": self.depths,
+            f"temperature_{annulus_type}": self.temperatures,
         }
         return {"columns": columns}
 
@@ -124,7 +139,10 @@ class Annulus:
     mode_type: AnnulusModeType = AnnulusModeType.UNDISTURBED
     initial_top_pressure: Scalar = Scalar(0.0, PRESSURE_UNIT)
     is_open_seabed: bool = False
-    annulus_table: AnnulusTable = field(default_factory=lambda: AnnulusTable())
+    annulus_depth_table: AnnulusDepthTable = field(default_factory=lambda: AnnulusDepthTable())
+    annulus_temperature_table: AnnulusTemperatureTable = field(
+        default_factory=lambda: AnnulusTemperatureTable()
+    )
     has_fluid_return: bool = False
     initial_leakoff: Scalar = Scalar(0.0, VOLUME_UNIT)
     has_relief_pressure: bool = False
@@ -135,23 +153,21 @@ class Annulus:
         """Convert data to dict in order to write data to the alfacase."""
         # TODO PWPA-2152: make sure all names match (plugin and converter) then remove this mapped names
         plugin_key_names = {
-            "is_active": "is_active",
-            "mode_type": "mode_type",
-            "initial_top_pressure": "initial_top_pressure",
             "is_open_seabed": "open_sea",
-            "annulus_table": "annulus_table",
+            "annulus_depth_table": "annulus_table",
             "has_fluid_return": "fluid_return",
-            "initial_leakoff": "initial_leakoff",
             "has_relief_pressure": "relief_pressure_check",
             "relief_pressure": "pressure_relief",
-            "relief_position": "relief_position",
         }
-        output = {
-            f"{plugin_key_names[key]}_{annulus_type}": (
-                self.annulus_table.to_dict(annulus_type) if key == "annulus_table" else value
-            )
-            for key, value in asdict(self).items()
-        }
+        output = {}
+        for key, value in asdict(self).items():
+            converted_key = plugin_key_names.get(key, key)
+            if key == "annulus_depth_table":
+                value = self.annulus_depth_table.to_dict(annulus_type)
+            elif key == "annulus_temperature_table":
+                value = self.annulus_temperature_table.to_dict(annulus_type)
+            output[f"{converted_key}_{annulus_type}"] = value
+
         # the annular A doesn't have these parameters in plugin
         if annulus_type == "A":
             output.pop("pressure_relief_A")

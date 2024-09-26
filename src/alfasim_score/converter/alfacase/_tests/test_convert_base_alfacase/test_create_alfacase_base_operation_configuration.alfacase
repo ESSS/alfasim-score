@@ -97,14 +97,54 @@ plugins:
         columns:
           fluid_id_A:
           - 1.0
-          initial_depth_A:
+          fluid_initial_measured_depth_A:
             values:
             - 0.0
             unit: m
-          final_depth_A:
+          fluid_final_measured_depth_A:
             values:
             - 3493.1800000000003
             unit: m
+      annulus_temperature_table_A:
+        columns:
+          temperature_depth_A:
+            values:
+            - 0.0
+            - 28.0
+            - 1468.0
+            - 1498.0
+            - 1528.0
+            - 1558.0
+            - 1588.0
+            - 1618.0
+            - 1648.0
+            - 1678.0
+            - 1708.0
+            - 1738.0
+            - 1768.0
+            - 1798.0
+            - 1828.0
+            - 1857.44
+            - 3906.79
+            unit: m
+          temperature_A:
+          - 5.133420693420694
+          - 5.909697055614838
+          - 45.795991200505135
+          - 46.62682565584696
+          - 47.45651331842102
+          - 48.28350312155777
+          - 49.106787505570104
+          - 49.925363425253344
+          - 50.7382335719413
+          - 51.5444075885733
+          - 52.34290327629164
+          - 53.132747791099696
+          - 53.91297882912237
+          - 54.682645799025224
+          - 55.44081098016352
+          - 56.17272608672309
+          - 106.04
       fluid_return_A: True
       initial_leakoff_A:
         value: 0.0
@@ -120,14 +160,54 @@ plugins:
         columns:
           fluid_id_B:
           - 2.0
-          initial_depth_B:
+          fluid_initial_measured_depth_B:
             values:
             - 0.0
             unit: m
-          final_depth_B:
+          fluid_final_measured_depth_B:
             values:
             - 2833.0
             unit: m
+      annulus_temperature_table_B:
+        columns:
+          temperature_depth_B:
+            values:
+            - 0.0
+            - 28.0
+            - 1468.0
+            - 1498.0
+            - 1528.0
+            - 1558.0
+            - 1588.0
+            - 1618.0
+            - 1648.0
+            - 1678.0
+            - 1708.0
+            - 1738.0
+            - 1768.0
+            - 1798.0
+            - 1828.0
+            - 1857.44
+            - 3906.79
+            unit: m
+          temperature_B:
+          - 5.133420693420694
+          - 5.909697055614838
+          - 45.795991200505135
+          - 46.62682565584696
+          - 47.45651331842102
+          - 48.28350312155777
+          - 49.106787505570104
+          - 49.925363425253344
+          - 50.7382335719413
+          - 51.5444075885733
+          - 52.34290327629164
+          - 53.132747791099696
+          - 53.91297882912237
+          - 54.682645799025224
+          - 55.44081098016352
+          - 56.17272608672309
+          - 106.04
       fluid_return_B: True
       initial_leakoff_B:
         value: 0.0
@@ -148,12 +228,20 @@ plugins:
       annulus_table_C:
         columns:
           fluid_id_C: []
-          initial_depth_C:
+          fluid_initial_measured_depth_C:
             values: []
             unit: m
-          final_depth_C:
+          fluid_final_measured_depth_C:
             values: []
             unit: m
+      annulus_temperature_table_C:
+        columns:
+          temperature_depth_C:
+            values: []
+            unit: m
+          temperature_C:
+            values: []
+            unit: degC
       fluid_return_C: False
       initial_leakoff_C:
         value: 0.0
@@ -174,12 +262,20 @@ plugins:
       annulus_table_D:
         columns:
           fluid_id_D: []
-          initial_depth_D:
+          fluid_initial_measured_depth_D:
             values: []
             unit: m
-          final_depth_D:
+          fluid_final_measured_depth_D:
             values: []
             unit: m
+      annulus_temperature_table_D:
+        columns:
+          temperature_depth_D:
+            values: []
+            unit: m
+          temperature_D:
+            values: []
+            unit: degC
       fluid_return_D: False
       initial_leakoff_D:
         value: 0.0
@@ -200,12 +296,20 @@ plugins:
       annulus_table_E:
         columns:
           fluid_id_E: []
-          initial_depth_E:
+          fluid_initial_measured_depth_E:
             values: []
             unit: m
-          final_depth_E:
+          fluid_final_measured_depth_E:
             values: []
             unit: m
+      annulus_temperature_table_E:
+        columns:
+          temperature_depth_E:
+            values: []
+            unit: m
+          temperature_E:
+            values: []
+            unit: degC
       fluid_return_E: False
       initial_leakoff_E:
         value: 0.0

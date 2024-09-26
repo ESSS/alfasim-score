@@ -7,8 +7,8 @@ from pathlib import Path
 
 from alfasim_score.common import Annuli
 from alfasim_score.common import Annulus
+from alfasim_score.common import AnnulusDepthTable
 from alfasim_score.common import AnnulusModeType
-from alfasim_score.common import AnnulusTable
 from alfasim_score.common import FluidModelPvt
 from alfasim_score.common import SolidMechanicalProperties
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder

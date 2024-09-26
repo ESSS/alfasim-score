@@ -56,6 +56,12 @@ class ScoreInputReader:
         y = [-entry["vertical_depth"] for entry in self.input_content["trajectory"]["data"]]
         return Array(x, LENGTH_UNIT), Array(y, LENGTH_UNIT)
 
+    def read_measured_depth(self) -> Array:
+        """Read the array with the measured depth."""
+        return Array(
+            [entry["depth"] for entry in self.input_content["trajectory"]["data"]], LENGTH_UNIT
+        )
+
     def read_tubing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Read the data for the tubings from SCORE input file."""
         tubing_data = []
