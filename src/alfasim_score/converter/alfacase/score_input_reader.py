@@ -151,9 +151,7 @@ class ScoreInputReader:
         return lithology_data
 
     def read_packer_fluid(self) -> List[Dict[str, Union[Scalar, str]]]:
-        """ "Get the properties of fluid above packer."""
-        # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
-        # the fluid used now is water
+        """Get the properties of default fluid above packer."""
         return [
             {
                 "name": FLUID_DEFAULT_NAME,
