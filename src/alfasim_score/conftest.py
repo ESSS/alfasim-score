@@ -1,7 +1,3 @@
-from typing import Any
-from typing import List
-from typing import Union
-
 import pytest
 from alfasim_sdk import PluginDescription
 from barril.units import Array
