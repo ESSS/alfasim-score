@@ -1,3 +1,6 @@
+from typing import Any
+from typing import Union
+
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import CaseOutputDescription
 from alfasim_sdk import EnergyModel
@@ -18,9 +21,11 @@ from alfasim_sdk import NodeDescription
 from alfasim_sdk import NumericalOptionsDescription
 from alfasim_sdk import OutputAttachmentLocation
 from alfasim_sdk import PhysicsDescription
+from alfasim_sdk import PluginDescription
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileOutputDescription
+from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk import TableInputType
 from alfasim_sdk import TemperaturesContainerDescription
@@ -34,6 +39,7 @@ from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Array
 from barril.units import Scalar
 from copy import deepcopy
+from dataclasses import asdict
 from pathlib import Path
 
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
@@ -47,6 +53,7 @@ from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
+from alfasim_score.converter.alfacase.convert_plugin_data import ScoreAPBPluginConverter
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
@@ -59,6 +66,7 @@ class BaseOperationBuilder:
     def __init__(self, score_filepath: Path):
         self.score_input = ScoreInputReader(score_filepath)
         self.alfacase_converter = ScoreAlfacaseConverter(self.score_input)
+        self.apb_plugin_converter = ScoreAPBPluginConverter(self.score_input)
         self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()
         self.general_data = self.score_input.read_operation_data()
         self.default_output_profiles = [
@@ -131,7 +139,14 @@ class BaseOperationBuilder:
 
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
         """Configure the pvt fluid for the model."""
-        pass
+        operation_fluid = self._get_fluid_model_name()
+        tables = {"base": Path(f"{operation_fluid}.tab")}
+        fluid_names = self.apb_plugin_converter.get_all_annular_fluid_names()
+        tables.update({name: Path(f"{name}.tab") for name in fluid_names})
+        alfacase.pvt_models = PvtModelsDescription(
+            default_model="base",
+            tables=tables,
+        )
 
     def configure_outputs(self, alfacase: CaseDescription) -> None:
         """Configure the outputs for the case."""
@@ -237,8 +252,15 @@ class BaseOperationBuilder:
         """
         pass
 
+    def configure_apb_plugin_description(
+        self,
+        alfacase: CaseDescription,
+    ) -> None:
+        """Configure the data for the apb plugin in the case description."""
+        alfacase.plugins.append(self.apb_plugin_converter.build_plugin_description())
+
     def generate_operation_alfacase_description(self) -> CaseDescription:
-        """Generate the configured node with data of the current operation."""
+        """Generate the configured alfacase description for the current operation."""
         alfacase_configured = deepcopy(self.base_alfacase)
         self.configure_physics(alfacase_configured)
         self.configure_time_options(alfacase_configured)
@@ -248,4 +270,5 @@ class BaseOperationBuilder:
         self.configure_nodes(alfacase_configured)
         self.configure_well_initial_conditions(alfacase_configured)
         self.configure_annulus(alfacase_configured)
+        self.configure_apb_plugin_description(alfacase_configured)
         return alfacase_configured

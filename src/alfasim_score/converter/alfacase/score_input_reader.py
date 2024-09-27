@@ -10,6 +10,7 @@ from barril.units import Array
 from barril.units import Scalar
 from pathlib import Path
 
+from alfasim_score.common import AnnulusModeType
 from alfasim_score.common import FluidType
 from alfasim_score.common import LiftMethod
 from alfasim_score.common import ModelFluidType
@@ -30,6 +31,7 @@ from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
 from alfasim_score.units import TIME_UNIT
+from alfasim_score.units import VOLUME_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
 
 
@@ -78,7 +80,7 @@ class ScoreInputReader:
         return tubing_data
 
     def read_casing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
-        """Read the data for the casing from SCORE input file."""
+        """Read geometric data for the casing and annulus data associated to the casing from SCORE input file."""
         casing_data = []
         for item in self.input_content["operation"]["thermal_simulation"]["well_strings"]:
             for section in item["string_sections"]:
@@ -177,6 +179,25 @@ class ScoreInputReader:
                         "final_md": Scalar(item["final_md"], LENGTH_UNIT, "length"),
                         "top_of_cement": Scalar(item["toc_md"], LENGTH_UNIT, "length"),
                         "hole_diameter": Scalar(item["hole_size"], DIAMETER_UNIT, "diameter"),
+                        "annular_fluids": [
+                            {
+                                "name": fluid_data["fluid"],
+                                "top_md": Scalar(fluid_data["top"], LENGTH_UNIT, "length"),
+                                "base_md": Scalar(fluid_data["base"], LENGTH_UNIT, "length"),
+                                "extension": Scalar(fluid_data["extension"], LENGTH_UNIT, "length"),
+                            }
+                            for fluid_data in item["annular_fluids"]
+                        ],
+                        "pressure_relief": {
+                            "is_active": item["pressure_relief"].get("active", False),
+                            "pressure": Scalar(
+                                item["pressure_relief"].get("depth", 0.0), PRESSURE_UNIT
+                            ),
+                            "position": Scalar(
+                                item["pressure_relief"].get("considered_pressure", 0.0),
+                                LENGTH_UNIT,
+                            ),
+                        },
                         "sections": [
                             {
                                 "material": section["pipe"]["grade"]["name"],
@@ -337,6 +358,37 @@ class ScoreInputReader:
             "api_gravity": Scalar(fluid_data["api_gravity"], FRACTION_UNIT),
             "gas_gravity": Scalar(fluid_data["gas_gravity"], FRACTION_UNIT),
         }
+
+    def read_operation_annuli_data(self) -> List[Dict[str, Any]]:
+        """Read annuli data defined in operation in SCORE input file."""
+        annuli_data = []
+        for annulus in self.input_content["operation"]["thermal_data"]["annuli_data"]:
+            leakoff_volume = annulus["apb_bled_volume"] if annulus["apb_bled_volume"] else 0.0
+            annuli_data.append(
+                {
+                    "string_name": annulus["string_name"],
+                    "leakoff_volume": Scalar(leakoff_volume, VOLUME_UNIT),
+                    "initial_top_pressure": Scalar(annulus["initial_top_pressure"], PRESSURE_UNIT),
+                }
+            )
+        return annuli_data
+
+    def read_tubing_fluid_data(self) -> List[Dict[str, Any]]:
+        """Read data for the annulus fluid associated to tubing in SCORE input file."""
+        tubing_string_data = self.input_content["operation"]["tubing_string"]
+        return [
+            {
+                "name": fluid_data["fluid"],
+                "top_md": Scalar(fluid_data["top"], LENGTH_UNIT, "length"),
+                "base_md": Scalar(fluid_data["base"], LENGTH_UNIT, "length"),
+                "extension": Scalar(fluid_data["extension"], LENGTH_UNIT, "length"),
+            }
+            for fluid_data in tubing_string_data["annular_fluids"]
+        ]
+
+    def read_initial_condition(self) -> Dict[str, AnnulusModeType]:
+        initial_conditions_data = self.input_content["initial_conditions"][0]
+        return {"mode": AnnulusModeType(initial_conditions_data["reference"])}
 
     def read_output_curves(self) -> Dict[str, Array]:
         """

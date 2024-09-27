@@ -24,6 +24,7 @@ from alfasim_sdk import XAndYDescription
 from barril.units import Scalar
 
 from alfasim_score.common import convert_quota_to_tvd
+from alfasim_score.common import filter_duplicated_materials_by_name
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import FLUID_DEFAULT_NAME
@@ -38,14 +39,6 @@ from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
-
-
-def filter_duplicated_materials(
-    material_list: List[MaterialDescription],
-) -> List[MaterialDescription]:
-    """Remove the duplicated materials parsed by the reader."""
-    filtered = {material.name: material for material in material_list}
-    return list(filtered.values())
 
 
 def get_section_top_of_filler(
@@ -66,7 +59,11 @@ class ScoreAlfacaseConverter:
         self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
 
     def get_position_in_well(self, position: Scalar) -> Scalar:
-        """Get the position relative to the well start position."""
+        """
+        Get the position relative to the well start position.
+        This method is a helper function to convert SCORE measured positions to the reference in well head
+        because this is the reference ALFAsim uses for well.
+        """
         return position - self.well_start_position
 
     def _convert_well_trajectory(self) -> ProfileDescription:
@@ -88,7 +85,7 @@ class ScoreAlfacaseConverter:
             + self.score_input.read_lithology_materials()
             + self.score_input.read_packer_fluid()
         )
-        for material in material_list:
+        for material in filter_duplicated_materials_by_name(material_list):
             material_descriptions.append(
                 MaterialDescription(
                     name=material["name"],
@@ -99,7 +96,7 @@ class ScoreAlfacaseConverter:
                     expansion=material["thermal_expansion"],
                 )
             )
-        return filter_duplicated_materials(material_descriptions)
+        return material_descriptions
 
     def _convert_formation(self) -> FormationDescription:
         """Create the description for the formations."""
