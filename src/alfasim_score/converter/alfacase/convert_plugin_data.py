@@ -74,7 +74,8 @@ class ScoreAPBPluginConverter:
         trajectory = self.score_input.read_well_trajectory()
         interpolated_temperatures_y = np.interp(
             np.abs(trajectory["y"]),
-            np.abs(formation_temperature_data["elevations"].GetValues()),
+            np.abs(formation_temperature_data["elevations"].GetValues())
+            + self.general_data["air_gap"].GetValue(),
             formation_temperature_data["temperatures"].GetValues(),
         )
         return AnnulusTemperatureTable(

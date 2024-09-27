@@ -114,7 +114,7 @@ plugins:
             unit: m
           temperature_a:
           - 4.0
-          - 69.40697674418604
+          - 68.69767441860465
       has_fluid_return_a: True
       initial_leakoff_a:
         value: 0.0
@@ -147,7 +147,7 @@ plugins:
             unit: m
           temperature_b:
           - 4.0
-          - 69.40697674418604
+          - 68.69767441860465
       has_fluid_return_b: True
       initial_leakoff_b:
         value: 0.0
