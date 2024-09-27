@@ -123,10 +123,9 @@ class ScoreAPBPluginConverter:
         annuli = Annuli()
         if annuli_data:
             # the annulus A uses data from tubing_strings section of SCORE file
-            tubind_data = self.score_input.read_tubing()
             tubing_fluids_data = self.score_input.read_tubing_fluid_data()
             annulus_data = annuli_data.pop(0)
-            annuli.annulus_A = Annulus(
+            annuli.annulus_a = Annulus(
                 is_active=True,
                 mode_type=initial_conditions_data["mode"],
                 initial_top_pressure=annulus_data["initial_top_pressure"],
@@ -152,7 +151,7 @@ class ScoreAPBPluginConverter:
         ]
         # It iterates the data in the section operation/thermal_data/annuli_data and use it to check
         # correspondent annulus iterating over the casings in order to check which of them are active by checking there is annular fluid.
-        for annulus_label, annulus_data in zip(["B", "C", "D", "E"], annuli_data):
+        for annulus_label, annulus_data in zip(["b", "c", "d", "e"], annuli_data):
             while casings:
                 casing = casings.pop()
                 if self._has_annular_fluid(casing["annular_fluids"]):
@@ -171,8 +170,8 @@ class ScoreAPBPluginConverter:
                             annulus_temperature_table=annular_temperature_table,
                             has_fluid_return=HAS_FLUID_RETURN,
                             initial_leakoff=annulus_data["leakoff_volume"],
-                            has_relief_pressure=casing["pressure_relief"]["is_active"],
-                            relief_pressure=casing["pressure_relief"]["pressure"],
+                            has_pressure_relief=casing["pressure_relief"]["is_active"],
+                            pressure_relief=casing["pressure_relief"]["pressure"],
                             relief_position=self.get_position_in_well(
                                 casing["pressure_relief"]["position"]
                             ),

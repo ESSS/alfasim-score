@@ -87,27 +87,27 @@ plugins:
   gui_models:
     AnnulusDataModel:
       name: Annulus Data Model
-      is_active_A: True
-      mode_type_A: Undisturbed
-      initial_top_pressure_A:
+      is_active_a: True
+      mode_type_a: Undisturbed
+      initial_top_pressure_a:
         value: 3189.0
         unit: psi
-      open_sea_A: False
-      annulus_table_A:
+      is_open_seabed_a: False
+      annulus_depth_table_a:
         columns:
-          fluid_id_A:
+          fluid_id_a:
           - 1.0
-          fluid_initial_measured_depth_A:
+          fluid_initial_measured_depth_a:
             values:
             - 0.0
             unit: m
-          fluid_final_measured_depth_A:
+          fluid_final_measured_depth_a:
             values:
             - 3493.1800000000003
             unit: m
-      annulus_temperature_table_A:
+      annulus_temperature_table_a:
         columns:
-          temperature_depth_A:
+          temperature_depth_a:
             values:
             - 0.0
             - 28.0
@@ -127,7 +127,7 @@ plugins:
             - 1857.44
             - 3906.79
             unit: m
-          temperature_A:
+          temperature_a:
           - 5.133420693420694
           - 5.909697055614838
           - 45.795991200505135
@@ -145,32 +145,32 @@ plugins:
           - 55.44081098016352
           - 56.17272608672309
           - 106.04
-      fluid_return_A: True
-      initial_leakoff_A:
+      has_fluid_return_a: True
+      initial_leakoff_a:
         value: 0.0
         unit: m3
-      relief_pressure_check_A: False
-      is_active_B: True
-      mode_type_B: Undisturbed
-      initial_top_pressure_B:
+      has_pressure_relief_a: False
+      is_active_b: True
+      mode_type_b: Undisturbed
+      initial_top_pressure_b:
         value: 3036.984013361966
         unit: psi
-      open_sea_B: False
-      annulus_table_B:
+      is_open_seabed_b: False
+      annulus_depth_table_b:
         columns:
-          fluid_id_B:
+          fluid_id_b:
           - 2.0
-          fluid_initial_measured_depth_B:
+          fluid_initial_measured_depth_b:
             values:
             - 0.0
             unit: m
-          fluid_final_measured_depth_B:
+          fluid_final_measured_depth_b:
             values:
             - 2833.0
             unit: m
-      annulus_temperature_table_B:
+      annulus_temperature_table_b:
         columns:
-          temperature_depth_B:
+          temperature_depth_b:
             values:
             - 0.0
             - 28.0
@@ -190,7 +190,7 @@ plugins:
             - 1857.44
             - 3906.79
             unit: m
-          temperature_B:
+          temperature_b:
           - 5.133420693420694
           - 5.909697055614838
           - 45.795991200505135
@@ -208,117 +208,117 @@ plugins:
           - 55.44081098016352
           - 56.17272608672309
           - 106.04
-      fluid_return_B: True
-      initial_leakoff_B:
+      has_fluid_return_b: True
+      initial_leakoff_b:
         value: 0.0
         unit: m3
-      relief_pressure_check_B: False
-      pressure_relief_B:
+      has_pressure_relief_b: False
+      pressure_relief_b:
         value: 3490.0
         unit: psi
-      relief_position_B:
+      relief_position_b:
         value: -2072.0
         unit: m
-      is_active_C: False
-      mode_type_C: Undisturbed
-      initial_top_pressure_C:
+      is_active_c: False
+      mode_type_c: Undisturbed
+      initial_top_pressure_c:
         value: 0.0
         unit: psi
-      open_sea_C: False
-      annulus_table_C:
+      is_open_seabed_c: False
+      annulus_depth_table_c:
         columns:
-          fluid_id_C: []
-          fluid_initial_measured_depth_C:
+          fluid_id_c: []
+          fluid_initial_measured_depth_c:
             values: []
             unit: m
-          fluid_final_measured_depth_C:
+          fluid_final_measured_depth_c:
             values: []
             unit: m
-      annulus_temperature_table_C:
+      annulus_temperature_table_c:
         columns:
-          temperature_depth_C:
+          temperature_depth_c:
             values: []
             unit: m
-          temperature_C:
+          temperature_c:
             values: []
             unit: degC
-      fluid_return_C: False
-      initial_leakoff_C:
+      has_fluid_return_c: False
+      initial_leakoff_c:
         value: 0.0
         unit: m3
-      relief_pressure_check_C: False
-      pressure_relief_C:
+      has_pressure_relief_c: False
+      pressure_relief_c:
         value: 0.0
         unit: psi
-      relief_position_C:
+      relief_position_c:
         value: 0.0
         unit: m
-      is_active_D: False
-      mode_type_D: Undisturbed
-      initial_top_pressure_D:
+      is_active_d: False
+      mode_type_d: Undisturbed
+      initial_top_pressure_d:
         value: 0.0
         unit: psi
-      open_sea_D: False
-      annulus_table_D:
+      is_open_seabed_d: False
+      annulus_depth_table_d:
         columns:
-          fluid_id_D: []
-          fluid_initial_measured_depth_D:
+          fluid_id_d: []
+          fluid_initial_measured_depth_d:
             values: []
             unit: m
-          fluid_final_measured_depth_D:
+          fluid_final_measured_depth_d:
             values: []
             unit: m
-      annulus_temperature_table_D:
+      annulus_temperature_table_d:
         columns:
-          temperature_depth_D:
+          temperature_depth_d:
             values: []
             unit: m
-          temperature_D:
+          temperature_d:
             values: []
             unit: degC
-      fluid_return_D: False
-      initial_leakoff_D:
+      has_fluid_return_d: False
+      initial_leakoff_d:
         value: 0.0
         unit: m3
-      relief_pressure_check_D: False
-      pressure_relief_D:
+      has_pressure_relief_d: False
+      pressure_relief_d:
         value: 0.0
         unit: psi
-      relief_position_D:
+      relief_position_d:
         value: 0.0
         unit: m
-      is_active_E: False
-      mode_type_E: Undisturbed
-      initial_top_pressure_E:
+      is_active_e: False
+      mode_type_e: Undisturbed
+      initial_top_pressure_e:
         value: 0.0
         unit: psi
-      open_sea_E: False
-      annulus_table_E:
+      is_open_seabed_e: False
+      annulus_depth_table_e:
         columns:
-          fluid_id_E: []
-          fluid_initial_measured_depth_E:
+          fluid_id_e: []
+          fluid_initial_measured_depth_e:
             values: []
             unit: m
-          fluid_final_measured_depth_E:
+          fluid_final_measured_depth_e:
             values: []
             unit: m
-      annulus_temperature_table_E:
+      annulus_temperature_table_e:
         columns:
-          temperature_depth_E:
+          temperature_depth_e:
             values: []
             unit: m
-          temperature_E:
+          temperature_e:
             values: []
             unit: degC
-      fluid_return_E: False
-      initial_leakoff_E:
+      has_fluid_return_e: False
+      initial_leakoff_e:
         value: 0.0
         unit: m3
-      relief_pressure_check_E: False
-      pressure_relief_E:
+      has_pressure_relief_e: False
+      pressure_relief_e:
         value: 0.0
         unit: psi
-      relief_position_E:
+      relief_position_e:
         value: 0.0
         unit: m
     FluidContainer:

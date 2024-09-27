@@ -145,48 +145,39 @@ class Annulus:
     )
     has_fluid_return: bool = False
     initial_leakoff: Scalar = Scalar(0.0, VOLUME_UNIT)
-    has_relief_pressure: bool = False
-    relief_pressure: Scalar = Scalar(0.0, PRESSURE_UNIT)
+    has_pressure_relief: bool = False
+    pressure_relief: Scalar = Scalar(0.0, PRESSURE_UNIT)
     relief_position: Scalar = Scalar(0.0, LENGTH_UNIT)
 
     def to_dict(self, annulus_type: str) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
-        # TODO PWPA-2152: make sure all names match (plugin and converter) then remove this mapped names
-        plugin_key_names = {
-            "is_open_seabed": "open_sea",
-            "annulus_depth_table": "annulus_table",
-            "has_fluid_return": "fluid_return",
-            "has_relief_pressure": "relief_pressure_check",
-            "relief_pressure": "pressure_relief",
-        }
         output = {}
         for key, value in asdict(self).items():
-            converted_key = plugin_key_names.get(key, key)
             if key == "annulus_depth_table":
                 value = self.annulus_depth_table.to_dict(annulus_type)
             elif key == "annulus_temperature_table":
                 value = self.annulus_temperature_table.to_dict(annulus_type)
-            output[f"{converted_key}_{annulus_type}"] = value
+            output[f"{key}_{annulus_type}"] = value
 
         # the annular A doesn't have these parameters in plugin
-        if annulus_type == "A":
-            output.pop("pressure_relief_A")
-            output.pop("relief_position_A")
+        if annulus_type == "a":
+            output.pop("pressure_relief_a")
+            output.pop("relief_position_a")
         return output
 
 
 @dataclass
 class Annuli:
-    annulus_A: Annulus = field(default_factory=lambda: Annulus())
-    annulus_B: Annulus = field(default_factory=lambda: Annulus())
-    annulus_C: Annulus = field(default_factory=lambda: Annulus())
-    annulus_D: Annulus = field(default_factory=lambda: Annulus())
-    annulus_E: Annulus = field(default_factory=lambda: Annulus())
+    annulus_a: Annulus = field(default_factory=lambda: Annulus())
+    annulus_b: Annulus = field(default_factory=lambda: Annulus())
+    annulus_c: Annulus = field(default_factory=lambda: Annulus())
+    annulus_d: Annulus = field(default_factory=lambda: Annulus())
+    annulus_e: Annulus = field(default_factory=lambda: Annulus())
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         data = {}
-        for annulus_type in "ABCDE":
+        for annulus_type in ["a", "b", "c", "d", "e"]:
             data.update(getattr(self, f"annulus_{annulus_type}").to_dict(annulus_type))
         return data
 
