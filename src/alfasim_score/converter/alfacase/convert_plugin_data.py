@@ -66,14 +66,14 @@ class ScoreAPBPluginConverter:
         measured_depths = Array(
             [
                 self.get_position_in_well(depth).GetValue()
-                for depth in self.score_input.read_measured_depth()
+                for depth in self.score_input.read_well_trajectory()["md"]
             ],
             LENGTH_UNIT,
         )
         formation_temperature_data = self.score_input.read_formation_temperatures()
-        well_positions_x, well_positions_y = self.score_input.read_well_trajectory()
+        trajectory = self.score_input.read_well_trajectory()
         interpolated_temperatures_y = np.interp(
-            np.abs(well_positions_y),
+            np.abs(trajectory["y"]),
             np.abs(formation_temperature_data["elevations"].GetValues()),
             formation_temperature_data["temperatures"].GetValues(),
         )

@@ -50,17 +50,16 @@ class ScoreInputReader:
             "air_gap": Scalar(self.input_content["air_gap"], LENGTH_UNIT),
         }
 
-    def read_well_trajectory(self) -> Tuple[Array, Array]:
+    def read_well_trajectory(self) -> Dict[str, Any]:
         """Read the arrays with the x and y positions."""
         x = [entry["displacement"] for entry in self.input_content["trajectory"]["data"]]
         y = [-entry["vertical_depth"] for entry in self.input_content["trajectory"]["data"]]
-        return Array(x, LENGTH_UNIT), Array(y, LENGTH_UNIT)
-
-    def read_measured_depth(self) -> Array:
-        """Read the array with the measured depth."""
-        return Array(
-            [entry["depth"] for entry in self.input_content["trajectory"]["data"]], LENGTH_UNIT
-        )
+        md = [entry["depth"] for entry in self.input_content["trajectory"]["data"]]
+        return {
+            "x": Array(x, LENGTH_UNIT),
+            "y": Array(y, LENGTH_UNIT),
+            "md": Array(md, LENGTH_UNIT),
+        }
 
     def read_tubing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Read the data for the tubings from SCORE input file."""
