@@ -12,7 +12,7 @@
     unit: mm
     value: 0.05
   material: B
-  material_above_filler: fluid_default
+  material_above_filler: Brine_860
   name: CONDUCTOR_DRILLING_1
   outer_diameter:
     unit: in
@@ -37,7 +37,7 @@
     unit: mm
     value: 0.05
   material: X-80
-  material_above_filler: fluid_default
+  material_above_filler: Brine_860
   name: SURFACE_CASING_1
   outer_diameter:
     unit: in
@@ -62,7 +62,7 @@
     unit: mm
     value: 0.05
   material: N-80
-  material_above_filler: fluid_default
+  material_above_filler: DFLT_FPBA_BARITE_8.60_35000
   name: PRODUCTION_CASING_1
   outer_diameter:
     unit: in
@@ -87,7 +87,7 @@
     unit: mm
     value: 0.05
   material: C-110 HC
-  material_above_filler: fluid_default
+  material_above_filler: DFLT_FPBA_BARITE_8.60_35000
   name: PRODUCTION_CASING_2
   outer_diameter:
     unit: in
@@ -112,7 +112,7 @@
     unit: mm
     value: 0.05
   material: SDSS/125KSI
-  material_above_filler: fluid_default
+  material_above_filler: DFLT_FPBA_BARITE_8.60_35000
   name: PRODUCTION_CASING_3
   outer_diameter:
     unit: in

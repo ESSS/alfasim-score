@@ -796,7 +796,7 @@ wells:
         value: 0.0
         unit: m
       filler_material: cement
-      material_above_filler: fluid_default
+      material_above_filler: Brine_860
     - name: SURFACE_CASING_1
       hanger_depth:
         value: 0.0
@@ -821,7 +821,7 @@ wells:
         value: 0.0
         unit: m
       filler_material: cement
-      material_above_filler: fluid_default
+      material_above_filler: Brine_860
     - name: PRODUCTION_CASING_1
       hanger_depth:
         value: 0.0
@@ -846,7 +846,7 @@ wells:
         value: 1000.0
         unit: m
       filler_material: cement
-      material_above_filler: fluid_default
+      material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     - name: PRODUCTION_CASING_2
       hanger_depth:
         value: 1000.0
@@ -871,7 +871,7 @@ wells:
         value: 2833.0
         unit: m
       filler_material: cement
-      material_above_filler: fluid_default
+      material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     - name: PRODUCTION_CASING_3
       hanger_depth:
         value: 3369.0
@@ -896,7 +896,7 @@ wells:
         value: 3369.0
         unit: m
       filler_material: cement
-      material_above_filler: fluid_default
+      material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     tubings:
     - name: TUBING_1
       length:
@@ -1127,7 +1127,7 @@ wells:
       position:
         value: 3493.1800000000003
         unit: m
-      material_above: fluid_default
+      material_above: DFLT_FCBA_9.00
     open_holes:
     - name: OPEN_HOLE_1
       length:

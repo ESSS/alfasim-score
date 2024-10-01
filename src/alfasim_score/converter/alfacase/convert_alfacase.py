@@ -25,6 +25,7 @@ from barril.units import Scalar
 
 from alfasim_score.common import convert_quota_to_tvd
 from alfasim_score.common import filter_duplicated_materials_by_name
+from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import FLUID_DEFAULT_NAME
@@ -164,8 +165,7 @@ class ScoreAlfacaseConverter:
                         material=section["material"],
                         top_of_filler=top_of_filler,
                         filler_material=CEMENT_NAME,
-                        # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
-                        material_above_filler=FLUID_DEFAULT_NAME,
+                        material_above_filler=casing["annular_fluids"][-1]["name"],
                     )
                 )
                 i += 1
@@ -189,14 +189,23 @@ class ScoreAlfacaseConverter:
 
     def _convert_packer_list(self) -> List[PackerDescription]:
         """Create the description for the packers."""
+        annular_fluid_data = self.score_input.read_tubing_fluid_data()
         packers = []
         for packer in self.score_input.read_packers():
+            # look for the material above packer
+            # if not found, just use first fluid in annular fluids list
+            material_above_name = annular_fluid_data[0]["name"]
+            for fluid in annular_fluid_data:
+                if abs(
+                    (fluid["base_md"] - packer["position"]).GetValue(LENGTH_UNIT)
+                ) < ANNULUS_DEPTH_TOLERANCE.GetValue(LENGTH_UNIT):
+                    material_above_name = fluid["name"]
+                    break
             packers.append(
                 PackerDescription(
                     name=packer["name"],
                     position=self.get_position_in_well(packer["position"]),
-                    # TODO PWPA-1970: review this fluid default with fluid actually used by SCORE file
-                    material_above=FLUID_DEFAULT_NAME,
+                    material_above=material_above_name,
                 )
             )
         return packers
