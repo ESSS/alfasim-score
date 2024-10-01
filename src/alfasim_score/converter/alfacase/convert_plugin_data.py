@@ -3,6 +3,7 @@ from typing import Dict
 from typing import List
 from typing import Union
 
+import numpy as np
 from alfasim_sdk import PluginDescription
 from barril.units import Array
 from barril.units import Scalar
@@ -13,8 +14,9 @@ from pathlib import Path
 
 from alfasim_score.common import Annuli
 from alfasim_score.common import Annulus
+from alfasim_score.common import AnnulusDepthTable
 from alfasim_score.common import AnnulusModeType
-from alfasim_score.common import AnnulusTable
+from alfasim_score.common import AnnulusTemperatureTable
 from alfasim_score.common import FluidModelPvt
 from alfasim_score.common import SolidMechanicalProperties
 from alfasim_score.common import WellItemFunction
@@ -55,7 +57,34 @@ class ScoreAPBPluginConverter:
         """
         return self.get_all_annular_fluid_names().index(fluid_name)
 
-    def _build_annular_fluid_table(self, fluids_data: List[Dict[str, Any]]) -> AnnulusTable:
+    def _build_annular_temperature_table(self) -> AnnulusTemperatureTable:
+        """
+        Calculate the temperature of fluids based on temperature of formation coming from SCORE input file.
+        It uses the well vertical positions in order to interpolates the temperatures of formation and it maps
+        each measured depth to the temperature of formation in that position.
+        """
+        measured_depths = Array(
+            [
+                self.get_position_in_well(depth).GetValue()
+                for depth in self.score_input.read_well_trajectory()["md"]
+            ],
+            LENGTH_UNIT,
+        )
+        formation_temperature_data = self.score_input.read_formation_temperatures()
+        trajectory = self.score_input.read_well_trajectory()
+        interpolated_temperatures_y = np.interp(
+            np.abs(trajectory["y"]),
+            np.abs(formation_temperature_data["elevations"].GetValues())
+            + self.general_data["air_gap"].GetValue(),
+            formation_temperature_data["temperatures"].GetValues(),
+        )
+        return AnnulusTemperatureTable(
+            depths=measured_depths, temperatures=interpolated_temperatures_y
+        )
+
+    def _build_annular_fluid_depth_table(
+        self, fluids_data: List[Dict[str, Any]]
+    ) -> AnnulusDepthTable:
         """Build the table with fluids in the annular."""
         fluid_names = []
         fluid_ids = []
@@ -68,7 +97,7 @@ class ScoreAPBPluginConverter:
                 fluid_ids.append(float(self.get_fluid_id(fluid["name"])))
                 initial_depths.append(self.get_position_in_well(fluid["top_md"]).GetValue())
                 final_depths.append(self.get_position_in_well(fluid["base_md"]).GetValue())
-        return AnnulusTable(
+        return AnnulusDepthTable(
             fluid_names,
             fluid_ids,
             Array(initial_depths, LENGTH_UNIT),
@@ -91,17 +120,19 @@ class ScoreAPBPluginConverter:
         # therefore it's considered here that they sorted in the input SCORE file.
         annuli_data = self.score_input.read_operation_annuli_data().copy()
         initial_conditions_data = self.score_input.read_initial_condition()
+        annular_temperature_table = self._build_annular_temperature_table()
         annuli = Annuli()
         if annuli_data:
             # the annulus A uses data from tubing_strings section of SCORE file
-            tubing_fluids = self.score_input.read_tubing_fluid_data()
+            tubing_fluids_data = self.score_input.read_tubing_fluid_data()
             annulus_data = annuli_data.pop(0)
-            annuli.annulus_A = Annulus(
+            annuli.annulus_a = Annulus(
                 is_active=True,
                 mode_type=initial_conditions_data["mode"],
                 initial_top_pressure=annulus_data["initial_top_pressure"],
                 is_open_seabed=False,
-                annulus_table=self._build_annular_fluid_table(tubing_fluids),
+                annulus_depth_table=self._build_annular_fluid_depth_table(tubing_fluids_data),
+                annulus_temperature_table=annular_temperature_table,
                 has_fluid_return=HAS_FLUID_RETURN,
                 initial_leakoff=annulus_data["leakoff_volume"],
             )
@@ -121,7 +152,7 @@ class ScoreAPBPluginConverter:
         ]
         # It iterates the data in the section operation/thermal_data/annuli_data and use it to check
         # correspondent annulus iterating over the casings in order to check which of them are active by checking there is annular fluid.
-        for annulus_label, annulus_data in zip(["B", "C", "D", "E"], annuli_data):
+        for annulus_label, annulus_data in zip(["b", "c", "d", "e"], annuli_data):
             while casings:
                 casing = casings.pop()
                 if self._has_annular_fluid(casing["annular_fluids"]):
@@ -134,11 +165,14 @@ class ScoreAPBPluginConverter:
                             mode_type=initial_conditions_data["mode"],
                             initial_top_pressure=annulus_data["initial_top_pressure"],
                             is_open_seabed=is_open_seabed,
-                            annulus_table=self._build_annular_fluid_table(casing["annular_fluids"]),
+                            annulus_depth_table=self._build_annular_fluid_depth_table(
+                                casing["annular_fluids"]
+                            ),
+                            annulus_temperature_table=annular_temperature_table,
                             has_fluid_return=HAS_FLUID_RETURN,
                             initial_leakoff=annulus_data["leakoff_volume"],
-                            has_relief_pressure=casing["pressure_relief"]["is_active"],
-                            relief_pressure=casing["pressure_relief"]["pressure"],
+                            has_pressure_relief=casing["pressure_relief"]["is_active"],
+                            pressure_relief=casing["pressure_relief"]["pressure"],
                             relief_position=self.get_position_in_well(
                                 casing["pressure_relief"]["position"]
                             ),
