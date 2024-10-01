@@ -50,7 +50,7 @@ class ScoreInputReader:
             "air_gap": Scalar(self.input_content["air_gap"], LENGTH_UNIT),
         }
 
-    def read_well_trajectory(self) -> Dict[str, Any]:
+    def read_well_trajectory(self) -> Dict[str, Array]:
         """Read the arrays with the x and y positions."""
         x = [entry["displacement"] for entry in self.input_content["trajectory"]["data"]]
         y = [-entry["vertical_depth"] for entry in self.input_content["trajectory"]["data"]]
