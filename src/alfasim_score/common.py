@@ -78,6 +78,14 @@ class AnnulusModeType(str, Enum):
     DRILLING = "Drilling"
 
 
+class AnnulusLabel(str, Enum):
+    A = "a"
+    B = "b"
+    C = "c"
+    D = "d"
+    E = "e"
+
+
 @dataclass
 class FluidModelPvt:
     name: str
@@ -109,12 +117,12 @@ class AnnulusDepthTable:
     initial_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
     final_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
 
-    def to_dict(self, annulus_type: str) -> Dict[str, Any]:
+    def to_dict(self, annulus_label: AnnulusLabel) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         columns = {
-            f"fluid_id_{annulus_type}": self.fluid_ids,
-            f"fluid_initial_measured_depth_{annulus_type}": self.initial_depths,
-            f"fluid_final_measured_depth_{annulus_type}": self.final_depths,
+            f"fluid_id_{annulus_label.value}": self.fluid_ids,
+            f"fluid_initial_measured_depth_{annulus_label.value}": self.initial_depths,
+            f"fluid_final_measured_depth_{annulus_label.value}": self.final_depths,
         }
         return {"columns": columns}
 
@@ -124,11 +132,11 @@ class AnnulusTemperatureTable:
     depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
     temperatures: Array = field(default_factory=lambda: Array([], TEMPERATURE_UNIT))
 
-    def to_dict(self, annulus_type: str) -> Dict[str, Any]:
+    def to_dict(self, annulus_label: AnnulusLabel) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         columns = {
-            f"temperature_depth_{annulus_type}": self.depths,
-            f"temperature_{annulus_type}": self.temperatures,
+            f"temperature_depth_{annulus_label.value}": self.depths,
+            f"temperature_{annulus_label.value}": self.temperatures,
         }
         return {"columns": columns}
 
@@ -149,18 +157,18 @@ class Annulus:
     pressure_relief: Scalar = Scalar(0.0, PRESSURE_UNIT)
     relief_position: Scalar = Scalar(0.0, LENGTH_UNIT)
 
-    def to_dict(self, annulus_type: str) -> Dict[str, Any]:
+    def to_dict(self, annulus_label: AnnulusLabel) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         output = {}
         for key, value in asdict(self).items():
             if key == "annulus_depth_table":
-                value = self.annulus_depth_table.to_dict(annulus_type)
+                value = self.annulus_depth_table.to_dict(annulus_label)
             elif key == "annulus_temperature_table":
-                value = self.annulus_temperature_table.to_dict(annulus_type)
-            output[f"{key}_{annulus_type}"] = value
+                value = self.annulus_temperature_table.to_dict(annulus_label)
+            output[f"{key}_{annulus_label.value}"] = value
 
         # the annular A doesn't have these parameters in plugin
-        if annulus_type == "a":
+        if annulus_label == AnnulusLabel.A:
             output.pop("pressure_relief_a")
             output.pop("relief_position_a")
         return output
@@ -177,8 +185,8 @@ class Annuli:
     def to_dict(self) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         data = {}
-        for annulus_type in ["a", "b", "c", "d", "e"]:
-            data.update(getattr(self, f"annulus_{annulus_type}").to_dict(annulus_type))
+        for annulus_label in AnnulusLabel:
+            data.update(getattr(self, f"annulus_{annulus_label.value}").to_dict(annulus_label))
         return data
 
 
