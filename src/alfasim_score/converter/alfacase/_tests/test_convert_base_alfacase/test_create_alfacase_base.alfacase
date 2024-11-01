@@ -1112,7 +1112,7 @@ wells:
           - 288.6
           unit: K
 materials:
-- name: cement
+- name: CM_cement
   material_type: solid
   density:
     value: 15.7743
@@ -1250,7 +1250,7 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
-- name: Folhelho
+- name: FC_Folhelho
   material_type: solid
   density:
     value: 1.0

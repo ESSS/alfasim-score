@@ -11,7 +11,7 @@
     unit: '-'
     value: 0.0
   material_type: solid
-  name: cement
+  name: CM_cement
   outer_emissivity:
     unit: '-'
     value: 0.0
@@ -149,7 +149,7 @@
     unit: '-'
     value: 0.0
   material_type: solid
-  name: Folhelho
+  name: FC_Folhelho
   outer_emissivity:
     unit: '-'
     value: 0.0
