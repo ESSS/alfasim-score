@@ -333,7 +333,7 @@ plugins:
     MechanicalContainer:
       name: Mechanical Properties
       _children_list:
-      - name: cement
+      - name: CM_cement
         young_modulus:
           value: 1500000.0
           unit: psi
@@ -393,7 +393,7 @@ plugins:
         thermal_expansion_coefficient:
           value: 1.2e-05
           unit: 1/K
-      - name: Folhelho
+      - name: FC_Folhelho
         young_modulus:
           value: 30000000.0
           unit: psi
@@ -1515,7 +1515,7 @@ wells:
           - 97.0
           unit: degC
 materials:
-- name: cement
+- name: CM_cement
   material_type: solid
   density:
     value: 15.7743
@@ -1653,7 +1653,7 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
-- name: Folhelho
+- name: FC_Folhelho
   material_type: solid
   density:
     value: 1.0

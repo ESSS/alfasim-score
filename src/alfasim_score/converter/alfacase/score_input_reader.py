@@ -18,7 +18,9 @@ from alfasim_score.common import OperationType
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import WellItemType
 from alfasim_score.constants import CEMENT_NAME
+from alfasim_score.constants import CEMENT_PREFIX
 from alfasim_score.constants import FLUID_DEFAULT_NAME
+from alfasim_score.constants import FORMATION_PREFIX
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import DIAMETER_UNIT
 from alfasim_score.units import FRACTION_UNIT
@@ -118,7 +120,7 @@ class ScoreInputReader:
         properties = well_strings[0]["cementing"]["first_slurry"]["thermomechanical_property"]
         return [
             {
-                "name": CEMENT_NAME,
+                "name": CEMENT_PREFIX + CEMENT_NAME,
                 "type": "solid",
                 "density": Scalar(properties["density"], DENSITY_UNIT),
                 "thermal_conductivity": Scalar(
@@ -140,7 +142,7 @@ class ScoreInputReader:
             properties = lithology["thermomechanical_property"]
             lithology_data.append(
                 {
-                    "name": lithology["display_name"],
+                    "name": FORMATION_PREFIX + lithology["display_name"],
                     "type": "solid",
                     "density": Scalar(properties["density"], DENSITY_UNIT),
                     "thermal_conductivity": Scalar(
