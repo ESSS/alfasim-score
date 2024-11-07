@@ -31,10 +31,12 @@ class ScoreOutputGenerator:
         results_path: Path,
         well_start_position: Scalar,
         active_annuli: List[AnnulusLabel] = [],
+        walls: List[int] = [],
     ):
         self.results_path = results_path
         self.well_start_position = well_start_position
         self.active_annuli = active_annuli
+        self.walls = walls
         self.element_name = WELLBORE_NAME
 
     def _generate_output_results(self) -> Dict[str, Any]:
@@ -48,6 +50,9 @@ class ScoreOutputGenerator:
         tubing_profiles = [
             "pressure",
             "mixture temperature",
+        ]
+        wall_temperature_profiles = [
+            f"wall_{wall_label}_temperature" for wall_label in self.walls
         ]
         results = Results(self.results_path)
         measured_depths = self.well_start_position.GetValue(LENGTH_UNIT) + np.array(
@@ -88,6 +93,22 @@ class ScoreOutputGenerator:
             annuli_output[str(annulus_index)]["pressure"] = pressure
             annulus_index += 1
 
+        # build walls output data
+        walls_output: Dict[str, Any] = {}
+        wall_index = 0
+        for wall_label in self.walls:
+            wall_name = f"wall_{wall_label}_temperature"
+            wall = {}
+            wall["MD"] = measured_depths.tolist()
+            wall["temperature"] = (
+                results.get_profile_curve(wall_name, self.element_name, -1)
+                .image.GetValues(TEMPERATURE_UNIT)
+                .tolist()
+            )
+            walls_output[str(wall_index)] = wall
+            wall_index += 1
+
+        
         # build production tubing output data
         production_tubing = {
             "temperature": {
@@ -109,6 +130,7 @@ class ScoreOutputGenerator:
             "annuli": annuli_output,
             "MD": measured_depths.tolist(),
             "production_tubing": production_tubing,
+            "walls": walls_output, 
         }
 
     def generate_output_file(self, output_filepath: Path) -> None:
