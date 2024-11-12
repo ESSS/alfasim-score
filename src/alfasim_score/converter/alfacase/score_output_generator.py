@@ -97,7 +97,9 @@ class ScoreOutputGenerator:
         walls_output: Dict[str, Any] = {}
         wall_index = 0
         for wall_label in self.walls:
-            wall_name = f"wall_{wall_label}_temperature"
+            # Score wall labels are inverted with respect to PWPA
+            wall_label_inverted = self.walls[-1-wall_index]
+            wall_name = f"wall_{wall_label_inverted}_temperature"
             wall = {}
             wall["MD"] = measured_depths.tolist()
             wall["temperature"] = (
@@ -130,7 +132,7 @@ class ScoreOutputGenerator:
             "annuli": annuli_output,
             "MD": measured_depths.tolist(),
             "production_tubing": production_tubing,
-            "walls": walls_output, 
+            "layers": walls_output, 
         }
 
     def generate_output_file(self, output_filepath: Path) -> None:
