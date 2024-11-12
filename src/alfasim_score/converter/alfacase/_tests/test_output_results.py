@@ -15,7 +15,7 @@ def test_generate_output_file_results(
     alfasim_results_directory = shared_datadir / "case.data"
     well_start_position = Scalar(2072, "m")
     active_annuli = [AnnulusLabel.A, AnnulusLabel.B, AnnulusLabel.C]
-    #It was defined to use 6 wall layers as output from Alfasim
+    # It was defined to use 6 wall layers as output from ALFAsim
     layers = list(range(6))
     output_generator = ScoreOutputGenerator(
         alfasim_results_directory, well_start_position, active_annuli, layers
