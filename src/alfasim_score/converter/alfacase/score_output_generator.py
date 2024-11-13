@@ -43,7 +43,9 @@ class ScoreOutputGenerator:
         """Create data for the output results."""
         results = Results(self.results_path)
         measured_depths = self.well_start_position.GetValue(LENGTH_UNIT) + np.array(
-            results.get_profile_curve("pressure", self.element_name, -1).domain.GetValues("m")
+            results.get_profile_curve("pressure", self.element_name, -1).domain.GetValues(
+                LENGTH_UNIT
+            )
         )
         return {
             "annuli": self._generate_annuli_output(results, measured_depths),
@@ -52,7 +54,9 @@ class ScoreOutputGenerator:
             "layers": self._generate_walls_output(results, measured_depths),
         }
 
-    def _generate_annuli_output(self, results: Results, measured_depths: np.ndarray) -> Dict[str, Any]:
+    def _generate_annuli_output(
+        self, results: Results, measured_depths: np.ndarray
+    ) -> Dict[str, Any]:
         """Create data for the output results of annuli."""
         annuli_temperature_profiles = [
             f"annulus_{annuli_label.value}_temperature" for annuli_label in self.active_annuli
@@ -114,14 +118,15 @@ class ScoreOutputGenerator:
         }
         return production_tubing
 
-    def _generate_walls_output(self, results: Results, measured_depths: np.ndarray) -> Dict[str, Any]:
+    def _generate_walls_output(
+        self, results: Results, measured_depths: np.ndarray
+    ) -> Dict[str, Any]:
         """Create data for the output results of walls."""
         walls_output: Dict[str, Any] = {}
         wall_index = 0
-        for wall_label in self.walls:
-            # Score wall labels are inverted with respect to PWPA
-            wall_label_inverted = self.walls[-1-wall_index]
-            wall_name = f"wall_{wall_label_inverted}_temperature"
+        # Score wall labels are inverted with respect to PWPA
+        for wall_label in reversed(self.walls):
+            wall_name = f"wall_{wall_label}_temperature"
             wall = {}
             wall["MD"] = measured_depths.tolist()
             wall["temperature"] = (
