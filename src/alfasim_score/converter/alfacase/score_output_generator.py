@@ -31,30 +31,39 @@ class ScoreOutputGenerator:
         results_path: Path,
         well_start_position: Scalar,
         active_annuli: List[AnnulusLabel] = [],
+        walls: List[int] = [],
     ):
         self.results_path = results_path
         self.well_start_position = well_start_position
         self.active_annuli = active_annuli
+        self.walls = walls
         self.element_name = WELLBORE_NAME
 
     def _generate_output_results(self) -> Dict[str, Any]:
         """Create data for the output results."""
+        results = Results(self.results_path)
+        measured_depths = self.well_start_position.GetValue(LENGTH_UNIT) + np.array(
+            results.get_profile_curve("pressure", self.element_name, -1).domain.GetValues(
+                LENGTH_UNIT
+            )
+        )
+        return {
+            "annuli": self._generate_annuli_output(results, measured_depths),
+            "MD": measured_depths.tolist(),
+            "production_tubing": self._generate_production_tubing_output(results),
+            "layers": self._generate_walls_output(results, measured_depths),
+        }
+
+    def _generate_annuli_output(
+        self, results: Results, measured_depths: np.ndarray
+    ) -> Dict[str, Any]:
+        """Create data for the output results of annuli."""
         annuli_temperature_profiles = [
             f"annulus_{annuli_label.value}_temperature" for annuli_label in self.active_annuli
         ]
         annuli_pressure_profiles = [
             f"annulus_{annuli_label.value}_pressure" for annuli_label in self.active_annuli
         ]
-        tubing_profiles = [
-            "pressure",
-            "mixture temperature",
-        ]
-        results = Results(self.results_path)
-        measured_depths = self.well_start_position.GetValue(LENGTH_UNIT) + np.array(
-            results.get_profile_curve("pressure", self.element_name, -1).domain.GetValues("m")
-        )
-
-        # build annuli output data
         annuli_output: Dict[str, Any] = {}
         annulus_index = 0
         for temperature_profile_name, pressure_profile_name in zip(
@@ -87,8 +96,10 @@ class ScoreOutputGenerator:
             annuli_output[str(annulus_index)]["temperature"] = temperature
             annuli_output[str(annulus_index)]["pressure"] = pressure
             annulus_index += 1
+        return annuli_output
 
-        # build production tubing output data
+    def _generate_production_tubing_output(self, results: Results) -> Dict[str, Any]:
+        """Create data for the output results of production tubing."""
         production_tubing = {
             "temperature": {
                 "final": (
@@ -105,11 +116,28 @@ class ScoreOutputGenerator:
                 )
             },
         }
-        return {
-            "annuli": annuli_output,
-            "MD": measured_depths.tolist(),
-            "production_tubing": production_tubing,
-        }
+        return production_tubing
+
+    def _generate_walls_output(
+        self, results: Results, measured_depths: np.ndarray
+    ) -> Dict[str, Any]:
+        """Create data for the output results of walls."""
+        walls_output: Dict[str, Any] = {}
+        wall_index = 0
+        # Score wall labels are inverted with respect to PWPA
+        for wall_label in reversed(self.walls):
+            wall_name = f"wall_{wall_label}_temperature"
+            wall = {}
+            wall["MD"] = measured_depths.tolist()
+            wall_temperatures = results.get_profile_curve(
+                wall_name, self.element_name, -1
+            ).image.GetValues(TEMPERATURE_UNIT)
+            # Ignore walls with negative dummy values from ALFAsim
+            if not np.all(wall_temperatures < 0):
+                wall["temperature"] = wall_temperatures.tolist()
+                walls_output[str(wall_index)] = wall
+                wall_index += 1
+        return walls_output
 
     def generate_output_file(self, output_filepath: Path) -> None:
         """Create the output file for SCORE."""
