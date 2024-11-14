@@ -129,13 +129,14 @@ class ScoreOutputGenerator:
             wall_name = f"wall_{wall_label}_temperature"
             wall = {}
             wall["MD"] = measured_depths.tolist()
-            wall["temperature"] = (
-                results.get_profile_curve(wall_name, self.element_name, -1)
-                .image.GetValues(TEMPERATURE_UNIT)
-                .tolist()
-            )
-            walls_output[str(wall_index)] = wall
-            wall_index += 1
+            wall_temperatures = results.get_profile_curve(
+                wall_name, self.element_name, -1
+            ).image.GetValues(TEMPERATURE_UNIT)
+            # Ignore walls with negative dummy values from ALFAsim
+            if not np.all(wall_temperatures < 0):
+                wall["temperature"] = wall_temperatures.tolist()
+                walls_output[str(wall_index)] = wall
+                wall_index += 1
         return walls_output
 
     def generate_output_file(self, output_filepath: Path) -> None:
