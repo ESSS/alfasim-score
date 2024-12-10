@@ -34,6 +34,22 @@ Features
 * Converter from Score input JSON to Alfacase
 * Parser for the ALFAsim results
 
+How to use it
+-------------
+1. First step is to convert the SCORE input into the alfacase file, so the user just need to call the functions like example below:
+
+    from alfasim_score.converter.alfacase.converter_main import convert_score_to_alfacase
+
+    # call the converter main function with the input file and output file names
+    convert_score_to_alfacase("score_input.json", "alfacase_output.alfacase")
+
+2. Run the ALFAsim with the generated file (and the pvt tables in the same folder)
+3. Once the result file of ALFAsim is generated, one can call the converter for the output file.
+
+    from alfasim_score.converter.alfacase.converter_main import convert_score_to_alfacase
+
+    # call the converter main function with the input file and output file names
+    convert_score_to_alfacase("score_input.json", "alfacase_output.alfacase")
 
 Development
 -----------
