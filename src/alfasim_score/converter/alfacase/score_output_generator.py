@@ -1,5 +1,6 @@
 from typing import Any
 from typing import Dict
+from typing import List
 
 import numpy as np
 from alfasim_sdk.result_reader import Results
@@ -25,7 +26,7 @@ class ScoreOutputBuilder:
         self.active_annuli = self._get_annuli_list()
         self.element_name = WELLBORE_NAME
 
-    def _get_annuli_list(self) -> list[AnnulusLabel]:
+    def _get_annuli_list(self) -> List[AnnulusLabel]:
         """Get the list of active annuli configured in the input file"""
         annuli_data = self.score_input_reader.read_operation_annuli_data()
         total_annuli = len(annuli_data)
