@@ -5,12 +5,6 @@ from barril.units import Scalar
 from enum import Enum
 from pathlib import Path
 
-from alfasim_score.common import Annuli
-from alfasim_score.common import Annulus
-from alfasim_score.common import AnnulusDepthTable
-from alfasim_score.common import AnnulusModeType
-from alfasim_score.common import FluidModelPvt
-from alfasim_score.common import SolidMechanicalProperties
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
 from alfasim_score.converter.alfacase.injection_operation import InjectionOperationBuilder
@@ -33,20 +27,24 @@ def alfacase_gas_lift(score_input_gas_lift: ScoreInputReader) -> ScoreAlfacaseCo
 
 
 @pytest.fixture
-def base_operation_gas_lift(shared_datadir: Path) -> BaseOperationBuilder:
-    return BaseOperationBuilder(shared_datadir / SCORE_GAS_LIFT_EXAMPLE_FILENAME)
+def base_operation_gas_lift(score_input_gas_lift: ScoreInputReader) -> BaseOperationBuilder:
+    return BaseOperationBuilder(score_input_gas_lift)
 
 
 @pytest.fixture
-def production_operation_gas_lift(shared_datadir: Path) -> ProductionOperationBuilder:
-    return ProductionOperationBuilder(shared_datadir / SCORE_GAS_LIFT_EXAMPLE_FILENAME)
+def production_operation_gas_lift(
+    score_input_gas_lift: ScoreInputReader,
+) -> ProductionOperationBuilder:
+    return ProductionOperationBuilder(score_input_gas_lift)
 
 
 @pytest.fixture
 def production_operation_natural_flow(shared_datadir: Path) -> ProductionOperationBuilder:
-    return ProductionOperationBuilder(shared_datadir / SCORE_NATURAL_FLOW_EXAMPLE_FILENAME)
+    score_input_reader = ScoreInputReader(shared_datadir / SCORE_NATURAL_FLOW_EXAMPLE_FILENAME)
+    return ProductionOperationBuilder(score_input_reader)
 
 
 @pytest.fixture
 def injection_operation(shared_datadir: Path) -> InjectionOperationBuilder:
-    return InjectionOperationBuilder(shared_datadir / SCORE_INJECTION_EXAMPLE_FILENAME)
+    score_input_reader = ScoreInputReader(shared_datadir / SCORE_INJECTION_EXAMPLE_FILENAME)
+    return InjectionOperationBuilder(score_input_reader)

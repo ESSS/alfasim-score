@@ -64,3 +64,6 @@ ANNULUS_DEPTH_TOLERANCE = Scalar(10.0, LENGTH_UNIT)
 # set default value for annulus for the plugin APB
 # there is no such option in the SCORE input so use this default value
 HAS_FLUID_RETURN = True
+
+# total number of walls in the output
+TOTAL_WALLS = 6

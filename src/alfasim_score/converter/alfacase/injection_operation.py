@@ -20,13 +20,14 @@ from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
+from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 
 
 class InjectionOperationBuilder(BaseOperationBuilder):
-    def __init__(self, score_filepath: Path):
-        super().__init__(score_filepath)
+    def __init__(self, score_input_reader: ScoreInputReader):
+        super().__init__(score_input_reader)
         self.operation_type = OperationType.INJECTION
         assert (
             self.general_data["type"] == self.operation_type

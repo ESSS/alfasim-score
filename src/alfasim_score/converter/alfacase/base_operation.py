@@ -63,8 +63,8 @@ from alfasim_score.units import VELOCITY_UNIT
 
 
 class BaseOperationBuilder:
-    def __init__(self, score_filepath: Path):
-        self.score_input = ScoreInputReader(score_filepath)
+    def __init__(self, score_input_reader: ScoreInputReader):
+        self.score_input = score_input_reader
         self.alfacase_converter = ScoreAlfacaseConverter(self.score_input)
         self.apb_plugin_converter = ScoreAPBPluginConverter(self.score_input)
         self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()

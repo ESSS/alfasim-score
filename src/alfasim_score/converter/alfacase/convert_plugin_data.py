@@ -28,9 +28,9 @@ from alfasim_score.units import LENGTH_UNIT
 
 
 class ScoreAPBPluginConverter:
-    def __init__(self, score_reader: ScoreInputReader):
-        self.score_input = score_reader
-        self.general_data = score_reader.read_general_data()
+    def __init__(self, score_input_reader: ScoreInputReader):
+        self.score_input = score_input_reader
+        self.general_data = score_input_reader.read_general_data()
         self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
 
     def get_position_in_well(self, position: Scalar) -> Scalar:
