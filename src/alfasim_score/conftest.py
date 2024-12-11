@@ -1,8 +1,4 @@
 import pytest
-from alfasim_sdk import PluginDescription
-from barril.units import Array
-from barril.units import Scalar
-from enum import Enum
 from pathlib import Path
 
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder

@@ -1,13 +1,11 @@
 from typing import Any
 from typing import Dict
-from typing import List
 
 import numpy as np
 from alfasim_sdk.result_reader import Results
 from pathlib import Path
 
 from alfasim_score.common import AnnulusLabel
-from alfasim_score.common import WellItemFunction
 from alfasim_score.constants import TOTAL_WALLS
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
@@ -24,10 +22,10 @@ class ScoreOutputBuilder:
     ):
         self.score_input_reader = score_input_reader
         self.score_output_filepath = score_output_filepath
-        self.active_annuli = self._get_annuli()
+        self.active_annuli = self._get_annuli_list()
         self.element_name = WELLBORE_NAME
 
-    def _get_annuli(self) -> list[AnnulusLabel]:
+    def _get_annuli_list(self) -> list[AnnulusLabel]:
         """Get the list of active annuli configured in the input file"""
         annuli_data = self.score_input_reader.read_operation_annuli_data()
         total_annuli = len(annuli_data)

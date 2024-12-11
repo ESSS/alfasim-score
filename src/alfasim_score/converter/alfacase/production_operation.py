@@ -7,7 +7,6 @@ from alfasim_sdk import CaseDescription
 from alfasim_sdk import GasLiftValveEquipmentDescription
 from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import InitialConditionsDescription
-from alfasim_sdk import InitialConditionStrategyType
 from alfasim_sdk import InitialPressuresDescription
 from alfasim_sdk import InitialTemperaturesDescription
 from alfasim_sdk import InitialVelocitiesDescription
@@ -19,7 +18,6 @@ from alfasim_sdk import MultiInputType
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import PvtModelCorrelationDescription
-from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk import TableInputType
 from alfasim_sdk import TemperaturesContainerDescription
@@ -31,7 +29,6 @@ from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Array
 from barril.units import Scalar
-from pathlib import Path
 
 from alfasim_score.common import LiftMethod
 from alfasim_score.common import OperationType

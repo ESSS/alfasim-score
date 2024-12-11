@@ -11,7 +11,6 @@ from dataclasses import asdict
 from dataclasses import dataclass
 from dataclasses import field
 from enum import Enum
-from pathlib import Path
 
 from alfasim_score.constants import AIR_DENSITY_STANDARD
 from alfasim_score.constants import WATER_DENSITY_STANDARD

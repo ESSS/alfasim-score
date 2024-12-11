@@ -1,5 +1,4 @@
 import attr
-import numpy as np
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
@@ -11,7 +10,6 @@ from alfasim_sdk._internal.constants import FLUID_GAS
 from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Scalar
-from pathlib import Path
 
 from alfasim_score.common import FluidType
 from alfasim_score.common import OperationType
