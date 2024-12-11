@@ -32,24 +32,29 @@ Features
 -----------
 
 * Converter from Score input JSON to Alfacase
-* Parser for the ALFAsim results
+* Parser for the ALFAsim results and generate a JSON compatible with SCORE
 
 How to use it
 -------------
-1. First step is to convert the SCORE input into the alfacase file, so the user just need to call the functions like example below:
+1. First the user need to create an instance of the converter::
+    from pathlib import Path
+    from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScoreConverter
+    # path indicating where the SCORE input file is
+    score_input_filepath = Path("path/to/score_input.json")
+    # path indicating where the ouput file (converted from ALFAsim results) should be created
+    score_output_filepath = Path("path/to/score_output_result.json")
+    # then create a converter instance
+    converter = AlfasimScoreConverter(score_input_filepath, score_output_filepath)
 
-    from alfasim_score.converter.alfacase.converter_main import convert_score_to_alfacase
+2. to convert the SCORE input into the alfacase file, so the user can do::
+    alfacase_filepath = Path("path/where/save/converted_score.alfacase")
+    converter.generate_alfasim_input_file(alfacase_filepath)
 
-    # call the converter main function with the input file and output file names
-    convert_score_to_alfacase("score_input.json", "alfacase_output.alfacase")
+3. Run the ALFAsim with the generated file (and the pvt tables in the same folder)
+4. Once the result file of ALFAsim is generated, one can call the converter for the output file::
+    alfasim_results_directory = Path("path/to/alfasim_results_folder")
+    converter.generate_score_output_file(alfasim_results_directory)
 
-2. Run the ALFAsim with the generated file (and the pvt tables in the same folder)
-3. Once the result file of ALFAsim is generated, one can call the converter for the output file.
-
-    from alfasim_score.converter.alfacase.converter_main import convert_score_to_alfacase
-
-    # call the converter main function with the input file and output file names
-    convert_score_to_alfacase("score_input.json", "alfacase_output.alfacase")
 
 Development
 -----------

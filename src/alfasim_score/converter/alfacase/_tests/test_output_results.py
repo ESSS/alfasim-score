@@ -1,13 +1,8 @@
-import json
-import pandas as pd
-import pytest
-from barril.units import Scalar
 from pathlib import Path
 from pytest_regressions.file_regression import FileRegressionFixture
 
 from alfasim_score.common import AnnulusLabel
 from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScoreConverter
-from alfasim_score.converter.alfacase.score_output_generator import ScoreOutputBuilder
 
 
 def test_generate_output_file_results(
