@@ -1,21 +1,15 @@
 from typing import Any
 from typing import Dict
 from typing import List
-from typing import Union
 
 import numpy as np
 from alfasim_sdk import PluginDescription
 from barril.units import Array
 from barril.units import Scalar
-from dataclasses import asdict
-from dataclasses import dataclass
-from enum import Enum
-from pathlib import Path
 
 from alfasim_score.common import Annuli
 from alfasim_score.common import Annulus
 from alfasim_score.common import AnnulusDepthTable
-from alfasim_score.common import AnnulusModeType
 from alfasim_score.common import AnnulusTemperatureTable
 from alfasim_score.common import FluidModelPvt
 from alfasim_score.common import SolidMechanicalProperties
