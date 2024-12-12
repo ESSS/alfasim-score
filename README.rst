@@ -36,7 +36,8 @@ Features
 
 How to use it
 -------------
-1. First the user need to create an instance of the converter::
+#. First the user need to create an instance of the converter::
+
     from pathlib import Path
     from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScoreConverter
     # path indicating where the SCORE input file is
@@ -46,13 +47,15 @@ How to use it
     # then create a converter instance
     converter = AlfasimScoreConverter(score_input_filepath, score_output_filepath)
 
-2. to convert the SCORE input into the alfacase file the user can do::
+#. to convert the SCORE input into the alfacase file the user can do::
+
     alfacase_filepath = Path("path/where/save/converted_score.alfacase")
     converter.generate_alfasim_input_file(alfacase_filepath)
 
-3. Run the ALFAsim with the generated file (and the pvt tables in the same folder)
+#. Run the ALFAsim with the generated file (and the pvt tables in the same folder)
 
-4. Once the result file of ALFAsim is generated, one can call the converter for the output file::
+#. Once the result file of ALFAsim is generated, one can call the converter for the output file::
+
     alfasim_results_directory = Path("path/to/alfasim_results_folder")
     converter.generate_score_output_file(alfasim_results_directory)
 
