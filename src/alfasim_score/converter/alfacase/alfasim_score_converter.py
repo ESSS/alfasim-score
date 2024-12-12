@@ -17,10 +17,10 @@ class AlfasimScoreConverter:
     - it can use a ALFAsim result into a SCORE output file.
     """
 
-    def __init__(self, score_input_filepath: Path, score_output_filepath: Path):
-        self.score_input = ScoreInputReader(score_input_filepath)
+    def __init__(self, score_input_file: Path, score_output_file: Path):
+        self.score_input = ScoreInputReader(score_input_file)
         self.alfacase_builder = self._get_score_to_alfacase_builder()
-        self.output_builder = ScoreOutputBuilder(self.score_input, score_output_filepath)
+        self.output_builder = ScoreOutputBuilder(self.score_input, score_output_file)
 
     def _get_score_to_alfacase_builder(self) -> BaseOperationBuilder:
         """Convert SCORE input file to an alfacase description."""
