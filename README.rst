@@ -47,7 +47,7 @@ How to use it
     # then create a converter instance
     converter = AlfasimScoreConverter(score_input_filepath, score_output_filepath)
 
-#. to convert the SCORE input into the alfacase file the user can do::
+#. To convert the SCORE input to the alfacase file the user can do::
 
     alfacase_filepath = Path("path/where/save/converted_score.alfacase")
     converter.generate_alfasim_input_file(alfacase_filepath)
