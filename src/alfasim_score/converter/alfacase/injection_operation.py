@@ -1,5 +1,4 @@
 import attr
-import numpy as np
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import MassInflowSplitType
 from alfasim_sdk import MassSourceNodePropertiesDescription
@@ -11,7 +10,6 @@ from alfasim_sdk._internal.constants import FLUID_GAS
 from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Scalar
-from pathlib import Path
 
 from alfasim_score.common import FluidType
 from alfasim_score.common import OperationType
@@ -20,13 +18,14 @@ from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
+from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 
 
 class InjectionOperationBuilder(BaseOperationBuilder):
-    def __init__(self, score_filepath: Path):
-        super().__init__(score_filepath)
+    def __init__(self, score_input_reader: ScoreInputReader):
+        super().__init__(score_input_reader)
         self.operation_type = OperationType.INJECTION
         assert (
             self.general_data["type"] == self.operation_type

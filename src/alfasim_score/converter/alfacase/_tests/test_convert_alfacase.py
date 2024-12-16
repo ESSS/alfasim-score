@@ -2,7 +2,7 @@ import pytest
 from pathlib import Path
 from pytest_regressions.file_regression import FileRegressionFixture
 
-from alfasim_score.converter.alfacase.converter_main import convert_score_to_alfacase
+from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScoreConverter
 
 
 @pytest.mark.parametrize(
@@ -12,8 +12,11 @@ def test_create_alfacase_file(
     shared_datadir: Path, datadir: Path, file_regression: FileRegressionFixture, score_filename: str
 ) -> None:
     score_input = shared_datadir / f"{score_filename}.json"
-    alfacase_output = datadir / f"{score_filename}.alfacase"
-    convert_score_to_alfacase(score_input, alfacase_output)
+    converted_alfacase_filepath = datadir / f"{score_filename}.alfacase"
+    converter = AlfasimScoreConverter(score_input, Path("score_output/dummy.json"))
+    converter.generate_alfasim_input_file(converted_alfacase_filepath)
     file_regression.check(
-        alfacase_output.read_text(encoding="utf-8"), encoding="utf-8", extension=".alfacase"
+        converted_alfacase_filepath.read_text(encoding="utf-8"),
+        encoding="utf-8",
+        extension=".alfacase",
     )

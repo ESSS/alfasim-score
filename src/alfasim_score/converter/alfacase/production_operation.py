@@ -7,7 +7,6 @@ from alfasim_sdk import CaseDescription
 from alfasim_sdk import GasLiftValveEquipmentDescription
 from alfasim_sdk import HydrodynamicModelType
 from alfasim_sdk import InitialConditionsDescription
-from alfasim_sdk import InitialConditionStrategyType
 from alfasim_sdk import InitialPressuresDescription
 from alfasim_sdk import InitialTemperaturesDescription
 from alfasim_sdk import InitialVelocitiesDescription
@@ -19,7 +18,6 @@ from alfasim_sdk import MultiInputType
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import PvtModelCorrelationDescription
-from alfasim_sdk import PvtModelsDescription
 from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk import TableInputType
 from alfasim_sdk import TemperaturesContainerDescription
@@ -31,7 +29,6 @@ from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Array
 from barril.units import Scalar
-from pathlib import Path
 
 from alfasim_score.common import LiftMethod
 from alfasim_score.common import OperationType
@@ -48,6 +45,7 @@ from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
+from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import PRESSURE_UNIT
@@ -56,8 +54,8 @@ from alfasim_score.units import VELOCITY_UNIT
 
 
 class ProductionOperationBuilder(BaseOperationBuilder):
-    def __init__(self, score_filepath: Path):
-        super().__init__(score_filepath)
+    def __init__(self, score_input_reader: ScoreInputReader):
+        super().__init__(score_input_reader)
         self.operation_type = OperationType.PRODUCTION
         self.lift_method_data = self.score_input.read_operation_method_data()
         self.produced_fluid_data = self.score_input.read_operation_fluid_data()
