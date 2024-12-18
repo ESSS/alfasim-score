@@ -32,7 +32,32 @@ Features
 -----------
 
 * Converter from Score input JSON to Alfacase
-* Parser for the ALFAsim results
+* Parser for the ALFAsim results and generate a JSON compatible with SCORE
+
+How to use it
+-------------
+#. First, the user needs to create an instance of the converter::
+
+    from pathlib import Path
+    from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScoreConverter
+    # path indicating where the SCORE input file is
+    score_input_filepath = Path("path/to/score_input.json")
+    # path indicating where the output file (converted from ALFAsim results) should be created
+    score_output_filepath = Path("path/to/score_output_result.json")
+    # then create a converter instance
+    converter = AlfasimScoreConverter(score_input_filepath, score_output_filepath)
+
+#. To convert the SCORE input into an alfacase file, the user can do the following::
+
+    alfacase_filepath = Path("path/where/save/converted_score.alfacase")
+    converter.generate_alfasim_input_file(alfacase_filepath)
+
+#. Run the ALFAsim with the generated file (and the pvt tables in the same folder)
+
+#. Once the result file of ALFAsim is generated, one can call the converter for the output file::
+
+    alfasim_results_directory = Path("path/to/alfasim_results_folder")
+    converter.generate_score_output_file(alfasim_results_directory)
 
 
 Development
@@ -91,7 +116,7 @@ Ex.: v1.0.5
 1. Create a ``release-VERSION`` branch from ``upstream/master``.
 2. Update ``CHANGELOG.rst``.
 3. Push a branch with the changes.
-4. Once all builds pass, push a ``VERSION`` tag to ``upstream``.
+4. Once all builds pass, push a ``VERSION`` tag to ``upstream``. Ex: ``git tag v1.0.5; git push origin --tags``
 5. Merge the PR.
 
 

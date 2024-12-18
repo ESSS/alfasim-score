@@ -1,6 +1,3 @@
-from typing import Any
-from typing import Union
-
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import CaseOutputDescription
 from alfasim_sdk import EnergyModel
@@ -21,7 +18,6 @@ from alfasim_sdk import NodeDescription
 from alfasim_sdk import NumericalOptionsDescription
 from alfasim_sdk import OutputAttachmentLocation
 from alfasim_sdk import PhysicsDescription
-from alfasim_sdk import PluginDescription
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import ProfileOutputDescription
@@ -39,7 +35,6 @@ from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Array
 from barril.units import Scalar
 from copy import deepcopy
-from dataclasses import asdict
 from pathlib import Path
 
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
@@ -63,8 +58,8 @@ from alfasim_score.units import VELOCITY_UNIT
 
 
 class BaseOperationBuilder:
-    def __init__(self, score_filepath: Path):
-        self.score_input = ScoreInputReader(score_filepath)
+    def __init__(self, score_input_reader: ScoreInputReader):
+        self.score_input = score_input_reader
         self.alfacase_converter = ScoreAlfacaseConverter(self.score_input)
         self.apb_plugin_converter = ScoreAPBPluginConverter(self.score_input)
         self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()
@@ -76,6 +71,22 @@ class BaseOperationBuilder:
             "mixture temperature",
             "pressure",
             "environment temperature",
+            "annulus_a_temperature",
+            "annulus_b_temperature",
+            "annulus_c_temperature",
+            "annulus_d_temperature",
+            "annulus_e_temperature",
+            "annulus_a_pressure",
+            "annulus_b_pressure",
+            "annulus_c_pressure",
+            "annulus_d_pressure",
+            "annulus_e_pressure",
+            "wall_0_temperature",
+            "wall_1_temperature",
+            "wall_2_temperature",
+            "wall_3_temperature",
+            "wall_4_temperature",
+            "wall_5_temperature",
         ]
 
     def _get_fluid_model_name(self) -> str:
