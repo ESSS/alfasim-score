@@ -8,7 +8,7 @@ with open("CHANGELOG.rst", encoding="UTF-8") as changelog_file:
     history = changelog_file.read()
 
 requirements = [
-    "alfasim-sdk==0.20.0",
+    "alfasim-sdk==1.0.0",
     "attrs>=18.1.0",
     "numpy>=1.11.0",
     "pandas>=2.0.0",
