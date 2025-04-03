@@ -86,6 +86,18 @@ class AnnulusLabel(str, Enum):
 
 
 @dataclass
+class PluginReferences:
+    id_values: List[int]
+
+    def to_dict(self) -> Dict[str, Union[str, Scalar]]:
+        """Convert data to dict in order to write data to the alfacase."""
+        return {
+            "plugin_item_ids": self.id_values,
+            "container_key": "FluidContainer",
+        }
+
+
+@dataclass
 class FluidModelPvt:
     name: str
 
@@ -111,17 +123,16 @@ class SolidMechanicalProperties:
 
 @dataclass
 class AnnulusDepthTable:
-    fluid_names: List[str] = field(default_factory=lambda: [])
-    fluid_ids: List[float] = field(default_factory=lambda: [])
     initial_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
     final_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
+    fluid_references: PluginReferences = field(default_factory=lambda: PluginReferences([]))
 
     def to_dict(self, annulus_label: AnnulusLabel) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
         columns = {
-            f"fluid_id_{annulus_label.value}": self.fluid_ids,
             f"fluid_initial_measured_depth_{annulus_label.value}": self.initial_depths,
             f"fluid_final_measured_depth_{annulus_label.value}": self.final_depths,
+            f"fluid_name_{annulus_label.value}": self.fluid_references.to_dict(),
         }
         return {"columns": columns}
 

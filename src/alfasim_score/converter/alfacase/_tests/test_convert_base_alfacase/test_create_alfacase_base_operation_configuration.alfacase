@@ -96,8 +96,6 @@ plugins:
       is_open_seabed_a: False
       annulus_depth_table_a:
         columns:
-          fluid_id_a:
-          - 1.0
           fluid_initial_measured_depth_a:
             values:
             - 0.0
@@ -106,6 +104,10 @@ plugins:
             values:
             - 3493.1800000000003
             unit: m
+          fluid_name_a:
+            plugin_item_ids:
+            - 1
+            container_key: FluidContainer
       annulus_temperature_table_a:
         columns:
           temperature_depth_a:
@@ -159,8 +161,6 @@ plugins:
       is_open_seabed_b: False
       annulus_depth_table_b:
         columns:
-          fluid_id_b:
-          - 2.0
           fluid_initial_measured_depth_b:
             values:
             - 0.0
@@ -169,6 +169,10 @@ plugins:
             values:
             - 2833.0
             unit: m
+          fluid_name_b:
+            plugin_item_ids:
+            - 2
+            container_key: FluidContainer
       annulus_temperature_table_b:
         columns:
           temperature_depth_b:
@@ -228,13 +232,15 @@ plugins:
       is_open_seabed_c: False
       annulus_depth_table_c:
         columns:
-          fluid_id_c: []
           fluid_initial_measured_depth_c:
             values: []
             unit: m
           fluid_final_measured_depth_c:
             values: []
             unit: m
+          fluid_name_c:
+            plugin_item_ids: []
+            container_key: FluidContainer
       annulus_temperature_table_c:
         columns:
           temperature_depth_c:
@@ -262,13 +268,15 @@ plugins:
       is_open_seabed_d: False
       annulus_depth_table_d:
         columns:
-          fluid_id_d: []
           fluid_initial_measured_depth_d:
             values: []
             unit: m
           fluid_final_measured_depth_d:
             values: []
             unit: m
+          fluid_name_d:
+            plugin_item_ids: []
+            container_key: FluidContainer
       annulus_temperature_table_d:
         columns:
           temperature_depth_d:
@@ -296,13 +304,15 @@ plugins:
       is_open_seabed_e: False
       annulus_depth_table_e:
         columns:
-          fluid_id_e: []
           fluid_initial_measured_depth_e:
             values: []
             unit: m
           fluid_final_measured_depth_e:
             values: []
             unit: m
+          fluid_name_e:
+            plugin_item_ids: []
+            container_key: FluidContainer
       annulus_temperature_table_e:
         columns:
           temperature_depth_e:

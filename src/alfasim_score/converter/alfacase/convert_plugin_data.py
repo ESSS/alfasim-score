@@ -12,6 +12,7 @@ from alfasim_score.common import Annulus
 from alfasim_score.common import AnnulusDepthTable
 from alfasim_score.common import AnnulusTemperatureTable
 from alfasim_score.common import FluidModelPvt
+from alfasim_score.common import PluginReferences
 from alfasim_score.common import SolidMechanicalProperties
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import filter_duplicated_materials_by_name
@@ -80,22 +81,19 @@ class ScoreAPBPluginConverter:
         self, fluids_data: List[Dict[str, Any]]
     ) -> AnnulusDepthTable:
         """Build the table with fluids in the annular."""
-        fluid_names = []
-        fluid_ids = []
         initial_depths = []
         final_depths = []
+        fluid_ids = []
         for fluid in fluids_data:
             # in the SCORE input file when top and base measured distance are equal means that there is no fluid there
             if fluid["top_md"] < fluid["base_md"]:
-                fluid_names.append(fluid["name"])
-                fluid_ids.append(float(self.get_fluid_id(fluid["name"])))
                 initial_depths.append(self.get_position_in_well(fluid["top_md"]).GetValue())
                 final_depths.append(self.get_position_in_well(fluid["base_md"]).GetValue())
+                fluid_ids.append(int(self.get_fluid_id(fluid["name"])))
         return AnnulusDepthTable(
-            fluid_names,
-            fluid_ids,
             Array(initial_depths, LENGTH_UNIT),
             Array(final_depths, LENGTH_UNIT),
+            PluginReferences(fluid_ids),
         )
 
     def _has_annular_fluid(self, fluids_data: List[Dict[str, Any]]) -> bool:
