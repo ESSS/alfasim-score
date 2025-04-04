@@ -85,6 +85,12 @@ class AnnulusLabel(str, Enum):
     E = "e"
 
 
+class ThermalPropertyUpdateMode(str, Enum):
+    DISABLED = "Disabled"
+    FIRST_TIME_STEP = "First time step"
+    ALL_TIME_STEP = "All time steps"
+
+
 @dataclass
 class PluginReferences:
     id_values: List[int]
@@ -198,6 +204,19 @@ class Annuli:
         for annulus_label in AnnulusLabel:
             data.update(getattr(self, f"annulus_{annulus_label.value}").to_dict(annulus_label))
         return data
+
+
+@dataclass
+class Options:
+    thermal_property_update_mode: ThermalPropertyUpdateMode
+    is_gas_lift_on: bool
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert data to dict in order to write data to the alfacase."""
+        return {
+            "thermal_property_update_mode": self.thermal_property_update_mode,
+            "is_gas_lift_on": self.is_gas_lift_on,
+        }
 
 
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:

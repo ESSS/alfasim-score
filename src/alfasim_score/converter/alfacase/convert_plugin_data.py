@@ -12,8 +12,11 @@ from alfasim_score.common import Annulus
 from alfasim_score.common import AnnulusDepthTable
 from alfasim_score.common import AnnulusTemperatureTable
 from alfasim_score.common import FluidModelPvt
+from alfasim_score.common import LiftMethod
+from alfasim_score.common import Options
 from alfasim_score.common import PluginReferences
 from alfasim_score.common import SolidMechanicalProperties
+from alfasim_score.common import ThermalPropertyUpdateMode
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import filter_duplicated_materials_by_name
 from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
@@ -26,7 +29,12 @@ class ScoreAPBPluginConverter:
     def __init__(self, score_input_reader: ScoreInputReader):
         self.score_input = score_input_reader
         self.general_data = score_input_reader.read_general_data()
+        self.operation_data = score_input_reader.read_operation_data()
         self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
+
+    def has_gas_lift(self) -> bool:
+        """Check if the operation has gas lift."""
+        return self.operation_data.get("lift_method", "") == LiftMethod.GAS_LIFT
 
     def get_position_in_well(self, position: Scalar) -> Scalar:
         """
@@ -197,11 +205,18 @@ class ScoreAPBPluginConverter:
         # NOTE: for now the converter only uses PVT table model
         return [FluidModelPvt(name) for name in self.get_all_annular_fluid_names()]
 
+    def _convert_options(self) -> Options:
+        return Options(
+            thermal_property_update_mode=ThermalPropertyUpdateMode.FIRST_TIME_STEP,
+            is_gas_lift_on=self.has_gas_lift(),
+        )
+
     def build_plugin_description(self) -> PluginDescription:
         """Generate the configured node with data of the current operation."""
         annuli = self._convert_annuli()
         fluids = self._convert_fluids()
         materials = self._convert_solid_mechanical_properties()
+        options = self._convert_options()
         gui_models = {
             "AnnulusDataModel": {
                 "name": "Annulus Data Model",
@@ -215,6 +230,7 @@ class ScoreAPBPluginConverter:
                 "name": "Mechanical Properties",
                 "_children_list": [material.to_dict() for material in materials],
             },
+            "Options": {"name": "Options", **options.to_dict()},
         }
         return PluginDescription(
             name="apb",

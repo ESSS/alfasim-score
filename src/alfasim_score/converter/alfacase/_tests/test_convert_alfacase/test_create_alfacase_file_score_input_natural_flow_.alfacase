@@ -414,6 +414,10 @@ plugins:
         thermal_expansion_coefficient:
           value: 0.0
           unit: 1/K
+    Options:
+      name: Options
+      thermal_property_update_mode: First time step
+      is_gas_lift_on: False
   is_enabled: True
 pvt_models:
   default_model: base
