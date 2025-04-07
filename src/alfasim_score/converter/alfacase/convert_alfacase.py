@@ -145,6 +145,7 @@ class ScoreAlfacaseConverter:
     def _convert_casing_list(self) -> List[CasingSectionDescription]:
         """Create the description for the casings."""
         casing_sections = []
+        cement = self.score_input.read_cement_material()[0]
         for casing in self.score_input.read_casings():
             for i, section in enumerate(casing["sections"], 1):
                 hanger_depth = self.get_position_in_well(section["top_md"])
@@ -164,7 +165,7 @@ class ScoreAlfacaseConverter:
                         inner_roughness=CASING_DEFAULT_ROUGHNESS,
                         material=section["material"],
                         top_of_filler=top_of_filler,
-                        filler_material=CEMENT_NAME,
+                        filler_material=cement["name"],
                         material_above_filler=casing["annular_fluids"][-1]["name"],
                     )
                 )

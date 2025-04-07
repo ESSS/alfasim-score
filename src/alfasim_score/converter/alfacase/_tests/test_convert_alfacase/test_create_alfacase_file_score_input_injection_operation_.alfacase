@@ -116,8 +116,10 @@ plugins:
             - 2975.0
             unit: m
           temperature_a:
-          - 4.0
-          - 68.69767441860465
+            values:
+            - 4.0
+            - 68.69767441860465
+            unit: degC
       has_fluid_return_a: True
       initial_leakoff_a:
         value: 0.0
@@ -151,8 +153,10 @@ plugins:
             - 2975.0
             unit: m
           temperature_b:
-          - 4.0
-          - 68.69767441860465
+            values:
+            - 4.0
+            - 68.69767441860465
+            unit: degC
       has_fluid_return_b: True
       initial_leakoff_b:
         value: 0.0
@@ -277,10 +281,13 @@ plugins:
       _children_list:
       - name: Brine_860
         fluid_type: PVT
+        pvt_table_content: Brine_860.tab
       - name: DFLT_FCBA_9.80
         fluid_type: PVT
+        pvt_table_content: DFLT_FCBA_9.80.tab
       - name: DFLT_FPBA_BARITE_11.50_311300
         fluid_type: PVT
+        pvt_table_content: DFLT_FPBA_BARITE_11.50_311300.tab
     MechanicalContainer:
       name: Mechanical Properties
       _children_list:
@@ -795,7 +802,7 @@ wells:
       top_of_filler:
         value: 0.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: CONDUCTOR_JETTING_2
       hanger_depth:
@@ -820,7 +827,7 @@ wells:
       top_of_filler:
         value: 22.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: SURFACE_CASING_1
       hanger_depth:
@@ -845,7 +852,7 @@ wells:
       top_of_filler:
         value: 0.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: PRODUCTION_CASING_1
       hanger_depth:
@@ -870,7 +877,7 @@ wells:
       top_of_filler:
         value: 1700.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_11.50_311300
     - name: PRODUCTION_CASING_2
       hanger_depth:
@@ -895,7 +902,7 @@ wells:
       top_of_filler:
         value: 2270.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_11.50_311300
     - name: PRODUCTION_CASING_3
       hanger_depth:
@@ -920,7 +927,7 @@ wells:
       top_of_filler:
         value: 2655.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_11.50_311300
     tubings:
     - name: TUBING_1
@@ -1312,42 +1319,42 @@ wells:
       start:
         value: 2325.0
         unit: m
-      material: Folhelho
+      material: FC_Folhelho
     - name: formation_2
       start:
         value: 2744.67
         unit: m
-      material: Arenito
+      material: FC_Arenito
     - name: formation_3
       start:
         value: 2836.64
         unit: m
-      material: Folhelho
+      material: FC_Folhelho
     - name: formation_4
       start:
         value: 3001.42
         unit: m
-      material: Arenito
+      material: FC_Arenito
     - name: formation_5
       start:
         value: 3024.41
         unit: m
-      material: Folhelho
+      material: FC_Folhelho
     - name: formation_6
       start:
         value: 3535.0
         unit: m
-      material: Halita
+      material: FC_Halita
     - name: formation_7
       start:
         value: 5145.0
         unit: m
-      material: Calcario
+      material: FC_Calcario
     - name: formation_8
       start:
         value: 5515.0
         unit: m
-      material: Coquina
+      material: FC_Coquina
   top_node: WELLBORE_TOP_NODE
   bottom_node: WELLBORE_BOTTOM_NODE
   environment:

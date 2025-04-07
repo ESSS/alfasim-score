@@ -131,23 +131,25 @@ plugins:
             - 3906.79
             unit: m
           temperature_a:
-          - 4.44
-          - 5.216276362194144
-          - 45.102570507084444
-          - 45.933404962426266
-          - 46.763092625000326
-          - 47.59008242813707
-          - 48.41336681214941
-          - 49.23194273183265
-          - 50.04481287852061
-          - 50.8509868951526
-          - 51.649482582870945
-          - 52.439327097679005
-          - 53.219558135701675
-          - 53.98922510560453
-          - 54.74739028674283
-          - 55.47930539330239
-          - 105.99050193584353
+            values:
+            - 4.44
+            - 5.216276362194144
+            - 45.102570507084444
+            - 45.933404962426266
+            - 46.763092625000326
+            - 47.59008242813707
+            - 48.41336681214941
+            - 49.23194273183265
+            - 50.04481287852061
+            - 50.8509868951526
+            - 51.649482582870945
+            - 52.439327097679005
+            - 53.219558135701675
+            - 53.98922510560453
+            - 54.74739028674283
+            - 55.47930539330239
+            - 105.99050193584353
+            unit: degC
       has_fluid_return_a: True
       initial_leakoff_a:
         value: 0.0
@@ -196,23 +198,25 @@ plugins:
             - 3906.79
             unit: m
           temperature_b:
-          - 4.44
-          - 5.216276362194144
-          - 45.102570507084444
-          - 45.933404962426266
-          - 46.763092625000326
-          - 47.59008242813707
-          - 48.41336681214941
-          - 49.23194273183265
-          - 50.04481287852061
-          - 50.8509868951526
-          - 51.649482582870945
-          - 52.439327097679005
-          - 53.219558135701675
-          - 53.98922510560453
-          - 54.74739028674283
-          - 55.47930539330239
-          - 105.99050193584353
+            values:
+            - 4.44
+            - 5.216276362194144
+            - 45.102570507084444
+            - 45.933404962426266
+            - 46.763092625000326
+            - 47.59008242813707
+            - 48.41336681214941
+            - 49.23194273183265
+            - 50.04481287852061
+            - 50.8509868951526
+            - 51.649482582870945
+            - 52.439327097679005
+            - 53.219558135701675
+            - 53.98922510560453
+            - 54.74739028674283
+            - 55.47930539330239
+            - 105.99050193584353
+            unit: degC
       has_fluid_return_b: True
       initial_leakoff_b:
         value: 0.0
@@ -337,10 +341,13 @@ plugins:
       _children_list:
       - name: Brine_860
         fluid_type: PVT
+        pvt_table_content: Brine_860.tab
       - name: DFLT_FCBA_9.00
         fluid_type: PVT
+        pvt_table_content: DFLT_FCBA_9.00.tab
       - name: DFLT_FPBA_BARITE_8.60_35000
         fluid_type: PVT
+        pvt_table_content: DFLT_FPBA_BARITE_8.60_35000.tab
     MechanicalContainer:
       name: Mechanical Properties
       _children_list:
@@ -805,7 +812,7 @@ wells:
       top_of_filler:
         value: 0.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: SURFACE_CASING_1
       hanger_depth:
@@ -830,7 +837,7 @@ wells:
       top_of_filler:
         value: 0.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: PRODUCTION_CASING_1
       hanger_depth:
@@ -855,7 +862,7 @@ wells:
       top_of_filler:
         value: 1000.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     - name: PRODUCTION_CASING_2
       hanger_depth:
@@ -880,7 +887,7 @@ wells:
       top_of_filler:
         value: 2833.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     - name: PRODUCTION_CASING_3
       hanger_depth:
@@ -905,7 +912,7 @@ wells:
       top_of_filler:
         value: 3369.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     tubings:
     - name: TUBING_1
@@ -1311,7 +1318,7 @@ wells:
       start:
         value: 2072.0
         unit: m
-      material: Folhelho
+      material: FC_Folhelho
   top_node: WELLBORE_TOP_NODE
   bottom_node: WELLBORE_BOTTOM_NODE
   environment:

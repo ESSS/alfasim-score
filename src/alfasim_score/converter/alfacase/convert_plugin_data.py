@@ -7,22 +7,23 @@ from alfasim_sdk import PluginDescription
 from barril.units import Array
 from barril.units import Scalar
 
-from alfasim_score.common import Annuli
-from alfasim_score.common import Annulus
-from alfasim_score.common import AnnulusDepthTable
-from alfasim_score.common import AnnulusTemperatureTable
-from alfasim_score.common import FluidModelPvt
 from alfasim_score.common import LiftMethod
-from alfasim_score.common import Options
-from alfasim_score.common import PluginReferences
-from alfasim_score.common import SolidMechanicalProperties
-from alfasim_score.common import ThermalPropertyUpdateMode
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import filter_duplicated_materials_by_name
 from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
 from alfasim_score.constants import HAS_FLUID_RETURN
+from alfasim_score.converter.alfacase.apb_plugin_data import Annuli
+from alfasim_score.converter.alfacase.apb_plugin_data import Annulus
+from alfasim_score.converter.alfacase.apb_plugin_data import AnnulusDepthTable
+from alfasim_score.converter.alfacase.apb_plugin_data import AnnulusTemperatureTable
+from alfasim_score.converter.alfacase.apb_plugin_data import FluidModelPvt
+from alfasim_score.converter.alfacase.apb_plugin_data import Options
+from alfasim_score.converter.alfacase.apb_plugin_data import PluginReferences
+from alfasim_score.converter.alfacase.apb_plugin_data import SolidMechanicalProperties
+from alfasim_score.converter.alfacase.apb_plugin_data import ThermalPropertyUpdateMode
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import TEMPERATURE_UNIT
 
 
 class ScoreAPBPluginConverter:
@@ -75,11 +76,14 @@ class ScoreAPBPluginConverter:
         )
         formation_temperature_data = self.score_input.read_formation_temperatures()
         trajectory = self.score_input.read_well_trajectory()
-        interpolated_temperatures_y = np.interp(
-            np.abs(trajectory["y"]),
-            np.abs(formation_temperature_data["elevations"].GetValues())
-            + self.general_data["air_gap"].GetValue(),
-            formation_temperature_data["temperatures"].GetValues(),
+        interpolated_temperatures_y = Array(
+            np.interp(
+                np.abs(trajectory["y"]),
+                np.abs(formation_temperature_data["elevations"].GetValues())
+                + self.general_data["air_gap"].GetValue(),
+                formation_temperature_data["temperatures"].GetValues(),
+            ),
+            TEMPERATURE_UNIT,
         )
         return AnnulusTemperatureTable(
             depths=measured_depths, temperatures=interpolated_temperatures_y

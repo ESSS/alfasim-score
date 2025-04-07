@@ -36,6 +36,14 @@ from alfasim_score.units import VOLUME_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
 
 
+def encode_formation_name(name: str) -> str:
+    return FORMATION_PREFIX + name
+
+
+def encode_cement_name(name: str) -> str:
+    return CEMENT_PREFIX + name
+
+
 class ScoreInputReader:
     def __init__(self, score_filepath: Path):
         self.score_filepath = score_filepath
@@ -119,7 +127,7 @@ class ScoreInputReader:
         properties = well_strings[0]["cementing"]["first_slurry"]["thermomechanical_property"]
         return [
             {
-                "name": CEMENT_PREFIX + CEMENT_NAME,
+                "name": encode_cement_name(CEMENT_NAME),
                 "type": "solid",
                 "density": Scalar(properties["density"], DENSITY_UNIT),
                 "thermal_conductivity": Scalar(
@@ -141,7 +149,7 @@ class ScoreInputReader:
             properties = lithology["thermomechanical_property"]
             lithology_data.append(
                 {
-                    "name": FORMATION_PREFIX + lithology["display_name"],
+                    "name": encode_formation_name(lithology["display_name"]),
                     "type": "solid",
                     "density": Scalar(properties["density"], DENSITY_UNIT),
                     "thermal_conductivity": Scalar(
@@ -270,7 +278,7 @@ class ScoreInputReader:
         """Read data for formations from SCORE input file."""
         return [
             {
-                "material": lithology["display_name"],
+                "material": encode_formation_name(lithology["display_name"]),
                 # elevations are given in quota
                 "top_elevation": Scalar(lithology["top_elevation"], LENGTH_UNIT, "length"),
                 "base_elevation": Scalar(lithology["base_elevation"], LENGTH_UNIT, "length"),

@@ -413,7 +413,7 @@ wells:
       top_of_filler:
         value: 0.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: SURFACE_CASING_1
       hanger_depth:
@@ -438,7 +438,7 @@ wells:
       top_of_filler:
         value: 0.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: PRODUCTION_CASING_1
       hanger_depth:
@@ -463,7 +463,7 @@ wells:
       top_of_filler:
         value: 1000.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     - name: PRODUCTION_CASING_2
       hanger_depth:
@@ -488,7 +488,7 @@ wells:
       top_of_filler:
         value: 2833.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     - name: PRODUCTION_CASING_3
       hanger_depth:
@@ -513,7 +513,7 @@ wells:
       top_of_filler:
         value: 3369.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     tubings:
     - name: TUBING_1
@@ -919,7 +919,7 @@ wells:
       start:
         value: 2072.0
         unit: m
-      material: Folhelho
+      material: FC_Folhelho
   top_node: WELLBORE_TOP_NODE
   bottom_node: WELLBORE_BOTTOM_NODE
   environment:
