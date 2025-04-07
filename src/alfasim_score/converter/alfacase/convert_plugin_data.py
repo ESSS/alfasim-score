@@ -7,10 +7,8 @@ from alfasim_sdk import PluginDescription
 from barril.units import Array
 from barril.units import Scalar
 
-from alfasim_score.common import LiftMethod
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import filter_duplicated_materials_by_name
-from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
 from alfasim_score.constants import HAS_FLUID_RETURN
 from alfasim_score.converter.alfacase.apb_plugin_data import Annuli
 from alfasim_score.converter.alfacase.apb_plugin_data import Annulus
@@ -21,45 +19,15 @@ from alfasim_score.converter.alfacase.apb_plugin_data import Options
 from alfasim_score.converter.alfacase.apb_plugin_data import PluginReferences
 from alfasim_score.converter.alfacase.apb_plugin_data import SolidMechanicalProperties
 from alfasim_score.converter.alfacase.apb_plugin_data import ThermalPropertyUpdateMode
+from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 
 
 class ScoreAPBPluginConverter:
-    def __init__(self, score_input_reader: ScoreInputReader):
-        self.score_input = score_input_reader
-        self.general_data = score_input_reader.read_general_data()
-        self.operation_data = score_input_reader.read_operation_data()
-        self.well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
-
-    def has_gas_lift(self) -> bool:
-        """Check if the operation has gas lift."""
-        return self.operation_data.get("lift_method", "") == LiftMethod.GAS_LIFT
-
-    def get_position_in_well(self, position: Scalar) -> Scalar:
-        """
-        Get the position relative to the well start position.
-        This method is a helper function to convert SCORE measured positions to the reference in well head
-        because this is the reference ALFAsim uses for well.
-        """
-        return position - self.well_start_position
-
-    def get_all_annular_fluid_names(self) -> List[str]:
-        """Get the list of fluid names registered as annulus fluids in tubing and casing of SCORE data."""
-        all_fluids = set([fluid["name"] for fluid in self.score_input.read_tubing_fluid_data()])
-        for casings in self.score_input.read_casings():
-            for fluid in casings["annular_fluids"]:
-                all_fluids.add(fluid["name"])
-        return sorted(all_fluids)
-
-    def get_fluid_id(self, fluid_name: str) -> int:
-        """
-        Get the fluid id.
-        This method is used because the fluids need to have an id number because the fluid in the
-        plugin is identified by this number instead of its name.
-        """
-        return self.get_all_annular_fluid_names().index(fluid_name)
+    def __init__(self, score_input_data: ScoreInputData):
+        self.score_data = score_input_data
 
     def _build_annular_temperature_table(self) -> AnnulusTemperatureTable:
         """
@@ -69,18 +37,18 @@ class ScoreAPBPluginConverter:
         """
         measured_depths = Array(
             [
-                self.get_position_in_well(depth).GetValue()
-                for depth in self.score_input.read_well_trajectory()["md"]
+                self.score_data.get_position_in_well(depth).GetValue()
+                for depth in self.score_data.reader.read_well_trajectory()["md"]
             ],
             LENGTH_UNIT,
         )
-        formation_temperature_data = self.score_input.read_formation_temperatures()
-        trajectory = self.score_input.read_well_trajectory()
+        formation_temperature_data = self.score_data.reader.read_formation_temperatures()
+        trajectory = self.score_data.reader.read_well_trajectory()
         interpolated_temperatures_y = Array(
             np.interp(
                 np.abs(trajectory["y"]),
                 np.abs(formation_temperature_data["elevations"].GetValues())
-                + self.general_data["air_gap"].GetValue(),
+                + self.score_data.general_data["air_gap"].GetValue(),
                 formation_temperature_data["temperatures"].GetValues(),
             ),
             TEMPERATURE_UNIT,
@@ -99,22 +67,18 @@ class ScoreAPBPluginConverter:
         for fluid in fluids_data:
             # in the SCORE input file when top and base measured distance are equal means that there is no fluid there
             if fluid["top_md"] < fluid["base_md"]:
-                initial_depths.append(self.get_position_in_well(fluid["top_md"]).GetValue())
-                final_depths.append(self.get_position_in_well(fluid["base_md"]).GetValue())
-                fluid_ids.append(int(self.get_fluid_id(fluid["name"])))
+                initial_depths.append(
+                    self.score_data.get_position_in_well(fluid["top_md"]).GetValue()
+                )
+                final_depths.append(
+                    self.score_data.get_position_in_well(fluid["base_md"]).GetValue()
+                )
+                fluid_ids.append(int(self.score_data.get_fluid_id(fluid["name"])))
         return AnnulusDepthTable(
             Array(initial_depths, LENGTH_UNIT),
             Array(final_depths, LENGTH_UNIT),
             PluginReferences(fluid_ids),
         )
-
-    def _has_annular_fluid(self, fluids_data: List[Dict[str, Any]]) -> bool:
-        """
-        Check if there is fluid in the annular.
-        The current criterea is to use a threshold value of ANNULUS_DEPTH_TOLERANCE to define
-        if the annulus should be considered active.
-        """
-        return any([fluid["extension"] > ANNULUS_DEPTH_TOLERANCE for fluid in fluids_data])
 
     def _convert_annuli(self) -> Annuli:
         """
@@ -122,13 +86,13 @@ class ScoreAPBPluginConverter:
         """
         # It uses the data in list in the operation/thermal_data/annuli_data to define the A, B, C, D, E annulus
         # therefore it's considered here that they sorted in the input SCORE file.
-        annuli_data = self.score_input.read_operation_annuli_data().copy()
-        initial_conditions_data = self.score_input.read_initial_condition()
+        annuli_data = self.score_data.reader.read_operation_annuli_data().copy()
+        initial_conditions_data = self.score_data.reader.read_initial_condition()
         annular_temperature_table = self._build_annular_temperature_table()
         annuli = Annuli()
         if annuli_data:
             # the annulus A uses data from tubing_strings section of SCORE file
-            tubing_fluids_data = self.score_input.read_tubing_fluid_data()
+            tubing_fluids_data = self.score_data.reader.read_tubing_fluid_data()
             annulus_data = annuli_data.pop(0)
             annuli.annulus_a = Annulus(
                 is_active=True,
@@ -142,7 +106,9 @@ class ScoreAPBPluginConverter:
             )
 
         # create a list with the casings that are in the SCORE file
-        casings_data = {casing["function"]: casing for casing in self.score_input.read_casings()}
+        casings_data = {
+            casing["function"]: casing for casing in self.score_data.reader.read_casings()
+        }
         all_casing_types = [
             WellItemFunction.CONDUCTOR,
             WellItemFunction.SURFACE,
@@ -159,7 +125,7 @@ class ScoreAPBPluginConverter:
         for annulus_label, annulus_data in zip(["b", "c", "d", "e"], annuli_data):
             while casings:
                 casing = casings.pop()
-                if self._has_annular_fluid(casing["annular_fluids"]):
+                if self.score_data.has_annular_fluid(casing["annular_fluids"]):
                     is_open_seabed = casing["function"] == WellItemFunction.SURFACE
                     setattr(
                         annuli,
@@ -177,7 +143,7 @@ class ScoreAPBPluginConverter:
                             initial_leakoff=annulus_data["leakoff_volume"],
                             has_pressure_relief=casing["pressure_relief"]["is_active"],
                             pressure_relief=casing["pressure_relief"]["pressure"],
-                            relief_position=self.get_position_in_well(
+                            relief_position=self.score_data.get_position_in_well(
                                 casing["pressure_relief"]["position"]
                             ),
                         ),
@@ -188,10 +154,10 @@ class ScoreAPBPluginConverter:
         """Convert list of mechanical properties of solid materials from SCORE file."""
         solid_materials = []
         material_list = (
-            self.score_input.read_cement_material()
-            + self.score_input.read_casing_materials()
-            + self.score_input.read_tubing_materials()
-            + self.score_input.read_lithology_materials()
+            self.score_data.reader.read_cement_material()
+            + self.score_data.reader.read_casing_materials()
+            + self.score_data.reader.read_tubing_materials()
+            + self.score_data.reader.read_lithology_materials()
         )
         for material in filter_duplicated_materials_by_name(material_list):
             solid_materials.append(
@@ -207,12 +173,12 @@ class ScoreAPBPluginConverter:
     def _convert_fluids(self) -> List[FluidModelPvt]:
         """Convert the fluids used in the annuli."""
         # NOTE: for now the converter only uses PVT table model
-        return [FluidModelPvt(name) for name in self.get_all_annular_fluid_names()]
+        return [FluidModelPvt(name) for name in self.score_data.get_all_annular_fluid_names()]
 
     def _convert_options(self) -> Options:
         return Options(
             thermal_property_update_mode=ThermalPropertyUpdateMode.FIRST_TIME_STEP,
-            is_gas_lift_on=self.has_gas_lift(),
+            is_gas_lift_on=self.score_data.has_gas_lift(),
         )
 
     def build_plugin_description(self) -> PluginDescription:

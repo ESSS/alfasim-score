@@ -399,6 +399,9 @@ class ScoreInputReader:
         ]
 
     def read_initial_condition(self) -> Dict[str, AnnulusModeType]:
+        """
+        Get the initial condition data from the input file.
+        """
         initial_conditions_data = self.input_content["initial_conditions"][0]
         return {"mode": AnnulusModeType(initial_conditions_data["reference"])}
 
