@@ -71,6 +71,16 @@ class ScoreInputData:
         total_annuli = len(annuli_data)
         return list(AnnulusLabel)[:total_annuli]
 
+    def _get_default_fluid(self, fluid_name: str) -> Dict[str, Union[Scalar, str]]:
+        return {
+            "name": fluid_name,
+            "type": "fluid",
+            "density": Scalar(1000.0, "kg/m3", "density"),
+            "thermal_conductivity": Scalar(0.6, THERMAL_CONDUCTIVITY_UNIT),
+            "specific_heat": Scalar(4181.0, SPECIFIC_HEAT_UNIT),
+            "thermal_expansion": Scalar(0.0004, THERMAL_EXPANSION_UNIT),
+        }
+
     def get_default_fluid_properties(self) -> List[Dict[str, Union[Scalar, str]]]:
         """
         Get default properties for the materials that must be filled for material list
@@ -78,26 +88,9 @@ class ScoreInputData:
         The properties here are for now the same of default packer fluid
         """
         return [
-            {
-                "name": fluid_name,
-                "type": "fluid",
-                "density": Scalar(1000.0, "kg/m3", "density"),
-                "thermal_conductivity": Scalar(0.6, THERMAL_CONDUCTIVITY_UNIT),
-                "specific_heat": Scalar(4181.0, SPECIFIC_HEAT_UNIT),
-                "thermal_expansion": Scalar(0.0004, THERMAL_EXPANSION_UNIT),
-            }
-            for fluid_name in self.get_all_annular_fluid_names()
+            self._get_default_fluid(fluid_name) for fluid_name in self.get_all_annular_fluid_names()
         ]
 
     def get_default_packer_fluid(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Get the properties of default fluid above packer."""
-        return [
-            {
-                "name": FLUID_DEFAULT_NAME,
-                "type": "fluid",
-                "density": Scalar(1000.0, "kg/m3", "density"),
-                "thermal_conductivity": Scalar(0.6, THERMAL_CONDUCTIVITY_UNIT),
-                "specific_heat": Scalar(4181.0, SPECIFIC_HEAT_UNIT),
-                "thermal_expansion": Scalar(0.0004, THERMAL_EXPANSION_UNIT),
-            }
-        ]
+        return [self._get_default_fluid(FLUID_DEFAULT_NAME)]
