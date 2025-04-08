@@ -153,11 +153,13 @@ class BaseOperationBuilder:
         )
 
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
-        """Configure the pvt fluid for the model."""
+        """
+        Configure the pvt fluid for the model.
+        This method do not include the pvt tables provided by SCORE because they are
+        already used in the proper plugin section otherwise ALFAsim complains about duplication.
+        """
         operation_fluid = self.score_data.operation_data["fluid"]
         tables = {"base": Path(f"{operation_fluid}.tab")}
-        fluid_names = self.score_data.get_all_annular_fluid_names()
-        tables.update({name: Path(f"{name}.tab") for name in fluid_names})
         alfacase.pvt_models = PvtModelsDescription(
             default_model="base",
             tables=tables,

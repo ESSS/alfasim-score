@@ -440,9 +440,6 @@ pvt_models:
   default_model: base
   tables:
     base: Water.tab
-    Brine_860: Brine_860.tab
-    DFLT_FCBA_9.80: DFLT_FCBA_9.80.tab
-    DFLT_FPBA_BARITE_11.50_311300: DFLT_FPBA_BARITE_11.50_311300.tab
 outputs:
   automatic_trend_frequency: True
   trends:

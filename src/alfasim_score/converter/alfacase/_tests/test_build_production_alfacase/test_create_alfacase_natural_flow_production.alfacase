@@ -430,9 +430,6 @@ pvt_models:
   default_model: base
   tables:
     base: DFLT_BLACK_OIL_27.40_230.00_1.17.tab
-    Brine_860: Brine_860.tab
-    DFLT_FCBA_9.03: DFLT_FCBA_9.03.tab
-    DFLT_FPBA_BARITE_8.60_35000: DFLT_FPBA_BARITE_8.60_35000.tab
   correlations:
     DFLT_BLACK_OIL_27.40_230.00_1.17:
       oil_density_std:
