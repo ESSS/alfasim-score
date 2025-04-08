@@ -3,7 +3,6 @@ from typing import Dict
 from typing import List
 from typing import Union
 
-import csv
 import json
 from barril.units import Array
 from barril.units import Scalar
@@ -411,24 +410,3 @@ class ScoreInputReader:
                 ),
             }
         return {}
-
-    def export_profile_curve(self, filepath: Path, curve_name: str) -> None:
-        """
-        Export the result of a curve to a file.
-        This function export the measured depth related to the well start positions.
-        The exported output file is used to check cases results.
-        """
-        curves = self.read_output_curves()
-        if len(curves):
-            general_data = self.read_general_data()
-            start_position = general_data["water_depth"] + general_data["air_gap"]
-            with open(filepath, "w", encoding="utf-8") as csv_file:
-                writer = csv.DictWriter(csv_file, fieldnames=["measured_depth", curve_name])
-                writer.writeheader()
-                for md, value in zip(curves["measured_depth"], curves[curve_name]):
-                    writer.writerow(
-                        {
-                            "measured_depth": md - start_position.GetValue(LENGTH_UNIT),
-                            curve_name: value,
-                        }
-                    )
