@@ -18,7 +18,6 @@ from alfasim_score.common import WellItemFunction
 from alfasim_score.common import WellItemType
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import CEMENT_PREFIX
-from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import FORMATION_PREFIX
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import DIAMETER_UNIT
@@ -163,19 +162,6 @@ class ScoreInputReader:
                 }
             )
         return lithology_data
-
-    def read_packer_fluid(self) -> List[Dict[str, Union[Scalar, str]]]:
-        """Get the properties of default fluid above packer."""
-        return [
-            {
-                "name": FLUID_DEFAULT_NAME,
-                "type": "fluid",
-                "density": Scalar(1000.0, "kg/m3", "density"),
-                "thermal_conductivity": Scalar(0.6, THERMAL_CONDUCTIVITY_UNIT),
-                "specific_heat": Scalar(4181.0, SPECIFIC_HEAT_UNIT),
-                "thermal_expansion": Scalar(0.0004, THERMAL_EXPANSION_UNIT),
-            }
-        ]
 
     def read_casings(self) -> List[Dict[str, Any]]:
         """Read the data for the casing from SCORE input file."""

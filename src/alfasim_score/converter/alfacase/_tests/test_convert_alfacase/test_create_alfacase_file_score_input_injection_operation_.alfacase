@@ -1937,4 +1937,73 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
+- name: Brine_860
+  material_type: fluid
+  density:
+    value: 1000.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 0.6
+    unit: W/m.K
+  heat_capacity:
+    value: 4181.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0004
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: DFLT_FCBA_9.80
+  material_type: fluid
+  density:
+    value: 1000.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 0.6
+    unit: W/m.K
+  heat_capacity:
+    value: 4181.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0004
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: DFLT_FPBA_BARITE_11.50_311300
+  material_type: fluid
+  density:
+    value: 1000.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 0.6
+    unit: W/m.K
+  heat_capacity:
+    value: 4181.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0004
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
 walls: []

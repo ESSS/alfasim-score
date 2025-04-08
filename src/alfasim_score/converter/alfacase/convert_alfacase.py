@@ -74,7 +74,8 @@ class ScoreAlfacaseConverter:
             + self.score_data.reader.read_casing_materials()
             + self.score_data.reader.read_tubing_materials()
             + self.score_data.reader.read_lithology_materials()
-            + self.score_data.reader.read_packer_fluid()
+            + self.score_data.get_default_packer_fluid()
+            + self.score_data.get_default_fluid_properties()
         )
         for material in filter_duplicated_materials_by_name(material_list):
             material_descriptions.append(

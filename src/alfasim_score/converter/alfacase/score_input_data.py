@@ -1,13 +1,18 @@
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Union
 
 from barril.units import Scalar
 
 from alfasim_score.common import AnnulusLabel
 from alfasim_score.common import LiftMethod
 from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
+from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
+from alfasim_score.units import SPECIFIC_HEAT_UNIT
+from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
+from alfasim_score.units import THERMAL_EXPANSION_UNIT
 
 
 class ScoreInputData:
@@ -65,3 +70,34 @@ class ScoreInputData:
         annuli_data = self.reader.read_operation_annuli_data()
         total_annuli = len(annuli_data)
         return list(AnnulusLabel)[:total_annuli]
+
+    def get_default_fluid_properties(self) -> List[Dict[str, Union[Scalar, str]]]:
+        """
+        Get default properties for the materials that must be filled for material list
+        of alfacase regardless their properties are being calculated from pvt table in the plugin.
+        The properties here are for now the same of default packer fluid
+        """
+        return [
+            {
+                "name": fluid_name,
+                "type": "fluid",
+                "density": Scalar(1000.0, "kg/m3", "density"),
+                "thermal_conductivity": Scalar(0.6, THERMAL_CONDUCTIVITY_UNIT),
+                "specific_heat": Scalar(4181.0, SPECIFIC_HEAT_UNIT),
+                "thermal_expansion": Scalar(0.0004, THERMAL_EXPANSION_UNIT),
+            }
+            for fluid_name in self.get_all_annular_fluid_names()
+        ]
+
+    def get_default_packer_fluid(self) -> List[Dict[str, Union[Scalar, str]]]:
+        """Get the properties of default fluid above packer."""
+        return [
+            {
+                "name": FLUID_DEFAULT_NAME,
+                "type": "fluid",
+                "density": Scalar(1000.0, "kg/m3", "density"),
+                "thermal_conductivity": Scalar(0.6, THERMAL_CONDUCTIVITY_UNIT),
+                "specific_heat": Scalar(4181.0, SPECIFIC_HEAT_UNIT),
+                "thermal_expansion": Scalar(0.0004, THERMAL_EXPANSION_UNIT),
+            }
+        ]
