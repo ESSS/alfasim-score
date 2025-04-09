@@ -148,7 +148,4 @@ class Options:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
-        return {
-            "thermal_property_update_mode": self.thermal_property_update_mode,
-            "is_gas_lift_on": self.is_gas_lift_on,
-        }
+        return asdict(self)

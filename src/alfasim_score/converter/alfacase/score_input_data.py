@@ -45,8 +45,7 @@ class ScoreInputData:
         This method is a helper function to convert SCORE measured positions to the reference in well head
         because this is the reference ALFAsim uses for well.
         """
-        well_start_position = self.general_data["water_depth"] + self.general_data["air_gap"]
-        return position - well_start_position
+        return position - self.get_well_start_position()
 
     def get_all_annular_fluid_names(self) -> List[str]:
         """Get the list of fluid names registered as annulus fluids in tubing and casing of SCORE data."""

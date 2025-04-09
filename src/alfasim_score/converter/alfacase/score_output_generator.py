@@ -24,9 +24,7 @@ class ScoreOutputBuilder:
         self.score_output_filepath = score_output_filepath
         self.element_name = WELLBORE_NAME
 
-    def _generate_annuli_output(
-        self, results: Results, measured_depths: np.ndarray
-    ) -> Dict[str, Any]:
+    def _generate_annuli_output(self, results: Results, measured_depths: List) -> Dict[str, Any]:
         """Create data for the output results of annuli."""
         active_annuli = self.score_data.get_annuli_list()
         annuli_temperature_profiles = [
@@ -41,7 +39,7 @@ class ScoreOutputBuilder:
             annuli_temperature_profiles, annuli_pressure_profiles
         ):
             annuli_output[str(annulus_index)] = {}
-            annuli_output[str(annulus_index)]["MD"] = measured_depths.tolist()
+            annuli_output[str(annulus_index)]["MD"] = measured_depths
             temperature = {}
             temperature["start"] = (
                 results.get_profile_curve(temperature_profile_name, self.element_name, 0)
@@ -89,9 +87,7 @@ class ScoreOutputBuilder:
         }
         return production_tubing
 
-    def _generate_walls_output(
-        self, results: Results, measured_depths: np.ndarray
-    ) -> Dict[str, Any]:
+    def _generate_walls_output(self, results: Results, measured_depths: List) -> Dict[str, Any]:
         """Create data for the output results of walls."""
         walls_output: Dict[str, Any] = {}
         wall_index = 0
@@ -99,7 +95,7 @@ class ScoreOutputBuilder:
         for wall_label in range(TOTAL_WALLS - 1, -1, -1):
             wall_name = f"wall_{wall_label}_temperature"
             wall = {}
-            wall["MD"] = measured_depths.tolist()
+            wall["MD"] = measured_depths
             wall_temperatures = results.get_profile_curve(
                 wall_name, self.element_name, -1
             ).image.GetValues(TEMPERATURE_UNIT)
@@ -114,14 +110,15 @@ class ScoreOutputBuilder:
         """Create data for the output results."""
         results = Results(alfasim_results_filepath)
         well_start_position = self.score_data.get_well_start_position().GetValue(LENGTH_UNIT)
-        measured_depths = well_start_position + np.array(
-            results.get_profile_curve("pressure", self.element_name, -1).domain.GetValues(
+        measured_depths = list(
+            well_start_position
+            + results.get_profile_curve("pressure", self.element_name, -1).domain.GetValues(
                 LENGTH_UNIT
             )
         )
         return {
             "annuli": self._generate_annuli_output(results, measured_depths),
-            "MD": measured_depths.tolist(),
+            "MD": measured_depths,
             "production_tubing": self._generate_production_tubing_output(results),
             "layers": self._generate_walls_output(results, measured_depths),
         }
