@@ -66,7 +66,7 @@ class ScoreInputReader:
         """Read the data for the tubings from SCORE input file."""
         tubing_data = []
         for section in self.input_content["operation"]["tubing_string"]["string_sections"]:
-            thermal_property = section["pipe"]["grade"]["thermomechanical_property"]
+            thermal_property = section["pipe"]["grade"]["thermomechanical_properties"]
             tubing_data.append(
                 {
                     "name": section["pipe"]["grade"]["name"],
@@ -88,9 +88,9 @@ class ScoreInputReader:
     def read_casing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Read geometric data for the casing and annulus data associated to the casing from SCORE input file."""
         casing_data = []
-        for item in self.input_content["operation"]["thermal_simulation"]["well_strings"]:
+        for item in self.input_content["well_strings"]:
             for section in item["string_sections"]:
-                properties = section["pipe"]["grade"]["thermomechanical_property"]
+                properties = section["pipe"]["grade"]["thermomechanical_properties"]
                 casing_data.append(
                     {
                         "name": section["pipe"]["grade"]["name"],
@@ -116,7 +116,7 @@ class ScoreInputReader:
         the first_slurry and second_slurry have the same properties.
         """
         well_strings = self.input_content["well_strings"]
-        properties = well_strings[0]["cementing"]["first_slurry"]["thermomechanical_property"]
+        properties = well_strings[0]["cementing"]["first_slurry"]["thermomechanical_properties"]
         return [
             {
                 "name": CEMENT_PREFIX + CEMENT_NAME,
@@ -138,7 +138,7 @@ class ScoreInputReader:
         """Read the data for the lithologies from SCORE input file."""
         lithology_data = []
         for lithology in self.input_content["lithologies"]:
-            properties = lithology["thermomechanical_property"]
+            properties = lithology["thermomechanical_properties"]
             lithology_data.append(
                 {
                     "name": FORMATION_PREFIX + lithology["display_name"],
