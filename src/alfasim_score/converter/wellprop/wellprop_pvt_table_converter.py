@@ -2,7 +2,9 @@ import itertools
 import numpy as np
 import os
 import pandas as pd
+from barril.units import Array
 from barril.units import Scalar
+from dataclasses import dataclass
 from enum import Enum
 from io import StringIO
 from pathlib import Path
@@ -15,7 +17,7 @@ from alfasim_score.common import PvtTableNumberOfPhases
 #     water = "WATER"
 
 # @dataclass
-# class WellPropProperty:
+# class WellPropFile:
 #     name: str
 #     phase: WellPropPhase
 
@@ -24,6 +26,8 @@ from alfasim_score.common import PvtTableNumberOfPhases
 # phases = ["GAS", "equivLIQUID", "WATER"]
 # properties = ["conductivity", "cp", "density", "enthalpy", "interfacial_tension", "mass_fraction", "viscosity"]
 # temperature_files = [f"temperature_{phase}_{property}.csv" for phase in phases for property in properties]
+
+LABEL_NUMBER_OF_PHASES = "TWO"
 
 WELLPROP_FILES = [
     "temperature_GAS_conductivity.csv",
@@ -50,7 +54,7 @@ WELLPROP_FILES = [
 ]
 
 
-class StateProperties(Enum):
+class PvtTableProperties(Enum):
     GasDensity = "ROG"
     LiquidDensity = "ROHL"
     GasDensityDP = "DROGDP"
@@ -67,6 +71,14 @@ class StateProperties(Enum):
     GasThermalConductivity = "TCG"
     LiquidThermalConductivity = "TCHL"
     GasLiquidSurfaceTension = "SIGGHL"
+
+
+@dataclass
+class PvtTableData:
+    name: str
+    pressures: Array
+    temperatures: Array
+    table: pd.DataFrame
 
 
 class WellpropToPvtConverter:
@@ -130,30 +142,10 @@ class WellpropToPvtConverter:
 
         return densities_dp, densities_dt
 
-    # def generate_keyword_format_pvt_table(
-    #     table_name: Path,
-    #     destination_path,
-    #     pressure_points,
-    #     temperature_points,
-    #     properties,
-    #     number_of_phases,
-    #     save_to_file,
-    # ):
-    # file_buffer = StringIO(table_name)
-    # file_buffer.write(f"PVTTABLE LABEL = \"{table_name}\",  PHASE = TWO,  \n")
-    # file_buffer.write()
-
-    # pressure and temperature first two columns
-    # pressure_temperature = pd.DataFrame(
-    #     list(itertools.product(pressure_points, temperature_points)), columns=["PT", "TM"])
-    # [property.value for property in StateProperties]
-    # return
-
     def convert_pvt_table_data(self) -> pd.DataFrame:
         """
         Convert the data from wellprop tables into PVT tab file format.
         """
-        name = self.pvt_filename
         temperatures = self.dataframes["GAS_cp"].columns.astype(float) - 273.15
         pressures = self.dataframes["GAS_cp"].index.astype(float)
         number_of_points = len(temperatures) * len(pressures)
@@ -200,44 +192,82 @@ class WellpropToPvtConverter:
             .flatten(),
         }
 
-        properties[StateProperties.LiquidDensity.value] = np.array(liquid_densities)
-        properties[StateProperties.LiquidDensityDP.value] = np.array(liquid_densities_dp)
-        properties[StateProperties.LiquidDensityDT.value] = np.array(liquid_densities_dt)
-        properties[StateProperties.GasDensity.value] = np.array(gas_densities)
-        properties[StateProperties.GasDensityDP.value] = np.array(gas_densities_dp)
-        properties[StateProperties.GasDensityDT.value] = np.array(gas_densities_dt)
-        properties[StateProperties.GasMassFraction.value] = np.array(gas_constants["mass_fraction"])
-        properties[StateProperties.GasViscosity.value] = np.array(gas_constants["viscosity"])
-        properties[StateProperties.LiquidViscosity.value] = np.array(liquid_constants["viscosity"])
-        properties[StateProperties.GasSpecificHeat.value] = np.array(gas_constants["specific_heat"])
-        properties[StateProperties.LiquidSpecificHeat.value] = np.array(
+        properties[PvtTableProperties.LiquidDensity.value] = np.array(liquid_densities)
+        properties[PvtTableProperties.LiquidDensityDP.value] = np.array(liquid_densities_dp)
+        properties[PvtTableProperties.LiquidDensityDT.value] = np.array(liquid_densities_dt)
+        properties[PvtTableProperties.GasDensity.value] = np.array(gas_densities)
+        properties[PvtTableProperties.GasDensityDP.value] = np.array(gas_densities_dp)
+        properties[PvtTableProperties.GasDensityDT.value] = np.array(gas_densities_dt)
+        properties[PvtTableProperties.GasMassFraction.value] = np.array(
+            gas_constants["mass_fraction"]
+        )
+        properties[PvtTableProperties.GasViscosity.value] = np.array(gas_constants["viscosity"])
+        properties[PvtTableProperties.LiquidViscosity.value] = np.array(
+            liquid_constants["viscosity"]
+        )
+        properties[PvtTableProperties.GasSpecificHeat.value] = np.array(
+            gas_constants["specific_heat"]
+        )
+        properties[PvtTableProperties.LiquidSpecificHeat.value] = np.array(
             liquid_constants["specific_heat"]
         )
-        properties[StateProperties.GasSpecificEnthalpy.value] = np.array(
+        properties[PvtTableProperties.GasSpecificEnthalpy.value] = np.array(
             gas_constants["specific_enthalpy"]
         )
-        properties[StateProperties.LiquidSpecificEnthalpy.value] = np.array(
+        properties[PvtTableProperties.LiquidSpecificEnthalpy.value] = np.array(
             liquid_constants["specific_enthalpy"]
         )
-        properties[StateProperties.GasThermalConductivity.value] = np.array(
+        properties[PvtTableProperties.GasThermalConductivity.value] = np.array(
             gas_constants["conductivity"]
         )
-        properties[StateProperties.LiquidThermalConductivity.value] = np.array(
+        properties[PvtTableProperties.LiquidThermalConductivity.value] = np.array(
             liquid_constants["conductivity"]
         )
-        properties[StateProperties.GasLiquidSurfaceTension.value] = np.array(
+        properties[PvtTableProperties.GasLiquidSurfaceTension.value] = np.array(
             [Scalar(0.0, "N/m").GetValue("N/m")] * number_of_points
         )
         for key, value in properties.items():
             if not value.size:
                 properties[key] = np.zeros(number_of_points)
 
-        return pd.concat(
-            [
-                pd.DataFrame(
-                    list(itertools.product(pressures, temperatures)), columns=["PT", "TM"]
-                ),
-                pd.DataFrame(properties, columns=[property.value for property in StateProperties]),
-            ],
-            axis=1,
+        return PvtTableData(
+            name=self.pvt_filename,
+            pressures=Array(list(pressures), "Pa"),
+            temperatures=Array(list(temperatures), "degC"),
+            table=pd.concat(
+                [
+                    pd.DataFrame(
+                        list(itertools.product(pressures, temperatures)), columns=["PT", "TM"]
+                    ),
+                    pd.DataFrame(
+                        properties, columns=[property.value for property in PvtTableProperties]
+                    ),
+                ],
+                axis=1,
+            ),
         )
+
+    def generate_pvt_table_content(self, pvt_table_data: PvtTableData) -> StringIO:
+        format_numbers = lambda number: "{:.6e}".format(number)
+        file_buffer = StringIO(f"{pvt_table_data.name}.tab")
+        file_buffer.write(
+            f'PVTTABLE LABEL = "{pvt_table_data.name}", PHASE = {LABEL_NUMBER_OF_PHASES},\n'
+        )
+        file_buffer.write(f"STDPRESSURE = 1.000000e+00 ATM,\\\n")
+        file_buffer.write(f"STDTEMPERATURE = 2.887100e+02 K,\\\n")
+        file_buffer.write(
+            "PRESSURE = ({}) Pa,\\\n".format(
+                ", ".join(map(format_numbers, pvt_table_data.pressures.GetValues("Pa")))
+            )
+        )
+        file_buffer.write(
+            "TEMPERATURE = ({}) C,\\\n".format(
+                ", ".join(map(format_numbers, pvt_table_data.temperatures.GetValues("degC")))
+            )
+        )
+        file_buffer.write("COLUMNS = ({})\n".format(", ".join(pvt_table_data.table.columns)))
+        for _, row in pvt_table_data.table.iterrows():
+            file_buffer.write(
+                f"PVTTABLE POINT = ({', '.join(map(format_numbers, row.tolist()))})\n"
+            )
+        return file_buffer
