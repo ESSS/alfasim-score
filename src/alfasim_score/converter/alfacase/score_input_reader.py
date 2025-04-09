@@ -115,7 +115,7 @@ class ScoreInputReader:
         This method assumes all configured cement properties are the same and that
         the first_slurry and second_slurry have the same properties.
         """
-        well_strings = self.input_content["operation"]["thermal_simulation"]["well_strings"]
+        well_strings = self.input_content["well_strings"]
         properties = well_strings[0]["cementing"]["first_slurry"]["thermomechanical_property"]
         return [
             {
