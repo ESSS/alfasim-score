@@ -13,6 +13,7 @@ from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
 from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
@@ -117,3 +118,10 @@ class ScoreInputData:
                             curve_name: value,
                         }
                     )
+
+    def get_seabed_hydrostatic_pressure(self) -> Scalar:
+        """Calculate the value of hydrostatic pressure at seabed position."""
+        rho = 1025  # kg/m3
+        g = 9.8  # m/s²
+        h = self.general_data["water_depth"].GetValue(LENGTH_UNIT)
+        return Scalar(rho * g * h, "Pa")

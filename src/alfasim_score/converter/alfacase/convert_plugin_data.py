@@ -22,6 +22,7 @@ from alfasim_score.converter.alfacase.apb_plugin_data import ThermalPropertyUpda
 from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 
 
@@ -127,6 +128,11 @@ class ScoreAPBPluginConverter:
                 casing = casings.pop()
                 if self.score_data.has_annular_fluid(casing["annular_fluids"]):
                     is_open_seabed = casing["function"] == WellItemFunction.SURFACE
+                    water_depth_pressure = (
+                        self.score_data.get_seabed_hydrostatic_pressure()
+                        if is_open_seabed
+                        else Scalar(0.0, PRESSURE_UNIT)
+                    )
                     setattr(
                         annuli,
                         f"annulus_{annulus_label}",
@@ -146,6 +152,7 @@ class ScoreAPBPluginConverter:
                             relief_position=self.score_data.get_position_in_well(
                                 casing["pressure_relief"]["position"]
                             ),
+                            water_depth_pressure=water_depth_pressure,
                         ),
                     )
         return annuli

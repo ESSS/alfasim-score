@@ -131,6 +131,9 @@ plugins:
       relief_position_a:
         value: 0.0
         unit: m
+      water_depth_pressure_a:
+        value: 0.0
+        unit: psi
       is_active_b: True
       mode_type_b: Undisturbed
       initial_top_pressure_b:
@@ -174,6 +177,9 @@ plugins:
       relief_position_b:
         value: 6370.377952755905
         unit: m
+      water_depth_pressure_b:
+        value: 0.0
+        unit: psi
       is_active_c: False
       mode_type_c: Undisturbed
       initial_top_pressure_c:
@@ -210,6 +216,9 @@ plugins:
       relief_position_c:
         value: 0.0
         unit: m
+      water_depth_pressure_c:
+        value: 0.0
+        unit: psi
       is_active_d: False
       mode_type_d: Undisturbed
       initial_top_pressure_d:
@@ -246,6 +255,9 @@ plugins:
       relief_position_d:
         value: 0.0
         unit: m
+      water_depth_pressure_d:
+        value: 0.0
+        unit: psi
       is_active_e: False
       mode_type_e: Undisturbed
       initial_top_pressure_e:
@@ -282,6 +294,9 @@ plugins:
       relief_position_e:
         value: 0.0
         unit: m
+      water_depth_pressure_e:
+        value: 0.0
+        unit: psi
     FluidContainer:
       name: Annulus Fluids Container
       _children_list:

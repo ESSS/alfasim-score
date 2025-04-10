@@ -107,6 +107,7 @@ class Annulus:
     has_pressure_relief: bool = False
     pressure_relief: Scalar = Scalar(0.0, PRESSURE_UNIT)
     relief_position: Scalar = Scalar(0.0, LENGTH_UNIT)
+    water_depth_pressure: Scalar = Scalar(0.0, PRESSURE_UNIT)
 
     def to_dict(self, annulus_label: AnnulusLabel) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
@@ -116,8 +117,9 @@ class Annulus:
                 value = self.annulus_depth_table.to_dict(annulus_label)
             elif key == "annulus_temperature_table":
                 value = self.annulus_temperature_table.to_dict(annulus_label)
+            # pressure_relief for annulus A has a different name
             if f"{key}_{annulus_label.value}" == "pressure_relief_a":
-                output[f"glv_delta_pressure_a"] = value
+                output["glv_delta_pressure_a"] = value
                 continue
             output[f"{key}_{annulus_label.value}"] = value
         return output
