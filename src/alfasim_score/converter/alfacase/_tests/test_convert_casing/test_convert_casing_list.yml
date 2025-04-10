@@ -1,4 +1,4 @@
-- filler_material: cement
+- filler_material: CM_cement
   hanger_depth:
     unit: m
     value: 0.0
@@ -23,7 +23,7 @@
   top_of_filler:
     unit: m
     value: 0.0
-- filler_material: cement
+- filler_material: CM_cement
   hanger_depth:
     unit: m
     value: 0.0
@@ -48,7 +48,7 @@
   top_of_filler:
     unit: m
     value: 0.0
-- filler_material: cement
+- filler_material: CM_cement
   hanger_depth:
     unit: m
     value: 0.0
@@ -73,7 +73,7 @@
   top_of_filler:
     unit: m
     value: 1000.0
-- filler_material: cement
+- filler_material: CM_cement
   hanger_depth:
     unit: m
     value: 1000.0
@@ -98,7 +98,7 @@
   top_of_filler:
     unit: m
     value: 2833.0
-- filler_material: cement
+- filler_material: CM_cement
   hanger_depth:
     unit: m
     value: 3369.0

@@ -1,3 +1,5 @@
+from typing import Union
+
 from alfasim_sdk import CaseDescription
 from alfasim_sdk import CaseOutputDescription
 from alfasim_sdk import EnergyModel
@@ -37,6 +39,7 @@ from barril.units import Scalar
 from copy import deepcopy
 from pathlib import Path
 
+from alfasim_score.common import OperationType
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import INITIAL_TIMESTEP
 from alfasim_score.constants import MAXIMUM_TIMESTEP
@@ -49,6 +52,7 @@ from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
 from alfasim_score.converter.alfacase.convert_plugin_data import ScoreAPBPluginConverter
+from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import LENGTH_UNIT
@@ -58,12 +62,13 @@ from alfasim_score.units import VELOCITY_UNIT
 
 
 class BaseOperationBuilder:
-    def __init__(self, score_input_reader: ScoreInputReader):
-        self.score_input = score_input_reader
-        self.alfacase_converter = ScoreAlfacaseConverter(self.score_input)
-        self.apb_plugin_converter = ScoreAPBPluginConverter(self.score_input)
-        self.base_alfacase = self.alfacase_converter.build_base_alfacase_description()
-        self.general_data = self.score_input.read_operation_data()
+    def __init__(self, score_input_data: ScoreInputData):
+        self.operation_type: Union[None, OperationType] = None
+        self.score_data = score_input_data
+        self.base_alfacase = ScoreAlfacaseConverter(
+            self.score_data
+        ).build_base_alfacase_description()
+        self.plugin_converters = [ScoreAPBPluginConverter(self.score_data)]
         self.default_output_profiles = [
             "elevation",
             "holdup",
@@ -89,17 +94,18 @@ class BaseOperationBuilder:
             "wall_5_temperature",
         ]
 
-    def _get_fluid_model_name(self) -> str:
-        """Get the name of the fluid model configured for this operation."""
-        return self.general_data["fluid"]
+    def assert_operation_type(self, operation: OperationType) -> None:
+        """Make sure the configured operation is the same of that configured in SCORE input."""
+        score_configured_operation = self.score_data.operation_data["type"]
+        assert (
+            operation == score_configured_operation
+        ), f"The created operation is production, but the imported operation is configured as {score_configured_operation}."
 
     def create_well_initial_pressures(
         self, top_pressure: Scalar, bottom_pressure: Scalar
     ) -> InitialPressuresDescription:
         """Create the initial pressures description."""
-        well_length = self.alfacase_converter.get_position_in_well(
-            self.score_input.read_general_data()["final_md"]
-        )
+        well_length = self.score_data.get_well_length()
         return InitialPressuresDescription(
             position_input_type=TableInputType.length,
             table_length=PressureContainerDescription(
@@ -115,9 +121,7 @@ class BaseOperationBuilder:
         self, top_temperature: Scalar, bottom_temperature: Scalar
     ) -> InitialTemperaturesDescription:
         """Create the initial temperatures description."""
-        well_length = self.alfacase_converter.get_position_in_well(
-            self.score_input.read_general_data()["final_md"]
-        )
+        well_length = self.score_data.get_well_length()
         return InitialTemperaturesDescription(
             position_input_type=TableInputType.length,
             table_length=TemperaturesContainerDescription(
@@ -149,11 +153,13 @@ class BaseOperationBuilder:
         )
 
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
-        """Configure the pvt fluid for the model."""
-        operation_fluid = self._get_fluid_model_name()
+        """
+        Configure the pvt fluid for the model.
+        This method do not include the pvt tables provided by SCORE because they are
+        already used in the proper plugin section otherwise ALFAsim complains about duplication.
+        """
+        operation_fluid = self.score_data.operation_data["fluid"]
         tables = {"base": Path(f"{operation_fluid}.tab")}
-        fluid_names = self.apb_plugin_converter.get_all_annular_fluid_names()
-        tables.update({name: Path(f"{name}.tab") for name in fluid_names})
         alfacase.pvt_models = PvtModelsDescription(
             default_model="base",
             tables=tables,
@@ -202,7 +208,7 @@ class BaseOperationBuilder:
     def configure_time_options(self, alfacase: CaseDescription) -> None:
         """Configure the description for the time options data."""
         alfacase.time_options = TimeOptionsDescription(
-            final_time=self.general_data["duration"],
+            final_time=self.score_data.operation_data["duration"],
             initial_timestep=INITIAL_TIMESTEP,
             minimum_timestep=MINIMUM_TIMESTEP,
             maximum_timestep=MAXIMUM_TIMESTEP,
@@ -221,7 +227,7 @@ class BaseOperationBuilder:
             NodeDescription(
                 name=WELLBORE_TOP_NODE_NAME,
                 node_type=NodeCellType.MassSource,
-                pvt_model=self._get_fluid_model_name(),
+                pvt_model=self.score_data.operation_data["fluid"],
                 mass_source_properties=MassSourceNodePropertiesDescription(
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
@@ -235,7 +241,7 @@ class BaseOperationBuilder:
             NodeDescription(
                 name=WELLBORE_BOTTOM_NODE_NAME,
                 node_type=NodeCellType.Pressure,
-                pvt_model=self._get_fluid_model_name(),
+                pvt_model=self.score_data.operation_data["fluid"],
                 pressure_properties=PressureNodePropertiesDescription(
                     split_type=MassInflowSplitType.Pvt,
                 ),
@@ -243,7 +249,7 @@ class BaseOperationBuilder:
             NodeDescription(
                 name=GAS_LIFT_MASS_NODE_NAME,
                 node_type=NodeCellType.MassSource,
-                pvt_model=self._get_fluid_model_name(),
+                pvt_model=self.score_data.operation_data["fluid"],
                 mass_source_properties=MassSourceNodePropertiesDescription(
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
@@ -263,12 +269,13 @@ class BaseOperationBuilder:
         """
         pass
 
-    def configure_apb_plugin_description(
+    def configure_plugin_descriptions(
         self,
         alfacase: CaseDescription,
     ) -> None:
-        """Configure the data for the apb plugin in the case description."""
-        alfacase.plugins.append(self.apb_plugin_converter.build_plugin_description())
+        """Configure in the case description the data for configured plugin list."""
+        for plugin_converter in self.plugin_converters:
+            alfacase.plugins.append(plugin_converter.build_plugin_description())
 
     def generate_operation_alfacase_description(self) -> CaseDescription:
         """Generate the configured alfacase description for the current operation."""
@@ -281,5 +288,5 @@ class BaseOperationBuilder:
         self.configure_nodes(alfacase_configured)
         self.configure_well_initial_conditions(alfacase_configured)
         self.configure_annulus(alfacase_configured)
-        self.configure_apb_plugin_description(alfacase_configured)
+        self.configure_plugin_descriptions(alfacase_configured)
         return alfacase_configured

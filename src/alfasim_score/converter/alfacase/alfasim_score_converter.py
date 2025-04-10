@@ -6,6 +6,7 @@ from alfasim_score.common import OperationType
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
 from alfasim_score.converter.alfacase.injection_operation import InjectionOperationBuilder
 from alfasim_score.converter.alfacase.production_operation import ProductionOperationBuilder
+from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.converter.alfacase.score_output_generator import ScoreOutputBuilder
 
@@ -18,17 +19,18 @@ class AlfasimScoreConverter:
     """
 
     def __init__(self, score_input_file: Path, score_output_file: Path):
-        self.score_input = ScoreInputReader(score_input_file)
+        score_reader = ScoreInputReader(score_input_file)
+        self.score_data = ScoreInputData(score_reader)
         self.alfacase_builder = self._get_score_to_alfacase_builder()
-        self.output_builder = ScoreOutputBuilder(self.score_input, score_output_file)
+        self.output_builder = ScoreOutputBuilder(self.score_data, score_output_file)
 
     def _get_score_to_alfacase_builder(self) -> BaseOperationBuilder:
         """Convert SCORE input file to an alfacase description."""
-        operation_type = self.score_input.read_operation_type()
+        operation_type = self.score_data.operation_data["type"]
         if operation_type == OperationType.PRODUCTION:
-            return ProductionOperationBuilder(self.score_input)
+            return ProductionOperationBuilder(self.score_data)
         else:
-            return InjectionOperationBuilder(self.score_input)
+            return InjectionOperationBuilder(self.score_data)
 
     def generate_alfasim_input_file(self, alfacase_filepath: Path) -> None:
         """Create the ALFAsim input file (AKA alfacase) from an SCORE input file."""

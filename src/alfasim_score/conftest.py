@@ -5,6 +5,7 @@ from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
 from alfasim_score.converter.alfacase.convert_alfacase import ScoreAlfacaseConverter
 from alfasim_score.converter.alfacase.injection_operation import InjectionOperationBuilder
 from alfasim_score.converter.alfacase.production_operation import ProductionOperationBuilder
+from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 SCORE_GAS_LIFT_EXAMPLE_FILENAME = "score_input_gas_lift.json"
@@ -18,29 +19,34 @@ def score_input_gas_lift(shared_datadir: Path) -> ScoreInputReader:
 
 
 @pytest.fixture
-def alfacase_gas_lift(score_input_gas_lift: ScoreInputReader) -> ScoreAlfacaseConverter:
-    return ScoreAlfacaseConverter(score_input_gas_lift)
+def score_data_gas_lift(score_input_gas_lift: ScoreInputReader) -> ScoreInputData:
+    return ScoreInputData(score_input_gas_lift)
 
 
 @pytest.fixture
-def base_operation_gas_lift(score_input_gas_lift: ScoreInputReader) -> BaseOperationBuilder:
-    return BaseOperationBuilder(score_input_gas_lift)
+def alfacase_gas_lift(score_data_gas_lift: ScoreInputData) -> ScoreAlfacaseConverter:
+    return ScoreAlfacaseConverter(score_data_gas_lift)
+
+
+@pytest.fixture
+def base_operation_gas_lift(score_data_gas_lift: ScoreInputData) -> BaseOperationBuilder:
+    return BaseOperationBuilder(score_data_gas_lift)
 
 
 @pytest.fixture
 def production_operation_gas_lift(
-    score_input_gas_lift: ScoreInputReader,
+    score_data_gas_lift: ScoreInputData,
 ) -> ProductionOperationBuilder:
-    return ProductionOperationBuilder(score_input_gas_lift)
+    return ProductionOperationBuilder(score_data_gas_lift)
 
 
 @pytest.fixture
 def production_operation_natural_flow(shared_datadir: Path) -> ProductionOperationBuilder:
     score_input_reader = ScoreInputReader(shared_datadir / SCORE_NATURAL_FLOW_EXAMPLE_FILENAME)
-    return ProductionOperationBuilder(score_input_reader)
+    return ProductionOperationBuilder(ScoreInputData(score_input_reader))
 
 
 @pytest.fixture
 def injection_operation(shared_datadir: Path) -> InjectionOperationBuilder:
     score_input_reader = ScoreInputReader(shared_datadir / SCORE_INJECTION_EXAMPLE_FILENAME)
-    return InjectionOperationBuilder(score_input_reader)
+    return InjectionOperationBuilder(ScoreInputData(score_input_reader))

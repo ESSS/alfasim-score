@@ -96,8 +96,6 @@ plugins:
       is_open_seabed_a: False
       annulus_depth_table_a:
         columns:
-          fluid_id_a:
-          - 1.0
           fluid_initial_measured_depth_a:
             values:
             - 0.0
@@ -106,6 +104,10 @@ plugins:
             values:
             - 3493.1800000000003
             unit: m
+          fluid_name_a:
+            plugin_item_ids:
+            - 1
+            container_key: FluidContainer
       annulus_temperature_table_a:
         columns:
           temperature_depth_a:
@@ -129,28 +131,39 @@ plugins:
             - 3906.79
             unit: m
           temperature_a:
-          - 4.44
-          - 5.216276362194144
-          - 45.102570507084444
-          - 45.933404962426266
-          - 46.763092625000326
-          - 47.59008242813707
-          - 48.41336681214941
-          - 49.23194273183265
-          - 50.04481287852061
-          - 50.8509868951526
-          - 51.649482582870945
-          - 52.439327097679005
-          - 53.219558135701675
-          - 53.98922510560453
-          - 54.74739028674283
-          - 55.47930539330239
-          - 105.99050193584353
+            values:
+            - 4.44
+            - 5.216276362194144
+            - 45.102570507084444
+            - 45.933404962426266
+            - 46.763092625000326
+            - 47.59008242813707
+            - 48.41336681214941
+            - 49.23194273183265
+            - 50.04481287852061
+            - 50.8509868951526
+            - 51.649482582870945
+            - 52.439327097679005
+            - 53.219558135701675
+            - 53.98922510560453
+            - 54.74739028674283
+            - 55.47930539330239
+            - 105.99050193584353
+            unit: degC
       has_fluid_return_a: True
       initial_leakoff_a:
         value: 0.0
         unit: m3
       has_pressure_relief_a: False
+      glv_delta_pressure_a:
+        value: 0.0
+        unit: psi
+      relief_position_a:
+        value: 0.0
+        unit: m
+      water_depth_pressure_a:
+        value: 0.0
+        unit: psi
       is_active_b: True
       mode_type_b: Undisturbed
       initial_top_pressure_b:
@@ -159,8 +172,6 @@ plugins:
       is_open_seabed_b: False
       annulus_depth_table_b:
         columns:
-          fluid_id_b:
-          - 2.0
           fluid_initial_measured_depth_b:
             values:
             - 0.0
@@ -169,6 +180,10 @@ plugins:
             values:
             - 2833.0
             unit: m
+          fluid_name_b:
+            plugin_item_ids:
+            - 2
+            container_key: FluidContainer
       annulus_temperature_table_b:
         columns:
           temperature_depth_b:
@@ -192,23 +207,25 @@ plugins:
             - 3906.79
             unit: m
           temperature_b:
-          - 4.44
-          - 5.216276362194144
-          - 45.102570507084444
-          - 45.933404962426266
-          - 46.763092625000326
-          - 47.59008242813707
-          - 48.41336681214941
-          - 49.23194273183265
-          - 50.04481287852061
-          - 50.8509868951526
-          - 51.649482582870945
-          - 52.439327097679005
-          - 53.219558135701675
-          - 53.98922510560453
-          - 54.74739028674283
-          - 55.47930539330239
-          - 105.99050193584353
+            values:
+            - 4.44
+            - 5.216276362194144
+            - 45.102570507084444
+            - 45.933404962426266
+            - 46.763092625000326
+            - 47.59008242813707
+            - 48.41336681214941
+            - 49.23194273183265
+            - 50.04481287852061
+            - 50.8509868951526
+            - 51.649482582870945
+            - 52.439327097679005
+            - 53.219558135701675
+            - 53.98922510560453
+            - 54.74739028674283
+            - 55.47930539330239
+            - 105.99050193584353
+            unit: degC
       has_fluid_return_b: True
       initial_leakoff_b:
         value: 0.0
@@ -220,6 +237,9 @@ plugins:
       relief_position_b:
         value: -2072.0
         unit: m
+      water_depth_pressure_b:
+        value: 0.0
+        unit: psi
       is_active_c: False
       mode_type_c: Undisturbed
       initial_top_pressure_c:
@@ -228,13 +248,15 @@ plugins:
       is_open_seabed_c: False
       annulus_depth_table_c:
         columns:
-          fluid_id_c: []
           fluid_initial_measured_depth_c:
             values: []
             unit: m
           fluid_final_measured_depth_c:
             values: []
             unit: m
+          fluid_name_c:
+            plugin_item_ids: []
+            container_key: FluidContainer
       annulus_temperature_table_c:
         columns:
           temperature_depth_c:
@@ -254,6 +276,9 @@ plugins:
       relief_position_c:
         value: 0.0
         unit: m
+      water_depth_pressure_c:
+        value: 0.0
+        unit: psi
       is_active_d: False
       mode_type_d: Undisturbed
       initial_top_pressure_d:
@@ -262,13 +287,15 @@ plugins:
       is_open_seabed_d: False
       annulus_depth_table_d:
         columns:
-          fluid_id_d: []
           fluid_initial_measured_depth_d:
             values: []
             unit: m
           fluid_final_measured_depth_d:
             values: []
             unit: m
+          fluid_name_d:
+            plugin_item_ids: []
+            container_key: FluidContainer
       annulus_temperature_table_d:
         columns:
           temperature_depth_d:
@@ -288,6 +315,9 @@ plugins:
       relief_position_d:
         value: 0.0
         unit: m
+      water_depth_pressure_d:
+        value: 0.0
+        unit: psi
       is_active_e: False
       mode_type_e: Undisturbed
       initial_top_pressure_e:
@@ -296,13 +326,15 @@ plugins:
       is_open_seabed_e: False
       annulus_depth_table_e:
         columns:
-          fluid_id_e: []
           fluid_initial_measured_depth_e:
             values: []
             unit: m
           fluid_final_measured_depth_e:
             values: []
             unit: m
+          fluid_name_e:
+            plugin_item_ids: []
+            container_key: FluidContainer
       annulus_temperature_table_e:
         columns:
           temperature_depth_e:
@@ -322,15 +354,21 @@ plugins:
       relief_position_e:
         value: 0.0
         unit: m
+      water_depth_pressure_e:
+        value: 0.0
+        unit: psi
     FluidContainer:
       name: Annulus Fluids Container
       _children_list:
       - name: Brine_860
         fluid_type: PVT
+        pvt_table_content: Brine_860.tab
       - name: DFLT_FCBA_9.00
         fluid_type: PVT
+        pvt_table_content: DFLT_FCBA_9.00.tab
       - name: DFLT_FPBA_BARITE_8.60_35000
         fluid_type: PVT
+        pvt_table_content: DFLT_FPBA_BARITE_8.60_35000.tab
     MechanicalContainer:
       name: Mechanical Properties
       _children_list:
@@ -404,14 +442,15 @@ plugins:
         thermal_expansion_coefficient:
           value: 0.0
           unit: 1/K
+    Options:
+      name: Options
+      thermal_property_update_mode: First time step
+      is_gas_lift_on: True
   is_enabled: True
 pvt_models:
   default_model: base
   tables:
     base: DFLT_BLACK_OIL_27.40_230.00_1.17.tab
-    Brine_860: Brine_860.tab
-    DFLT_FCBA_9.00: DFLT_FCBA_9.00.tab
-    DFLT_FPBA_BARITE_8.60_35000: DFLT_FPBA_BARITE_8.60_35000.tab
   correlations:
     DFLT_BLACK_OIL_27.40_230.00_1.17:
       oil_density_std:
@@ -812,7 +851,7 @@ wells:
       top_of_filler:
         value: 0.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: SURFACE_CASING_1
       hanger_depth:
@@ -837,7 +876,7 @@ wells:
       top_of_filler:
         value: 0.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: Brine_860
     - name: PRODUCTION_CASING_1
       hanger_depth:
@@ -862,7 +901,7 @@ wells:
       top_of_filler:
         value: 1000.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     - name: PRODUCTION_CASING_2
       hanger_depth:
@@ -887,7 +926,7 @@ wells:
       top_of_filler:
         value: 2833.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     - name: PRODUCTION_CASING_3
       hanger_depth:
@@ -912,7 +951,7 @@ wells:
       top_of_filler:
         value: 3369.0
         unit: m
-      filler_material: cement
+      filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_8.60_35000
     tubings:
     - name: TUBING_1
@@ -1342,7 +1381,7 @@ wells:
       start:
         value: 2072.0
         unit: m
-      material: Folhelho
+      material: FC_Folhelho
   top_node: WELLBORE_TOP_NODE
   bottom_node: WELLBORE_BOTTOM_NODE
   environment:
@@ -1710,6 +1749,75 @@ materials:
     value: 0.0
     unit: cP
 - name: fluid_default
+  material_type: fluid
+  density:
+    value: 1000.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 0.6
+    unit: W/m.K
+  heat_capacity:
+    value: 4181.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0004
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: Brine_860
+  material_type: fluid
+  density:
+    value: 1000.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 0.6
+    unit: W/m.K
+  heat_capacity:
+    value: 4181.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0004
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: DFLT_FCBA_9.00
+  material_type: fluid
+  density:
+    value: 1000.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 0.6
+    unit: W/m.K
+  heat_capacity:
+    value: 4181.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0004
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: DFLT_FPBA_BARITE_8.60_35000
   material_type: fluid
   density:
     value: 1000.0

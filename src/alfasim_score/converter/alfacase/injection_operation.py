@@ -18,28 +18,26 @@ from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
 from alfasim_score.converter.alfacase.base_operation import BaseOperationBuilder
-from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
+from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
 from alfasim_score.units import FRACTION_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 
 
 class InjectionOperationBuilder(BaseOperationBuilder):
-    def __init__(self, score_input_reader: ScoreInputReader):
-        super().__init__(score_input_reader)
+    def __init__(self, score_input_data: ScoreInputData):
+        super().__init__(score_input_data)
         self.operation_type = OperationType.INJECTION
-        assert (
-            self.general_data["type"] == self.operation_type
-        ), f"The created operation is injection, but the imported operation is configured as {self.general_data['type']}."
+        self.assert_operation_type(self.operation_type)
 
     def is_injecting(self, fluid_type: FluidType) -> bool:
         """Check if the operation has water or gas injected into the well."""
-        has_inlet_flow = self.general_data["flow_rate"].GetValue() > 0.0
-        return has_inlet_flow and self.general_data["fluid_type"] == fluid_type
+        has_inlet_flow = self.score_data.operation_data["flow_rate"].GetValue() > 0.0
+        return has_inlet_flow and self.score_data.operation_data["fluid_type"] == fluid_type
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
         super().configure_well_initial_conditions(alfacase)
-        formation_data = self.score_input.read_formation_temperatures()
+        formation_data = self.score_data.reader.read_formation_temperatures()
         # once the simulation is configured as steady state regime for injection,
         # the expected value of injected phase is 1.0 when the steady state is reached
         gas_fraction = 1.0 if self.is_injecting(FluidType.GAS) else 0.0
@@ -48,8 +46,8 @@ class InjectionOperationBuilder(BaseOperationBuilder):
             alfacase.wells[0].initial_conditions,
             # the factor multiplied by the bottom pressure is arbitrary, just to set an initial value
             pressures=self.create_well_initial_pressures(
-                self.general_data["flow_initial_pressure"],
-                1.2 * self.general_data["flow_initial_pressure"],
+                self.score_data.operation_data["flow_initial_pressure"],
+                1.2 * self.score_data.operation_data["flow_initial_pressure"],
             ),
             volume_fractions=self.create_well_initial_volume_fractions(
                 Scalar(0.0, FRACTION_UNIT),
@@ -57,7 +55,7 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                 Scalar(water_fraction, FRACTION_UNIT),
             ),
             temperatures=self.create_well_initial_temperatures(
-                self.general_data["flow_initial_temperature"],
+                self.score_data.operation_data["flow_initial_temperature"],
                 Scalar(formation_data["temperatures"][-1], TEMPERATURE_UNIT),
             ),
         )
@@ -71,11 +69,11 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                 default_nodes.pop(WELLBORE_TOP_NODE_NAME),
                 node_type=NodeCellType.Pressure,
                 pressure_properties=PressureNodePropertiesDescription(
-                    temperature=self.general_data["flow_initial_temperature"],
-                    pressure=self.general_data["flow_initial_pressure"],
+                    temperature=self.score_data.operation_data["flow_initial_temperature"],
+                    pressure=self.score_data.operation_data["flow_initial_pressure"],
                     split_type=MassInflowSplitType.Pvt,
                 ),
-                pvt_model=self._get_fluid_model_name(),
+                pvt_model=self.score_data.operation_data["fluid"],
             ),
             attr.evolve(
                 default_nodes.pop(WELLBORE_BOTTOM_NODE_NAME),
@@ -85,19 +83,19 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                     source_type=MassSourceType.AllVolumetricFlowRates,
                     volumetric_flow_rates_std={
                         FLUID_GAS: (
-                            -1.0 * self.general_data["flow_rate"]
+                            -1.0 * self.score_data.operation_data["flow_rate"]
                             if self.is_injecting(FluidType.GAS)
                             else NULL_VOLUMETRIC_FLOW_RATE
                         ),
                         FLUID_OIL: NULL_VOLUMETRIC_FLOW_RATE,
                         FLUID_WATER: (
-                            -1.0 * self.general_data["flow_rate"]
+                            -1.0 * self.score_data.operation_data["flow_rate"]
                             if self.is_injecting(FluidType.WATER)
                             else NULL_VOLUMETRIC_FLOW_RATE
                         ),
                     },
                 ),
-                pvt_model=self._get_fluid_model_name(),
+                pvt_model=self.score_data.operation_data["fluid"],
             ),
         ]
         # just use the original gas lift node with zero flow rate
