@@ -1,8 +1,8 @@
 from typing import Dict
+from typing import Tuple
 
 import itertools
 import numpy as np
-import os
 import pandas as pd
 from barril.units import Array
 from barril.units import Scalar
@@ -12,6 +12,8 @@ from io import StringIO
 from pathlib import Path
 
 LABEL_NUMBER_OF_PHASES = "TWO"
+STDPRESSURE = Scalar(1.0, "atm")
+STDTEMPERATURE = Scalar(2.887100e02, "K")
 
 WELLPROP_FILES = [
     "temperature_GAS_conductivity.csv",
@@ -87,7 +89,7 @@ class WellpropToPvtConverter:
 
     def _calculate_derivatives(
         self, densities: np.ndarray, pressures: np.ndarray, temperatures: np.ndarray
-    ) -> tuple:
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Calculate the pressure and temperature derivatives for the densities.
         """
@@ -133,12 +135,6 @@ class WellpropToPvtConverter:
         properties = {}
         liquid_densities = self.dataframes["equivLIQUID_density"].values
         gas_densities = self.dataframes["GAS_density"].values
-
-        # Initialize derivative arrays
-        liquid_densities_dp = np.zeros_like(liquid_densities)
-        liquid_densities_dt = np.zeros_like(liquid_densities)
-        gas_densities_dp = np.zeros_like(gas_densities)
-        gas_densities_dt = np.zeros_like(gas_densities)
 
         liquid_densities_dp, liquid_densities_dt = self._calculate_derivatives(
             liquid_densities, pressures, temperatures
@@ -234,8 +230,12 @@ class WellpropToPvtConverter:
         file_buffer.write(
             f'PVTTABLE LABEL = "{pvt_table_data.name}", PHASE = {LABEL_NUMBER_OF_PHASES},\n'
         )
-        file_buffer.write(f"STDPRESSURE = 1.000000e+00 ATM,\\\n")
-        file_buffer.write(f"STDTEMPERATURE = 2.887100e+02 K,\\\n")
+        file_buffer.write(
+            "STDPRESSURE = {} ATM,\\\n".format(format_numbers(STDPRESSURE.GetValue("atm")))
+        )
+        file_buffer.write(
+            "STDTEMPERATURE = {} K,\\\n".format(format_numbers(STDTEMPERATURE.GetValue("K")))
+        )
         file_buffer.write(
             "PRESSURE = ({}) Pa,\\\n".format(
                 ", ".join(map(format_numbers, pvt_table_data.pressures.GetValues("Pa")))
