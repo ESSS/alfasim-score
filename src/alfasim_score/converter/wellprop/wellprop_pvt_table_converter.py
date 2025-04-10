@@ -1,3 +1,5 @@
+from typing import Dict
+
 import itertools
 import numpy as np
 import os
@@ -8,24 +10,6 @@ from dataclasses import dataclass
 from enum import Enum
 from io import StringIO
 from pathlib import Path
-
-from alfasim_score.common import PvtTableNumberOfPhases
-
-# class WellPropPhase(Enum):
-#     gas = "GAS"
-#     liquid = "equivLIQUID"
-#     water = "WATER"
-
-# @dataclass
-# class WellPropFile:
-#     name: str
-#     phase: WellPropPhase
-
-#     def get_property_filename(self, property: str) -> str:
-#         return "temperature_{self.phase}_{self.name}.csv"
-# phases = ["GAS", "equivLIQUID", "WATER"]
-# properties = ["conductivity", "cp", "density", "enthalpy", "interfacial_tension", "mass_fraction", "viscosity"]
-# temperature_files = [f"temperature_{phase}_{property}.csv" for phase in phases for property in properties]
 
 LABEL_NUMBER_OF_PHASES = "TWO"
 
@@ -82,29 +66,26 @@ class PvtTableData:
 
 
 class WellpropToPvtConverter:
-    wellprop_folder: str
-    pvt_filename: str
-    dataframe: pd.DataFrame
-
-    def __init__(self, wellprop_folder: str = "", pvt_filename: str = "") -> None:
+    def __init__(self, wellprop_folder: Path) -> None:
         self.wellprop_folder = wellprop_folder
-        self.pvt_filename = pvt_filename
+        self.pvt_filename = wellprop_folder.name
+        self.dataframes = self._read_wellprop_files()
 
-    def read_wellprop_files(self) -> None:
+    def _read_wellprop_files(self) -> Dict[str, pd.DataFrame]:
         """
-        Read wellprop files.
+        Read wellprop csv files.
         """
-        self.dataframes = {}
-        for file in WELLPROP_FILES:
-
-            filename = os.path.join(self.wellprop_folder, file)
-            dataframe_name = os.path.splitext(file)[0].replace("temperature_", "")
-            if os.path.isfile(filename):
-                self.dataframes[dataframe_name] = pd.read_csv(filename, index_col=0)
+        dataframes = {}
+        for filename in WELLPROP_FILES:
+            filepath = Path(self.wellprop_folder) / filename
+            dataframe_name = filepath.stem.replace("temperature_", "")
+            if Path(filepath).exists():
+                dataframes[dataframe_name] = pd.read_csv(filepath, index_col=0)
             else:
-                self.dataframes[dataframe_name] = pd.DataFrame(index=[], columns=[], data=[])
+                dataframes[dataframe_name] = pd.DataFrame(index=[], columns=[], data=[])
+        return dataframes
 
-    def calculate_derivatives(
+    def _calculate_derivatives(
         self, densities: np.ndarray, pressures: np.ndarray, temperatures: np.ndarray
     ) -> tuple:
         """
@@ -142,7 +123,7 @@ class WellpropToPvtConverter:
 
         return densities_dp, densities_dt
 
-    def convert_pvt_table_data(self) -> pd.DataFrame:
+    def _convert_pvt_table_data(self) -> pd.DataFrame:
         """
         Convert the data from wellprop tables into PVT tab file format.
         """
@@ -159,10 +140,10 @@ class WellpropToPvtConverter:
         gas_densities_dp = np.zeros_like(gas_densities)
         gas_densities_dt = np.zeros_like(gas_densities)
 
-        liquid_densities_dp, liquid_densities_dt = self.calculate_derivatives(
+        liquid_densities_dp, liquid_densities_dt = self._calculate_derivatives(
             liquid_densities, pressures, temperatures
         )
-        gas_densities_dp, gas_densities_dt = self.calculate_derivatives(
+        gas_densities_dp, gas_densities_dt = self._calculate_derivatives(
             gas_densities, pressures, temperatures
         )
 
@@ -247,7 +228,7 @@ class WellpropToPvtConverter:
             ),
         )
 
-    def generate_pvt_table_content(self, pvt_table_data: PvtTableData) -> StringIO:
+    def _generate_pvt_table_content(self, pvt_table_data: PvtTableData) -> StringIO:
         format_numbers = lambda number: "{:.6e}".format(number)
         file_buffer = StringIO(f"{pvt_table_data.name}.tab")
         file_buffer.write(
@@ -271,3 +252,10 @@ class WellpropToPvtConverter:
                 f"PVTTABLE POINT = ({', '.join(map(format_numbers, row.tolist()))})\n"
             )
         return file_buffer
+
+    def generate_pvt_table_file(self, destiny_folder: Path) -> None:
+        """Create a pvt table file with data from welprop csv files."""
+        pvt_data = self._convert_pvt_table_data()
+        content = self._generate_pvt_table_content(pvt_data)
+        with open(destiny_folder / f"{pvt_data.name}.tab", "w") as file:
+            file.write(content.getvalue())
