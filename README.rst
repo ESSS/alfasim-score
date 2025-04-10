@@ -32,6 +32,7 @@ Features
 -----------
 
 * Converter from Score input JSON to Alfacase
+* Converter from Wellprop pvt tables to `.tab` pvt table format
 * Parser for the ALFAsim results and generate a JSON compatible with SCORE
 
 How to use it
@@ -59,6 +60,11 @@ How to use it
     alfasim_results_directory = Path("path/to/alfasim_results_folder")
     converter.generate_score_output_file(alfasim_results_directory)
 
+#. The user also must remember to convert and save the pvt table (as `.tab` file) if wellprop tables are being used
+
+    from alfasim_score.converter.wellprop.wellprop_pvt_table_converter import WellpropToPvtConverter
+    converter = WellpropToPvtConverter(Path("name_of_folder_with_wellprop_tables"))
+    converter.generate_pvt_table_file(Path("name_of_folder_to_save_converted_pvt_table"))
 
 Development
 -----------
