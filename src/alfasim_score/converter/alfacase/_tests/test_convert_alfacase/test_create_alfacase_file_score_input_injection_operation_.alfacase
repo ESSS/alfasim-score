@@ -125,6 +125,12 @@ plugins:
         value: 0.0
         unit: m3
       has_pressure_relief_a: False
+      glv_delta_pressure_a:
+        value: 0.0
+        unit: psi
+      relief_position_a:
+        value: 0.0
+        unit: m
       is_active_b: True
       mode_type_b: Undisturbed
       initial_top_pressure_b:

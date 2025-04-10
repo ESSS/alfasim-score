@@ -116,12 +116,10 @@ class Annulus:
                 value = self.annulus_depth_table.to_dict(annulus_label)
             elif key == "annulus_temperature_table":
                 value = self.annulus_temperature_table.to_dict(annulus_label)
+            if f"{key}_{annulus_label.value}" == "pressure_relief_a":
+                output[f"glv_delta_pressure_a"] = value
+                continue
             output[f"{key}_{annulus_label.value}"] = value
-
-        # the annular A doesn't have these parameters in plugin
-        if annulus_label == AnnulusLabel.A:
-            output.pop("pressure_relief_a")
-            output.pop("relief_position_a")
         return output
 
 
