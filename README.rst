@@ -46,25 +46,25 @@ How to use it
     # path indicating where the output file (converted from ALFAsim results) should be created
     score_output_filepath = Path("path/to/score_output_result.json")
     # then create a converter instance
-    converter = AlfasimScoreConverter(score_input_filepath, score_output_filepath)
+    alfacase_converter = AlfasimScoreConverter(score_input_filepath, score_output_filepath)
 
 #. To convert the SCORE input into an alfacase file, the user can do the following::
 
     alfacase_filepath = Path("path/where/save/converted_score.alfacase")
-    converter.generate_alfasim_input_file(alfacase_filepath)
+    alfacase_converter.generate_alfasim_input_file(alfacase_filepath)
 
 #. Run the ALFAsim with the generated file (and the pvt tables in the same folder)
 
 #. Once the result file of ALFAsim is generated, one can call the converter for the output file::
 
     alfasim_results_directory = Path("path/to/alfasim_results_folder")
-    converter.generate_score_output_file(alfasim_results_directory)
+    alfacase_converter.generate_score_output_file(alfasim_results_directory)
 
 #. The user also must remember to convert and save the pvt table (as `.tab` file) if wellprop tables are being used
 
     from alfasim_score.converter.wellprop.wellprop_pvt_table_converter import WellpropToPvtConverter
-    converter = WellpropToPvtConverter(Path("name_of_folder_with_wellprop_tables"))
-    converter.generate_pvt_table_file(Path("name_of_folder_to_save_converted_pvt_table"))
+    table_converter = WellpropToPvtConverter(Path("name_of_folder_with_wellprop_tables"))
+    table_converter.generate_pvt_table_file(Path("name_of_folder_to_save_converted_pvt_table"))
 
 Development
 -----------
