@@ -12,10 +12,9 @@ def test_generate_pvt_table_content(
     file_regression: FileRegressionFixture,
     fluid_name: str,
 ) -> None:
-    converter = WellpropToPvtConverter(str(shared_datadir / fluid_name), fluid_name)
-    converter.read_wellprop_files()
-    pvt_data = converter.convert_pvt_table_data()
-    content = converter.generate_pvt_table_content(pvt_data)
+    converter = WellpropToPvtConverter(shared_datadir / fluid_name)
+    pvt_data = converter._convert_pvt_table_data()
+    content = converter._generate_pvt_table_content(pvt_data)
     file_regression.check(content.getvalue(), extension=".tab")
 
 
@@ -25,6 +24,14 @@ def test_convert_pvt_table_data(
     dataframe_regression: DataFrameRegressionFixture,
     fluid_name: str,
 ) -> None:
-    converter = WellpropToPvtConverter(str(shared_datadir / fluid_name), fluid_name)
-    converter.read_wellprop_files()
-    dataframe_regression.check(converter.convert_pvt_table_data().table)
+    converter = WellpropToPvtConverter(shared_datadir / fluid_name)
+    dataframe_regression.check(converter._convert_pvt_table_data().table)
+
+
+def test_convert_pvt_table_file(
+    shared_datadir: Path,
+) -> None:
+    converter = WellpropToPvtConverter(shared_datadir / "N2_LIFT")
+    converter.generate_pvt_table_file(shared_datadir)
+    output_pvt_filepath = Path(shared_datadir / "N2_LIFT.tab")
+    assert output_pvt_filepath.exists(), "PVT table could not be created."
