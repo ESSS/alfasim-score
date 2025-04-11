@@ -81,6 +81,11 @@ class AnnulusLabel(str, Enum):
     E = "e"
 
 
+class PvtTableNumberOfPhases(Enum):
+    Two = 2
+    Three = 3
+
+
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:
     """Prepare Scalar and Array to the be used in regression test."""
     regression_values = {}
