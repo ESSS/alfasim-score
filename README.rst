@@ -60,7 +60,7 @@ How to use it
     alfasim_results_directory = Path("path/to/alfasim_results_folder")
     alfacase_converter.generate_score_output_file(alfasim_results_directory)
 
-#. The user also must remember to convert and save the pvt table (as `.tab` file) if wellprop tables are being used
+#. The user also must remember to convert and save the pvt table (as `.tab` file) if wellprop tables are being used::
 
     from alfasim_score.converter.wellprop.wellprop_pvt_table_converter import WellpropToPvtConverter
     table_converter = WellpropToPvtConverter(Path("name_of_folder_with_wellprop_tables"))
