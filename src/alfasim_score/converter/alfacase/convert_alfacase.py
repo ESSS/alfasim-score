@@ -103,7 +103,7 @@ class ScoreAlfacaseConverter:
             for i, formation in enumerate(self.score_data.reader.read_formations(), start=1)
         ]
         return FormationDescription(
-            reference_y_coordinate=REFERENCE_VERTICAL_COORDINATE, layers=layers
+            reference_y_coordinate=self.score_data.get_well_start_position(), layers=layers
         )
 
     def _convert_well_environment(self) -> EnvironmentDescription:
@@ -129,7 +129,7 @@ class ScoreAlfacaseConverter:
         return EnvironmentDescription(
             thermal_model=PipeThermalModelType.SteadyState,
             position_input_mode=PipeThermalPositionInput.Tvd,
-            reference_y_coordinate=REFERENCE_VERTICAL_COORDINATE,
+            reference_y_coordinate=self.score_data.get_well_start_position(),
             tvd_properties_table=environment_description,
         )
 

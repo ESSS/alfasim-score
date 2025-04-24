@@ -1358,7 +1358,7 @@ wells:
     top_node: GAS_LIFT_MASS_NODE
   formation:
     reference_y_coordinate:
-      value: 0.0
+      value: 2072.0
       unit: m
     layers:
     - name: formation_1
@@ -1372,7 +1372,7 @@ wells:
     thermal_model: steady_state_heat_transfer
     position_input_mode: position_by_tvd
     reference_y_coordinate:
-      value: 0.0
+      value: 2072.0
       unit: m
     md_properties_table: []
     tvd_properties_table:

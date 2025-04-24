@@ -1,4 +1,4 @@
-name: Teste Térmico
+name: Térmico - Produtor
 physics:
   hydrodynamic_model: hydrodynamic_model_4_fields
   simulation_regime: simulation_regime_steady_state
@@ -51,7 +51,7 @@ time_options:
     value: 0.0
     unit: s
   final_time:
-    value: 60.0
+    value: 5.0
     unit: min
   initial_timestep:
     value: 0.1
@@ -91,7 +91,7 @@ plugins:
       is_active_a: True
       mode_type_a: Undisturbed
       initial_top_pressure_a:
-        value: 3189.0
+        value: 3272.590926134233
         unit: psi
       is_open_seabed_a: False
       annulus_depth_table_a:
@@ -102,144 +102,65 @@ plugins:
             unit: m
           fluid_final_measured_depth_a:
             values:
-            - 3493.1800000000003
+            - 2788.0
             unit: m
           fluid_name_a:
             plugin_item_ids:
-            - 1
+            - 2
             container_key: FluidContainer
       annulus_temperature_table_a:
         columns:
           temperature_depth_a:
             values:
-            - 0.0
-            - 28.0
-            - 1468.0
-            - 1498.0
-            - 1528.0
-            - 1558.0
-            - 1588.0
-            - 1618.0
-            - 1648.0
-            - 1678.0
-            - 1708.0
-            - 1738.0
-            - 1768.0
-            - 1798.0
-            - 1828.0
-            - 1857.44
-            - 3906.79
+            - -2182.0
+            - 2957.0
             unit: m
           temperature_a:
             values:
-            - 4.44
-            - 5.216276362194144
-            - 45.102570507084444
-            - 45.933404962426266
-            - 46.763092625000326
-            - 47.59008242813707
-            - 48.41336681214941
-            - 49.23194273183265
-            - 50.04481287852061
-            - 50.8509868951526
-            - 51.649482582870945
-            - 52.439327097679005
-            - 53.219558135701675
-            - 53.98922510560453
-            - 54.74739028674283
-            - 55.47930539330239
-            - 105.99050193584353
+            - 4.0
+            - 69.3
             unit: degC
       has_fluid_return_a: True
       initial_leakoff_a:
         value: 0.0
         unit: m3
       has_pressure_relief_a: False
-      glv_delta_pressure_a:
-        value: 0.0
-        unit: psi
-      relief_position_a:
-        value: 0.0
-        unit: m
-      water_depth_pressure_a:
-        value: 0.0
-        unit: psi
-      is_active_b: True
+      is_active_b: False
       mode_type_b: Undisturbed
       initial_top_pressure_b:
-        value: 3036.984013361966
+        value: 0.0
         unit: psi
       is_open_seabed_b: False
       annulus_depth_table_b:
         columns:
           fluid_initial_measured_depth_b:
-            values:
-            - 0.0
+            values: []
             unit: m
           fluid_final_measured_depth_b:
-            values:
-            - 2833.0
+            values: []
             unit: m
           fluid_name_b:
-            plugin_item_ids:
-            - 2
+            plugin_item_ids: []
             container_key: FluidContainer
       annulus_temperature_table_b:
         columns:
           temperature_depth_b:
-            values:
-            - 0.0
-            - 28.0
-            - 1468.0
-            - 1498.0
-            - 1528.0
-            - 1558.0
-            - 1588.0
-            - 1618.0
-            - 1648.0
-            - 1678.0
-            - 1708.0
-            - 1738.0
-            - 1768.0
-            - 1798.0
-            - 1828.0
-            - 1857.44
-            - 3906.79
+            values: []
             unit: m
           temperature_b:
-            values:
-            - 4.44
-            - 5.216276362194144
-            - 45.102570507084444
-            - 45.933404962426266
-            - 46.763092625000326
-            - 47.59008242813707
-            - 48.41336681214941
-            - 49.23194273183265
-            - 50.04481287852061
-            - 50.8509868951526
-            - 51.649482582870945
-            - 52.439327097679005
-            - 53.219558135701675
-            - 53.98922510560453
-            - 54.74739028674283
-            - 55.47930539330239
-            - 105.99050193584353
+            values: []
             unit: degC
-      has_fluid_return_b: True
+      has_fluid_return_b: False
       initial_leakoff_b:
         value: 0.0
         unit: m3
       has_pressure_relief_b: False
       pressure_relief_b:
-        value: 3490.0
-        unit: psi
-      relief_position_b:
-        value: -2072.0
-        unit: m
-      water_depth_pressure_b:
         value: 0.0
         unit: psi
+      relief_position_b:
+        value: 0.0
+        unit: m
       is_active_c: False
       mode_type_c: Undisturbed
       initial_top_pressure_c:
@@ -276,9 +197,6 @@ plugins:
       relief_position_c:
         value: 0.0
         unit: m
-      water_depth_pressure_c:
-        value: 0.0
-        unit: psi
       is_active_d: False
       mode_type_d: Undisturbed
       initial_top_pressure_d:
@@ -315,9 +233,6 @@ plugins:
       relief_position_d:
         value: 0.0
         unit: m
-      water_depth_pressure_d:
-        value: 0.0
-        unit: psi
       is_active_e: False
       mode_type_e: Undisturbed
       initial_top_pressure_e:
@@ -354,21 +269,21 @@ plugins:
       relief_position_e:
         value: 0.0
         unit: m
-      water_depth_pressure_e:
-        value: 0.0
-        unit: psi
     FluidContainer:
       name: Annulus Fluids Container
       _children_list:
       - name: Brine_860
         fluid_type: PVT
-        pvt_table_content: Brine_860.tab
-      - name: DFLT_FCBA_9.03
+        pvt_table_content: apb_alfacase.base.tab
+      - name: DFLT_FCBA_10.00
         fluid_type: PVT
-        pvt_table_content: DFLT_FCBA_9.03.tab
-      - name: DFLT_FPBA_BARITE_8.60_35000
+        pvt_table_content: apb_alfacase.base.tab
+      - name: DFLT_FCBA_8.80
         fluid_type: PVT
-        pvt_table_content: DFLT_FPBA_BARITE_8.60_35000.tab
+        pvt_table_content: apb_alfacase.base.tab
+      - name: DFLT_FPBA_BARITE_10.00_300000
+        fluid_type: PVT
+        pvt_table_content: apb_alfacase.base.tab
     MechanicalContainer:
       name: Mechanical Properties
       _children_list:
@@ -382,32 +297,22 @@ plugins:
         thermal_expansion_coefficient:
           value: 1e-06
           unit: 1/K
+      - name: X-60
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
       - name: B
         young_modulus:
           value: 30000000.0
           unit: psi
         poisson_ratio:
           value: 0.31
-          unit: '-'
-        thermal_expansion_coefficient:
-          value: 1.2e-05
-          unit: 1/K
-      - name: X-80
-        young_modulus:
-          value: 30000000.0
-          unit: psi
-        poisson_ratio:
-          value: 0.31
-          unit: '-'
-        thermal_expansion_coefficient:
-          value: 1.2e-05
-          unit: 1/K
-      - name: N-80
-        young_modulus:
-          value: 30000000.0
-          unit: psi
-        poisson_ratio:
-          value: 0.3
           unit: '-'
         thermal_expansion_coefficient:
           value: 1.2e-05
@@ -422,17 +327,117 @@ plugins:
         thermal_expansion_coefficient:
           value: 1.2e-05
           unit: 1/K
+      - name: SMSS/110KSI
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.31
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 1.2e-05
+          unit: 1/K
       - name: SDSS/125KSI
         young_modulus:
           value: 30000000.0
           unit: psi
         poisson_ratio:
-          value: 0.3
+          value: 0.31
           unit: '-'
         thermal_expansion_coefficient:
           value: 1.2e-05
           unit: 1/K
+      - name: FC_Argila
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
       - name: FC_Folhelho
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+      - name: FC_Arenito
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+      - name: FC_Marga
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+      - name: FC_Packstone
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+      - name: FC_Anidrita
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+      - name: FC_Halita
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+      - name: FC_Carnalita
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+      - name: FC_Taquidrita
+        young_modulus:
+          value: 30000000.0
+          unit: psi
+        poisson_ratio:
+          value: 0.28
+          unit: '-'
+        thermal_expansion_coefficient:
+          value: 0.0
+          unit: 1/K
+      - name: FC_Calcario
         young_modulus:
           value: 30000000.0
           unit: psi
@@ -450,17 +455,17 @@ plugins:
 pvt_models:
   default_model: base
   tables:
-    base: DFLT_BLACK_OIL_27.40_230.00_1.17.tab
+    base: apb_alfacase.base.tab
   correlations:
-    DFLT_BLACK_OIL_27.40_230.00_1.17:
+    DFLT_BLACK_OIL_29.00_0_225.00_0.92:
       oil_density_std:
-        value: 889.6209188168658
+        value: 880.7524236760124
         unit: kg/m3
       gas_density_std:
-        value: 1.43325
+        value: 1.1270000000000002
         unit: kg/m3
       rs_sat:
-        value: 230.0
+        value: 225.0
         unit: sm3/sm3
       pvt_correlation_package: pvt_correlation_package_standing
       h2s_mol_frac:
@@ -520,7 +525,7 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: mass_source_boundary
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
+  pvt_model: DFLT_BLACK_OIL_29.00_0_225.00_0.92
   pressure_properties:
     pressure:
       value: 100000.0
@@ -551,10 +556,10 @@ nodes:
     source_type: mass_source_type_all_volumetric_flow_rates
     volumetric_flow_rates_std:
       gas:
-        value: -2530000.0
+        value: -604350.0
         unit: sm3/d
       oil:
-        value: -11000.0
+        value: -2686.0
         unit: sm3/d
       water:
         value: -0.0
@@ -611,13 +616,13 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: pressure_boundary
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
+  pvt_model: DFLT_BLACK_OIL_29.00_0_225.00_0.92
   pressure_properties:
     pressure:
-      value: 9814.11
+      value: 4907.0385
       unit: psi
     temperature:
-      value: 97.0
+      value: 69.3
       unit: degC
     tracer_mass_fraction:
       values: []
@@ -692,7 +697,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
-  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
+  pvt_model: DFLT_BLACK_OIL_29.00_0_225.00_0.92
   pressure_properties:
     pressure:
       value: 100000.0
@@ -789,54 +794,49 @@ wells:
       x:
         values:
         - 0.0
-        - 0.732870828967924
-        - 76.09664781880704
-        - 77.75299298522548
-        - 80.0179032358046
-        - 83.32537729373297
-        - 87.67138551134829
-        - 93.05063294708867
-        - 99.45656581656323
-        - 106.88137947732878
-        - 115.31602793764459
-        - 124.75023487761972
-        - 135.172506169326
-        - 146.5701438806223
-        - 158.92926174562896
-        - 171.9795438608509
-        - 1111.9130083432817
+        - 0.0
         unit: m
       y:
         values:
-        - -2072.0
-        - -2099.987207822019
-        - -3538.0137378686054
-        - -3567.967936785112
-        - -3597.8807902103954
-        - -3627.6963773057687
-        - -3657.3783723710953
-        - -3686.890612467549
-        - -3716.1971414765844
-        - -3745.262253906929
-        - -3774.050538396223
-        - -3802.5269208543127
-        - -3830.6567071956224
-        - -3858.405625608557
-        - -3885.739868310423
-        - -3912.1277131463253
-        - -5733.215438887744
+        - -0.0
+        - -5139.0
         unit: m
   casing:
     casing_sections:
-    - name: CONDUCTOR_DRILLING_1
+    - name: CONDUCTOR_JETTING_1
       hanger_depth:
         value: 0.0
         unit: m
       settings_depth:
-        value: 96.0
+        value: 24.0
         unit: m
       hole_diameter:
-        value: 42.0
+        value: 36.001
+        unit: in
+      outer_diameter:
+        value: 36.0
+        unit: in
+      inner_diameter:
+        value: 33.0
+        unit: in
+      inner_roughness:
+        value: 0.05
+        unit: mm
+      material: X-60
+      top_of_filler:
+        value: 0.0
+        unit: m
+      filler_material: CM_cement
+      material_above_filler: Brine_860
+    - name: CONDUCTOR_JETTING_2
+      hanger_depth:
+        value: 24.0
+        unit: m
+      settings_depth:
+        value: 44.0
+        unit: m
+      hole_diameter:
+        value: 36.001
         unit: in
       outer_diameter:
         value: 36.0
@@ -849,7 +849,7 @@ wells:
         unit: mm
       material: B
       top_of_filler:
-        value: 0.0
+        value: 24.0
         unit: m
       filler_material: CM_cement
       material_above_filler: Brine_860
@@ -858,60 +858,60 @@ wells:
         value: 0.0
         unit: m
       settings_depth:
-        value: 1418.0
+        value: 1223.0
         unit: m
       hole_diameter:
-        value: 20.0
+        value: 16.0
         unit: in
       outer_diameter:
-        value: 18.0
+        value: 13.625
         unit: in
       inner_diameter:
-        value: 16.25
+        value: 12.375
         unit: in
       inner_roughness:
         value: 0.05
         unit: mm
-      material: X-80
+      material: C-110 HC
       top_of_filler:
         value: 0.0
         unit: m
       filler_material: CM_cement
-      material_above_filler: Brine_860
+      material_above_filler: DFLT_FCBA_10.00
     - name: PRODUCTION_CASING_1
       hanger_depth:
         value: 0.0
         unit: m
       settings_depth:
-        value: 1000.0
+        value: 978.0
         unit: m
       hole_diameter:
-        value: 14.75
+        value: 12.25
         unit: in
       outer_diameter:
-        value: 11.875
+        value: 10.75
         unit: in
       inner_diameter:
-        value: 10.711
+        value: 9.56
         unit: in
       inner_roughness:
         value: 0.05
         unit: mm
-      material: N-80
+      material: C-110 HC
       top_of_filler:
-        value: 1000.0
+        value: 0.0
         unit: m
       filler_material: CM_cement
-      material_above_filler: DFLT_FPBA_BARITE_8.60_35000
+      material_above_filler: DFLT_FPBA_BARITE_10.00_300000
     - name: PRODUCTION_CASING_2
       hanger_depth:
-        value: 1000.0
+        value: 978.0
         unit: m
       settings_depth:
-        value: 3369.0
+        value: 2635.0
         unit: m
       hole_diameter:
-        value: 14.75
+        value: 12.25
         unit: in
       outer_diameter:
         value: 10.75
@@ -924,273 +924,63 @@ wells:
         unit: mm
       material: C-110 HC
       top_of_filler:
-        value: 2833.0
+        value: 978.0
         unit: m
       filler_material: CM_cement
-      material_above_filler: DFLT_FPBA_BARITE_8.60_35000
+      material_above_filler: DFLT_FPBA_BARITE_10.00_300000
     - name: PRODUCTION_CASING_3
       hanger_depth:
-        value: 3369.0
+        value: 2635.0
         unit: m
       settings_depth:
-        value: 3535.0
+        value: 2800.0
         unit: m
       hole_diameter:
-        value: 14.75
+        value: 12.25
         unit: in
       outer_diameter:
-        value: 10.75
+        value: 9.875
         unit: in
       inner_diameter:
-        value: 8.684000000000001
+        value: 8.539
         unit: in
       inner_roughness:
         value: 0.05
         unit: mm
-      material: SDSS/125KSI
+      material: SMSS/110KSI
       top_of_filler:
-        value: 3369.0
+        value: 2635.0
         unit: m
       filler_material: CM_cement
-      material_above_filler: DFLT_FPBA_BARITE_8.60_35000
+      material_above_filler: DFLT_FPBA_BARITE_10.00_300000
     tubings:
     - name: TUBING_1
       length:
-        value: 40.210000000000036
-        unit: m
-      outer_diameter:
-        value: 5.5
-        unit: in
-      inner_diameter:
-        value: 4.67
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_2
-      length:
-        value: 732.9000000000001
+        value: 2788.0
         unit: m
       outer_diameter:
         value: 6.625
         unit: in
       inner_diameter:
         value: 5.791
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_3
-      length:
-        value: 56.40000000000009
-        unit: m
-      outer_diameter:
-        value: 5.5
-        unit: in
-      inner_diameter:
-        value: 4.67
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_4
-      length:
-        value: 48.90000000000009
-        unit: m
-      outer_diameter:
-        value: 6.625
-        unit: in
-      inner_diameter:
-        value: 5.791
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_5
-      length:
-        value: 54.90000000000009
-        unit: m
-      outer_diameter:
-        value: 5.5
-        unit: in
-      inner_diameter:
-        value: 4.67
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_6
-      length:
-        value: 2400.9
-        unit: m
-      outer_diameter:
-        value: 6.625
-        unit: in
-      inner_diameter:
-        value: 5.791
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_7
-      length:
-        value: 158.97000000000025
-        unit: m
-      outer_diameter:
-        value: 5.5
-        unit: in
-      inner_diameter:
-        value: 4.67
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_8
-      length:
-        value: 31.039999999999964
-        unit: m
-      outer_diameter:
-        value: 4.5
-        unit: in
-      inner_diameter:
-        value: 3.92
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_9
-      length:
-        value: 24.899999999999636
-        unit: m
-      outer_diameter:
-        value: 5.5
-        unit: in
-      inner_diameter:
-        value: 4.67
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_10
-      length:
-        value: 21.670000000000073
-        unit: m
-      outer_diameter:
-        value: 4.5
-        unit: in
-      inner_diameter:
-        value: 3.92
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_11
-      length:
-        value: 20.23999999999978
-        unit: m
-      outer_diameter:
-        value: 5.5
-        unit: in
-      inner_diameter:
-        value: 4.67
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_12
-      length:
-        value: 27.420000000000073
-        unit: m
-      outer_diameter:
-        value: 4.5
-        unit: in
-      inner_diameter:
-        value: 3.92
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_13
-      length:
-        value: 132.89999999999964
-        unit: m
-      outer_diameter:
-        value: 5.5
-        unit: in
-      inner_diameter:
-        value: 4.67
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_14
-      length:
-        value: 21.670000000000073
-        unit: m
-      outer_diameter:
-        value: 4.5
-        unit: in
-      inner_diameter:
-        value: 3.92
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_15
-      length:
-        value: 20.23999999999978
-        unit: m
-      outer_diameter:
-        value: 5.5
-        unit: in
-      inner_diameter:
-        value: 4.67
-        unit: in
-      inner_roughness:
-        value: 0.05
-        unit: mm
-      material: SDSS/125KSI
-    - name: TUBING_16
-      length:
-        value: 31.859999999999673
-        unit: m
-      outer_diameter:
-        value: 4.5
-        unit: in
-      inner_diameter:
-        value: 3.92
         unit: in
       inner_roughness:
         value: 0.05
         unit: mm
       material: SDSS/125KSI
     packers:
-    - name: 'Packer (Hidráulico) #1'
+    - name: 'PACKER #1'
       position:
-        value: 3493.1800000000003
+        value: 2788.0
         unit: m
-      material_above: DFLT_FCBA_9.03
+      material_above: DFLT_FCBA_8.80
     open_holes:
     - name: OPEN_HOLE_1
       length:
-        value: 371.0
+        value: 157.0
         unit: m
       diameter:
-        value: 9.5
+        value: 8.5
         unit: in
       inner_roughness:
         value: 0.1
@@ -1358,29 +1148,654 @@ wells:
     top_node: GAS_LIFT_MASS_NODE
   formation:
     reference_y_coordinate:
-      value: 2072.0
+      value: 0.0
       unit: m
     layers:
     - name: formation_1
       start:
-        value: 2072.0
+        value: 2182.0
+        unit: m
+      material: FC_Argila
+    - name: formation_2
+      start:
+        value: 2561.61
         unit: m
       material: FC_Folhelho
+    - name: formation_3
+      start:
+        value: 2770.59
+        unit: m
+      material: FC_Arenito
+    - name: formation_4
+      start:
+        value: 2773.77
+        unit: m
+      material: FC_Folhelho
+    - name: formation_5
+      start:
+        value: 2792.55
+        unit: m
+      material: FC_Arenito
+    - name: formation_6
+      start:
+        value: 2795.54
+        unit: m
+      material: FC_Folhelho
+    - name: formation_7
+      start:
+        value: 2800.69
+        unit: m
+      material: FC_Arenito
+    - name: formation_8
+      start:
+        value: 2804.54
+        unit: m
+      material: FC_Folhelho
+    - name: formation_9
+      start:
+        value: 2810.33
+        unit: m
+      material: FC_Arenito
+    - name: formation_10
+      start:
+        value: 2815.48
+        unit: m
+      material: FC_Folhelho
+    - name: formation_11
+      start:
+        value: 2820.62
+        unit: m
+      material: FC_Arenito
+    - name: formation_12
+      start:
+        value: 2825.77
+        unit: m
+      material: FC_Folhelho
+    - name: formation_13
+      start:
+        value: 2837.34
+        unit: m
+      material: FC_Arenito
+    - name: formation_14
+      start:
+        value: 2840.87
+        unit: m
+      material: FC_Folhelho
+    - name: formation_15
+      start:
+        value: 2859.98
+        unit: m
+      material: FC_Marga
+    - name: formation_16
+      start:
+        value: 3137.69
+        unit: m
+      material: FC_Folhelho
+    - name: formation_17
+      start:
+        value: 3140.91
+        unit: m
+      material: FC_Marga
+    - name: formation_18
+      start:
+        value: 3150.56
+        unit: m
+      material: FC_Folhelho
+    - name: formation_19
+      start:
+        value: 3154.41
+        unit: m
+      material: FC_Marga
+    - name: formation_20
+      start:
+        value: 3164.06
+        unit: m
+      material: FC_Folhelho
+    - name: formation_21
+      start:
+        value: 3167.92
+        unit: m
+      material: FC_Marga
+    - name: formation_22
+      start:
+        value: 3180.14
+        unit: m
+      material: FC_Folhelho
+    - name: formation_23
+      start:
+        value: 3185.93
+        unit: m
+      material: FC_Marga
+    - name: formation_24
+      start:
+        value: 3195.58
+        unit: m
+      material: FC_Folhelho
+    - name: formation_25
+      start:
+        value: 3202.01
+        unit: m
+      material: FC_Marga
+    - name: formation_26
+      start:
+        value: 3210.37
+        unit: m
+      material: FC_Folhelho
+    - name: formation_27
+      start:
+        value: 3217.44
+        unit: m
+      material: FC_Marga
+    - name: formation_28
+      start:
+        value: 3223.23
+        unit: m
+      material: FC_Folhelho
+    - name: formation_29
+      start:
+        value: 3226.45
+        unit: m
+      material: FC_Marga
+    - name: formation_30
+      start:
+        value: 3234.16
+        unit: m
+      material: FC_Folhelho
+    - name: formation_31
+      start:
+        value: 3236.74
+        unit: m
+      material: FC_Marga
+    - name: formation_32
+      start:
+        value: 3242.52
+        unit: m
+      material: FC_Folhelho
+    - name: formation_33
+      start:
+        value: 3245.74
+        unit: m
+      material: FC_Marga
+    - name: formation_34
+      start:
+        value: 3255.39
+        unit: m
+      material: FC_Folhelho
+    - name: formation_35
+      start:
+        value: 3257.96
+        unit: m
+      material: FC_Marga
+    - name: formation_36
+      start:
+        value: 3264.95
+        unit: m
+      material: FC_Packstone
+    - name: formation_37
+      start:
+        value: 3269.34
+        unit: m
+      material: FC_Anidrita
+    - name: formation_38
+      start:
+        value: 3274.41
+        unit: m
+      material: FC_Packstone
+    - name: formation_39
+      start:
+        value: 3278.46
+        unit: m
+      material: FC_Anidrita
+    - name: formation_40
+      start:
+        value: 3295.68
+        unit: m
+      material: FC_Packstone
+    - name: formation_41
+      start:
+        value: 3299.3
+        unit: m
+      material: FC_Anidrita
+    - name: formation_42
+      start:
+        value: 3305.24
+        unit: m
+      material: FC_Packstone
+    - name: formation_43
+      start:
+        value: 3327.88
+        unit: m
+      material: FC_Anidrita
+    - name: formation_44
+      start:
+        value: 3333.29
+        unit: m
+      material: FC_Halita
+    - name: formation_45
+      start:
+        value: 3381.61
+        unit: m
+      material: FC_Anidrita
+    - name: formation_46
+      start:
+        value: 3389.38
+        unit: m
+      material: FC_Halita
+    - name: formation_47
+      start:
+        value: 3436.35
+        unit: m
+      material: FC_Anidrita
+    - name: formation_48
+      start:
+        value: 3447.84
+        unit: m
+      material: FC_Halita
+    - name: formation_49
+      start:
+        value: 3452.91
+        unit: m
+      material: FC_Anidrita
+    - name: formation_50
+      start:
+        value: 3471.16
+        unit: m
+      material: FC_Halita
+    - name: formation_51
+      start:
+        value: 3476.56
+        unit: m
+      material: FC_Anidrita
+    - name: formation_52
+      start:
+        value: 3500.89
+        unit: m
+      material: FC_Carnalita
+    - name: formation_53
+      start:
+        value: 3503.93
+        unit: m
+      material: FC_Halita
+    - name: formation_54
+      start:
+        value: 3516.44
+        unit: m
+      material: FC_Anidrita
+    - name: formation_55
+      start:
+        value: 3518.46
+        unit: m
+      material: FC_Halita
+    - name: formation_56
+      start:
+        value: 3524.55
+        unit: m
+      material: FC_Anidrita
+    - name: formation_57
+      start:
+        value: 3526.57
+        unit: m
+      material: FC_Carnalita
+    - name: formation_58
+      start:
+        value: 3530.29
+        unit: m
+      material: FC_Taquidrita
+    - name: formation_59
+      start:
+        value: 3532.99
+        unit: m
+      material: FC_Carnalita
+    - name: formation_60
+      start:
+        value: 3536.71
+        unit: m
+      material: FC_Taquidrita
+    - name: formation_61
+      start:
+        value: 3540.43
+        unit: m
+      material: FC_Carnalita
+    - name: formation_62
+      start:
+        value: 3543.47
+        unit: m
+      material: FC_Halita
+    - name: formation_63
+      start:
+        value: 3602.26
+        unit: m
+      material: FC_Carnalita
+    - name: formation_64
+      start:
+        value: 3623.89
+        unit: m
+      material: FC_Halita
+    - name: formation_65
+      start:
+        value: 3705.67
+        unit: m
+      material: FC_Anidrita
+    - name: formation_66
+      start:
+        value: 3709.04
+        unit: m
+      material: FC_Halita
+    - name: formation_67
+      start:
+        value: 3782.03
+        unit: m
+      material: FC_Anidrita
+    - name: formation_68
+      start:
+        value: 3786.76
+        unit: m
+      material: FC_Halita
+    - name: formation_69
+      start:
+        value: 3791.16
+        unit: m
+      material: FC_Carnalita
+    - name: formation_70
+      start:
+        value: 3793.52
+        unit: m
+      material: FC_Halita
+    - name: formation_71
+      start:
+        value: 3872.93
+        unit: m
+      material: FC_Anidrita
+    - name: formation_72
+      start:
+        value: 3876.99
+        unit: m
+      material: FC_Halita
+    - name: formation_73
+      start:
+        value: 3943.55
+        unit: m
+      material: FC_Carnalita
+    - name: formation_74
+      start:
+        value: 3948.28
+        unit: m
+      material: FC_Halita
+    - name: formation_75
+      start:
+        value: 3952.34
+        unit: m
+      material: FC_Carnalita
+    - name: formation_76
+      start:
+        value: 3957.75
+        unit: m
+      material: FC_Halita
+    - name: formation_77
+      start:
+        value: 4002.01
+        unit: m
+      material: FC_Anidrita
+    - name: formation_78
+      start:
+        value: 4009.11
+        unit: m
+      material: FC_Halita
+    - name: formation_79
+      start:
+        value: 4012.15
+        unit: m
+      material: FC_Carnalita
+    - name: formation_80
+      start:
+        value: 4017.22
+        unit: m
+      material: FC_Halita
+    - name: formation_81
+      start:
+        value: 4031.75
+        unit: m
+      material: FC_Anidrita
+    - name: formation_82
+      start:
+        value: 4035.13
+        unit: m
+      material: FC_Halita
+    - name: formation_83
+      start:
+        value: 4042.56
+        unit: m
+      material: FC_Anidrita
+    - name: formation_84
+      start:
+        value: 4047.63
+        unit: m
+      material: FC_Halita
+    - name: formation_85
+      start:
+        value: 4092.23
+        unit: m
+      material: FC_Anidrita
+    - name: formation_86
+      start:
+        value: 4097.639999999999
+        unit: m
+      material: FC_Halita
+    - name: formation_87
+      start:
+        value: 4116.23
+        unit: m
+      material: FC_Anidrita
+    - name: formation_88
+      start:
+        value: 4119.9400000000005
+        unit: m
+      material: FC_Halita
+    - name: formation_89
+      start:
+        value: 4133.46
+        unit: m
+      material: FC_Carnalita
+    - name: formation_90
+      start:
+        value: 4138.53
+        unit: m
+      material: FC_Halita
+    - name: formation_91
+      start:
+        value: 4175.02
+        unit: m
+      material: FC_Carnalita
+    - name: formation_92
+      start:
+        value: 4189.89
+        unit: m
+      material: FC_Halita
+    - name: formation_93
+      start:
+        value: 4219.29
+        unit: m
+      material: FC_Anidrita
+    - name: formation_94
+      start:
+        value: 4222.67
+        unit: m
+      material: FC_Halita
+    - name: formation_95
+      start:
+        value: 4275.38
+        unit: m
+      material: FC_Anidrita
+    - name: formation_96
+      start:
+        value: 4279.77
+        unit: m
+      material: FC_Halita
+    - name: formation_97
+      start:
+        value: 4324.38
+        unit: m
+      material: FC_Anidrita
+    - name: formation_98
+      start:
+        value: 4328.77
+        unit: m
+      material: FC_Halita
+    - name: formation_99
+      start:
+        value: 4372.7
+        unit: m
+      material: FC_Anidrita
+    - name: formation_100
+      start:
+        value: 4380.13
+        unit: m
+      material: FC_Halita
+    - name: formation_101
+      start:
+        value: 4478.13
+        unit: m
+      material: FC_Anidrita
+    - name: formation_102
+      start:
+        value: 4492.99
+        unit: m
+      material: FC_Halita
+    - name: formation_103
+      start:
+        value: 4612.95
+        unit: m
+      material: FC_Taquidrita
+    - name: formation_104
+      start:
+        value: 4621.74
+        unit: m
+      material: FC_Halita
+    - name: formation_105
+      start:
+        value: 4624.1
+        unit: m
+      material: FC_Carnalita
+    - name: formation_106
+      start:
+        value: 4626.81
+        unit: m
+      material: FC_Halita
+    - name: formation_107
+      start:
+        value: 4662.96
+        unit: m
+      material: FC_Carnalita
+    - name: formation_108
+      start:
+        value: 4671.41
+        unit: m
+      material: FC_Halita
+    - name: formation_109
+      start:
+        value: 4673.1
+        unit: m
+      material: FC_Taquidrita
+    - name: formation_110
+      start:
+        value: 4675.8
+        unit: m
+      material: FC_Halita
+    - name: formation_111
+      start:
+        value: 4678.17
+        unit: m
+      material: FC_Carnalita
+    - name: formation_112
+      start:
+        value: 4682.56
+        unit: m
+      material: FC_Halita
+    - name: formation_113
+      start:
+        value: 4684.93
+        unit: m
+      material: FC_Anidrita
+    - name: formation_114
+      start:
+        value: 4686.28
+        unit: m
+      material: FC_Halita
+    - name: formation_115
+      start:
+        value: 4737.3
+        unit: m
+      material: FC_Anidrita
+    - name: formation_116
+      start:
+        value: 4743.05
+        unit: m
+      material: FC_Halita
+    - name: formation_117
+      start:
+        value: 4782.58
+        unit: m
+      material: FC_Anidrita
+    - name: formation_118
+      start:
+        value: 4787.31
+        unit: m
+      material: FC_Halita
+    - name: formation_119
+      start:
+        value: 4838.34
+        unit: m
+      material: FC_Anidrita
+    - name: formation_120
+      start:
+        value: 4843.07
+        unit: m
+      material: FC_Halita
+    - name: formation_121
+      start:
+        value: 4935.32
+        unit: m
+      material: FC_Anidrita
+    - name: formation_122
+      start:
+        value: 4940.39
+        unit: m
+      material: FC_Halita
+    - name: formation_123
+      start:
+        value: 4969.83
+        unit: m
+      material: FC_Anidrita
+    - name: formation_124
+      start:
+        value: 4975.15
+        unit: m
+      material: FC_Calcario
+    - name: formation_125
+      start:
+        value: 4978.61
+        unit: m
+      material: FC_Anidrita
+    - name: formation_126
+      start:
+        value: 4982.08
+        unit: m
+      material: FC_Calcario
   top_node: WELLBORE_TOP_NODE
   bottom_node: WELLBORE_BOTTOM_NODE
   environment:
     thermal_model: steady_state_heat_transfer
     position_input_mode: position_by_tvd
     reference_y_coordinate:
-      value: 2072.0
+      value: 0.0
       unit: m
     md_properties_table: []
     tvd_properties_table:
     - position:
-        value: 2072.0
+        value: 2182.0
         unit: m
       temperature:
-        value: 4.44
+        value: 4.0
         unit: degC
       type: walls_and_environment_heat_transfer_coefficient
       heat_transfer_coefficient:
@@ -1393,10 +1808,42 @@ wells:
         value: 0.0
         unit: m/s
     - position:
-        value: 5735.0
+        value: 3269.0
         unit: m
       temperature:
-        value: 106.04
+        value: 47.0
+        unit: degC
+      type: walls_and_environment_heat_transfer_coefficient
+      heat_transfer_coefficient:
+        value: 1000.0
+        unit: W/m2.K
+      overall_heat_transfer_coefficient:
+        value: 0.0
+        unit: W/m2.K
+      fluid_velocity:
+        value: 0.0
+        unit: m/s
+    - position:
+        value: 4982.0
+        unit: m
+      temperature:
+        value: 62.01
+        unit: degC
+      type: walls_and_environment_heat_transfer_coefficient
+      heat_transfer_coefficient:
+        value: 1000.0
+        unit: W/m2.K
+      overall_heat_transfer_coefficient:
+        value: 0.0
+        unit: W/m2.K
+      fluid_velocity:
+        value: 0.0
+        unit: m/s
+    - position:
+        value: 5139.0
+        unit: m
+      temperature:
+        value: 69.3
         unit: degC
       type: walls_and_environment_heat_transfer_coefficient
       heat_transfer_coefficient:
@@ -1439,12 +1886,12 @@ wells:
         positions:
           values:
           - 0.0
-          - 3906.79
+          - 2957.0
           unit: m
         pressures:
           values:
-          - 5888.466
-          - 9814.11
+          - 2944.2230999999997
+          - 4907.0385
           unit: psi
     volume_fractions:
       position_input_type: length
@@ -1563,12 +2010,12 @@ wells:
         positions:
           values:
           - 0.0
-          - 3906.79
+          - 2957.0
           unit: m
         temperatures:
           values:
-          - 4.44
-          - 97.0
+          - 4.0
+          - 69.3
           unit: degC
 materials:
 - name: CM_cement
@@ -1594,53 +2041,30 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
+- name: X-60
+  material_type: solid
+  density:
+    value: 65.5035
+    unit: kg/m3
+  thermal_conductivity:
+    value: 45.345257
+    unit: W/m.K
+  heat_capacity:
+    value: 460.9
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 1.2e-05
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
 - name: B
-  material_type: solid
-  density:
-    value: 65.5035
-    unit: kg/m3
-  thermal_conductivity:
-    value: 45.345257
-    unit: W/m.K
-  heat_capacity:
-    value: 460.9
-    unit: J/kg.K
-  inner_emissivity:
-    value: 0.0
-    unit: '-'
-  outer_emissivity:
-    value: 0.0
-    unit: '-'
-  expansion:
-    value: 1.2e-05
-    unit: 1/K
-  viscosity:
-    value: 0.0
-    unit: cP
-- name: X-80
-  material_type: solid
-  density:
-    value: 65.5035
-    unit: kg/m3
-  thermal_conductivity:
-    value: 45.345257
-    unit: W/m.K
-  heat_capacity:
-    value: 460.9
-    unit: J/kg.K
-  inner_emissivity:
-    value: 0.0
-    unit: '-'
-  outer_emissivity:
-    value: 0.0
-    unit: '-'
-  expansion:
-    value: 1.2e-05
-    unit: 1/K
-  viscosity:
-    value: 0.0
-    unit: cP
-- name: N-80
   material_type: solid
   density:
     value: 65.5035
@@ -1686,6 +2110,29 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
+- name: SMSS/110KSI
+  material_type: solid
+  density:
+    value: 65.5035
+    unit: kg/m3
+  thermal_conductivity:
+    value: 45.345257
+    unit: W/m.K
+  heat_capacity:
+    value: 460.9
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 1.2e-05
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
 - name: SDSS/125KSI
   material_type: solid
   density:
@@ -1709,7 +2156,214 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
+- name: FC_Argila
+  material_type: solid
+  density:
+    value: 1.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 50.0
+    unit: W/m.K
+  heat_capacity:
+    value: 5.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
 - name: FC_Folhelho
+  material_type: solid
+  density:
+    value: 1.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 50.0
+    unit: W/m.K
+  heat_capacity:
+    value: 5.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: FC_Arenito
+  material_type: solid
+  density:
+    value: 1.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 50.0
+    unit: W/m.K
+  heat_capacity:
+    value: 5.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: FC_Marga
+  material_type: solid
+  density:
+    value: 1.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 50.0
+    unit: W/m.K
+  heat_capacity:
+    value: 5.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: FC_Packstone
+  material_type: solid
+  density:
+    value: 1.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 50.0
+    unit: W/m.K
+  heat_capacity:
+    value: 5.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: FC_Anidrita
+  material_type: solid
+  density:
+    value: 3.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 2.0
+    unit: W/m.K
+  heat_capacity:
+    value: 4.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: FC_Halita
+  material_type: solid
+  density:
+    value: 3.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 2.0
+    unit: W/m.K
+  heat_capacity:
+    value: 4.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: FC_Carnalita
+  material_type: solid
+  density:
+    value: 3.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 2.0
+    unit: W/m.K
+  heat_capacity:
+    value: 4.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: FC_Taquidrita
+  material_type: solid
+  density:
+    value: 3.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 2.0
+    unit: W/m.K
+  heat_capacity:
+    value: 4.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: FC_Calcario
   material_type: solid
   density:
     value: 1.0
@@ -1778,7 +2432,7 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
-- name: DFLT_FCBA_9.03
+- name: DFLT_FCBA_10.00
   material_type: fluid
   density:
     value: 1000.0
@@ -1801,7 +2455,30 @@ materials:
   viscosity:
     value: 0.0
     unit: cP
-- name: DFLT_FPBA_BARITE_8.60_35000
+- name: DFLT_FCBA_8.80
+  material_type: fluid
+  density:
+    value: 1000.0
+    unit: kg/m3
+  thermal_conductivity:
+    value: 0.6
+    unit: W/m.K
+  heat_capacity:
+    value: 4181.0
+    unit: J/kg.K
+  inner_emissivity:
+    value: 0.0
+    unit: '-'
+  outer_emissivity:
+    value: 0.0
+    unit: '-'
+  expansion:
+    value: 0.0004
+    unit: 1/K
+  viscosity:
+    value: 0.0
+    unit: cP
+- name: DFLT_FPBA_BARITE_10.00_300000
   material_type: fluid
   density:
     value: 1000.0
