@@ -1,3 +1,5 @@
+from typing import Dict
+
 import numpy as np
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
@@ -34,7 +36,7 @@ def test_get_seabed_hydrostatic_pressure(
     ],
 )
 def test_get_refined_trajectory(
-    trajectory_data: dict[str, Array], score_data_gas_lift: ScoreInputData, monkeypatch: MonkeyPatch
+    trajectory_data: Dict[str, Array], score_data_gas_lift: ScoreInputData, monkeypatch: MonkeyPatch
 ) -> None:
     monkeypatch.setattr(ScoreInputReader, "read_well_trajectory", lambda _: trajectory_data)
     refined = score_data_gas_lift.get_refined_trajectory()
@@ -45,4 +47,4 @@ def test_get_refined_trajectory(
     points = np.stack((x_out, y_out), axis=1)
     deltas = np.linalg.norm(points[1:] - points[:-1], axis=1)
     max_distance = MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS.GetValue(LENGTH_UNIT)
-    assert np.all(deltas <= max_distance + 1e-6), f"Found distance > {max_distance}"
+    assert np.all(deltas <= max_distance + 1e-6)

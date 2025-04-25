@@ -63,7 +63,7 @@ class ScoreAlfacaseConverter:
         NOTE: all positions don't start to count as zero at ANM, but they use the same values
         from the input SCORE file.
         """
-        trajectory = self.score_data.reader.read_well_trajectory()
+        trajectory = self.score_data.get_refined_trajectory()
         return ProfileDescription(x_and_y=XAndYDescription(x=trajectory["x"], y=trajectory["y"]))
 
     def _convert_materials(self) -> List[MaterialDescription]:
