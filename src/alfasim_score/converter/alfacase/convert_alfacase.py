@@ -63,7 +63,7 @@ class ScoreAlfacaseConverter:
         NOTE: all positions don't start to count as zero at ANM, but they use the same values
         from the input SCORE file.
         """
-        trajectory = self.score_data.reader.read_well_trajectory()
+        trajectory = self.score_data.get_refined_trajectory()
         return ProfileDescription(x_and_y=XAndYDescription(x=trajectory["x"], y=trajectory["y"]))
 
     def _convert_materials(self) -> List[MaterialDescription]:
@@ -103,7 +103,7 @@ class ScoreAlfacaseConverter:
             for i, formation in enumerate(self.score_data.reader.read_formations(), start=1)
         ]
         return FormationDescription(
-            reference_y_coordinate=REFERENCE_VERTICAL_COORDINATE, layers=layers
+            reference_y_coordinate=self.score_data.get_well_start_position(), layers=layers
         )
 
     def _convert_well_environment(self) -> EnvironmentDescription:
@@ -129,7 +129,7 @@ class ScoreAlfacaseConverter:
         return EnvironmentDescription(
             thermal_model=PipeThermalModelType.SteadyState,
             position_input_mode=PipeThermalPositionInput.Tvd,
-            reference_y_coordinate=REFERENCE_VERTICAL_COORDINATE,
+            reference_y_coordinate=self.score_data.get_well_start_position(),
             tvd_properties_table=environment_description,
         )
 

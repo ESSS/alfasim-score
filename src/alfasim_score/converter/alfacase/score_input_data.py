@@ -4,6 +4,8 @@ from typing import List
 from typing import Union
 
 import csv
+import numpy as np
+from barril.units import Array
 from barril.units import Scalar
 from pathlib import Path
 
@@ -11,9 +13,9 @@ from alfasim_score.common import AnnulusLabel
 from alfasim_score.common import LiftMethod
 from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
 from alfasim_score.constants import FLUID_DEFAULT_NAME
+from alfasim_score.constants import MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
-from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
@@ -125,3 +127,28 @@ class ScoreInputData:
         g = 9.8  # m/s²
         h = self.general_data["water_depth"].GetValue(LENGTH_UNIT)
         return Scalar(rho * g * h, "Pa")
+
+    def get_refined_trajectory(self) -> Dict[str, Array]:
+        """
+        Transform the original SCORE trajectory into a refined trajectory
+        with sections equal or less then some maximum length.
+        """
+        trajectory = self.reader.read_well_trajectory()
+        max_distance = MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS.GetValue(LENGTH_UNIT)
+        x_array = np.array(trajectory["x"].GetValues(LENGTH_UNIT), dtype=float)
+        y_array = np.array(trajectory["y"].GetValues(LENGTH_UNIT), dtype=float)
+        points = np.stack((x_array, y_array), axis=1)
+        interpolated_points = [points[0]]
+        for i in range(1, len(points)):
+            previous_point = interpolated_points[-1]
+            current_point = points[i]
+            distance = np.linalg.norm(current_point - previous_point)
+            if distance > max_distance:
+                num_segments = int(np.ceil(distance / max_distance))
+                new_points = np.linspace(previous_point, current_point, num_segments + 1)[1:]
+                interpolated_points.extend(new_points)
+            else:
+                interpolated_points.append(current_point)
+        x_new = [point[0] for point in interpolated_points]
+        y_new = [point[1] for point in interpolated_points]
+        return {"x": Array(x_new, LENGTH_UNIT), "y": Array(y_new, LENGTH_UNIT)}
