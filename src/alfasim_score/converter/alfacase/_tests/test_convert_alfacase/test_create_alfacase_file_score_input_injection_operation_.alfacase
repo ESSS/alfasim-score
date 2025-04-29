@@ -112,13 +112,15 @@ plugins:
         columns:
           temperature_depth_a:
             values:
-            - 0.0
-            - 2975.0
+            - 1305.0707547169814
+            - 1984.2688679245284
+            - 2675.0
             unit: m
           temperature_a:
             values:
             - 4.0
-            - 68.69767441860465
+            - 44.9
+            - 59.727699775562385
             unit: degC
       has_fluid_return_a: True
       initial_leakoff_a:
@@ -158,13 +160,15 @@ plugins:
         columns:
           temperature_depth_b:
             values:
-            - 0.0
-            - 2975.0
+            - 1305.0707547169814
+            - 1984.2688679245284
+            - 2270.0
             unit: m
           temperature_b:
             values:
             - 4.0
-            - 68.69767441860465
+            - 44.9
+            - 51.03369695704368
             unit: degC
       has_fluid_return_b: True
       initial_leakoff_b:

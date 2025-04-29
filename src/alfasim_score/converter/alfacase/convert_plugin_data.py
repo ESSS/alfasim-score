@@ -30,32 +30,63 @@ class ScoreAPBPluginConverter:
     def __init__(self, score_input_data: ScoreInputData):
         self.score_data = score_input_data
 
-    def _build_annular_temperature_table(self) -> AnnulusTemperatureTable:
+    def _build_annular_temperature_table(
+        self, final_temperature_depth: float
+    ) -> AnnulusTemperatureTable:
         """
         Calculate the temperature of fluids based on temperature of formation coming from SCORE input file.
         It uses the well vertical positions in order to interpolates the temperatures of formation and it maps
         each measured depth to the temperature of formation in that position.
         """
-        measured_depths = Array(
+        formation_temperature_data = self.score_data.reader.read_formation_temperatures()
+        formation_depths = (
+            np.abs(formation_temperature_data["elevations"].GetValues())
+            + self.score_data.general_data["air_gap"].GetValue()
+        )
+        formation_temperatures = formation_temperature_data["temperatures"].GetValues()
+        trajectory = self.score_data.reader.read_well_trajectory()
+        formation_md_score_reference = Array(
+            np.interp(
+                formation_depths,
+                np.abs(trajectory["y"]),
+                np.abs(trajectory["md"]),
+            ),
+            LENGTH_UNIT,
+        )
+
+        formation_md_alfasim_reference = Array(
             [
                 self.score_data.get_position_in_well(depth).GetValue()
-                for depth in self.score_data.reader.read_well_trajectory()["md"]
+                for depth in formation_md_score_reference
             ],
             LENGTH_UNIT,
         )
-        formation_temperature_data = self.score_data.reader.read_formation_temperatures()
-        trajectory = self.score_data.reader.read_well_trajectory()
-        interpolated_temperatures_y = Array(
+
+        annulus_depth_md_alfasim_reference = Array(
+            [
+                self.score_data.get_position_in_well(depth).GetValue()
+                for depth in formation_md_score_reference
+            ],
+            LENGTH_UNIT,
+        )
+        annulus_depth_md_alfasim_reference = [
+            depth for depth in annulus_depth_md_alfasim_reference if depth < final_temperature_depth
+        ]
+        if final_temperature_depth not in annulus_depth_md_alfasim_reference:
+            annulus_depth_md_alfasim_reference.append(final_temperature_depth)
+        annulus_depth_md_alfasim_reference = Array(annulus_depth_md_alfasim_reference, LENGTH_UNIT)
+
+        annulus_temperature = Array(
             np.interp(
-                np.abs(trajectory["y"]),
-                np.abs(formation_temperature_data["elevations"].GetValues())
-                + self.score_data.general_data["air_gap"].GetValue(),
-                formation_temperature_data["temperatures"].GetValues(),
+                annulus_depth_md_alfasim_reference,
+                formation_md_alfasim_reference,
+                formation_temperatures,
             ),
             TEMPERATURE_UNIT,
         )
+
         return AnnulusTemperatureTable(
-            depths=measured_depths, temperatures=interpolated_temperatures_y
+            depths=annulus_depth_md_alfasim_reference, temperatures=annulus_temperature
         )
 
     def _build_annular_fluid_depth_table(
@@ -89,19 +120,23 @@ class ScoreAPBPluginConverter:
         # therefore it's considered here that they sorted in the input SCORE file.
         annuli_data = self.score_data.reader.read_operation_annuli_data().copy()
         initial_conditions_data = self.score_data.reader.read_initial_condition()
-        annular_temperature_table = self._build_annular_temperature_table()
         annuli = Annuli()
         if annuli_data:
             # the annulus A uses data from tubing_strings section of SCORE file
             tubing_fluids_data = self.score_data.reader.read_tubing_fluid_data()
             annulus_data = annuli_data.pop(0)
+            final_temperature_depth = self._build_annular_fluid_depth_table(
+                tubing_fluids_data
+            ).final_depths.GetValues()
             annuli.annulus_a = Annulus(
                 is_active=True,
                 mode_type=initial_conditions_data["mode"],
                 initial_top_pressure=annulus_data["initial_top_pressure"],
                 is_open_seabed=False,
                 annulus_depth_table=self._build_annular_fluid_depth_table(tubing_fluids_data),
-                annulus_temperature_table=annular_temperature_table,
+                annulus_temperature_table=self._build_annular_temperature_table(
+                    final_temperature_depth[0]
+                ),
                 has_fluid_return=HAS_FLUID_RETURN,
                 initial_leakoff=annulus_data["leakoff_volume"],
             )
@@ -128,6 +163,9 @@ class ScoreAPBPluginConverter:
                 casing = casings.pop()
                 if self.score_data.has_annular_fluid(casing["annular_fluids"]):
                     is_open_seabed = casing["function"] == WellItemFunction.SURFACE
+                    final_temperature_depth = self._build_annular_fluid_depth_table(
+                        casing["annular_fluids"]
+                    ).final_depths.GetValues()
                     water_depth_pressure = (
                         self.score_data.get_seabed_hydrostatic_pressure()
                         if is_open_seabed
@@ -144,7 +182,9 @@ class ScoreAPBPluginConverter:
                             annulus_depth_table=self._build_annular_fluid_depth_table(
                                 casing["annular_fluids"]
                             ),
-                            annulus_temperature_table=annular_temperature_table,
+                            annulus_temperature_table=self._build_annular_temperature_table(
+                                final_temperature_depth[0]
+                            ),
                             has_fluid_return=HAS_FLUID_RETURN,
                             initial_leakoff=annulus_data["leakoff_volume"],
                             has_pressure_relief=casing["pressure_relief"]["is_active"],

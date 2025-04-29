@@ -112,45 +112,63 @@ plugins:
         columns:
           temperature_depth_a:
             values:
-            - -2182.0
-            - 2957.0
+            - 0.0
+            - 1087.0
+            - 2788.0
             unit: m
           temperature_a:
             values:
             - 4.0
-            - 69.3
+            - 47.0
+            - 61.90485113835376
             unit: degC
       has_fluid_return_a: True
       initial_leakoff_a:
         value: 0.0
         unit: m3
       has_pressure_relief_a: False
-      is_active_b: False
+      glv_delta_pressure_a:
+        value: 0.0
+        unit: psi
+      relief_position_a:
+        value: 0.0
+        unit: m
+      water_depth_pressure_a:
+        value: 0.0
+        unit: psi
+      is_active_b: True
       mode_type_b: Undisturbed
       initial_top_pressure_b:
-        value: 0.0
+        value: 3718.8533251525373
         unit: psi
       is_open_seabed_b: False
       annulus_depth_table_b:
         columns:
           fluid_initial_measured_depth_b:
-            values: []
+            values:
+            - 0.0
             unit: m
           fluid_final_measured_depth_b:
-            values: []
+            values:
+            - 818.0
             unit: m
           fluid_name_b:
-            plugin_item_ids: []
+            plugin_item_ids:
+            - 3
             container_key: FluidContainer
       annulus_temperature_table_b:
         columns:
           temperature_depth_b:
-            values: []
+            values:
+            - 0.0
+            - 818.0
             unit: m
           temperature_b:
-            values: []
+            values:
+            - 4.0
+            - 36.358785648574056
             unit: degC
-      has_fluid_return_b: False
+      has_fluid_return_b: True
       initial_leakoff_b:
         value: 0.0
         unit: m3
@@ -159,8 +177,11 @@ plugins:
         value: 0.0
         unit: psi
       relief_position_b:
-        value: 0.0
+        value: -2182.0
         unit: m
+      water_depth_pressure_b:
+        value: 0.0
+        unit: psi
       is_active_c: False
       mode_type_c: Undisturbed
       initial_top_pressure_c:
@@ -197,6 +218,9 @@ plugins:
       relief_position_c:
         value: 0.0
         unit: m
+      water_depth_pressure_c:
+        value: 0.0
+        unit: psi
       is_active_d: False
       mode_type_d: Undisturbed
       initial_top_pressure_d:
@@ -233,6 +257,9 @@ plugins:
       relief_position_d:
         value: 0.0
         unit: m
+      water_depth_pressure_d:
+        value: 0.0
+        unit: psi
       is_active_e: False
       mode_type_e: Undisturbed
       initial_top_pressure_e:
@@ -269,21 +296,24 @@ plugins:
       relief_position_e:
         value: 0.0
         unit: m
+      water_depth_pressure_e:
+        value: 0.0
+        unit: psi
     FluidContainer:
       name: Annulus Fluids Container
       _children_list:
       - name: Brine_860
         fluid_type: PVT
-        pvt_table_content: apb_alfacase.base.tab
+        pvt_table_content: Brine_860.tab
       - name: DFLT_FCBA_10.00
         fluid_type: PVT
-        pvt_table_content: apb_alfacase.base.tab
+        pvt_table_content: DFLT_FCBA_10.00.tab
       - name: DFLT_FCBA_8.80
         fluid_type: PVT
-        pvt_table_content: apb_alfacase.base.tab
+        pvt_table_content: DFLT_FCBA_8.80.tab
       - name: DFLT_FPBA_BARITE_10.00_300000
         fluid_type: PVT
-        pvt_table_content: apb_alfacase.base.tab
+        pvt_table_content: DFLT_FPBA_BARITE_10.00_300000.tab
     MechanicalContainer:
       name: Mechanical Properties
       _children_list:
@@ -455,7 +485,7 @@ plugins:
 pvt_models:
   default_model: base
   tables:
-    base: apb_alfacase.base.tab
+    base: DFLT_BLACK_OIL_29.00_0_225.00_0.92.tab
   correlations:
     DFLT_BLACK_OIL_29.00_0_225.00_0.92:
       oil_density_std:
@@ -795,10 +825,214 @@ wells:
         values:
         - 0.0
         - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
         unit: m
       y:
         values:
         - -0.0
+        - -49.89320388349514
+        - -99.78640776699028
+        - -149.67961165048544
+        - -199.57281553398056
+        - -249.46601941747574
+        - -299.3592233009709
+        - -349.252427184466
+        - -399.1456310679611
+        - -449.03883495145635
+        - -498.93203883495147
+        - -548.8252427184466
+        - -598.7184466019418
+        - -648.6116504854369
+        - -698.504854368932
+        - -748.3980582524272
+        - -798.2912621359222
+        - -848.1844660194175
+        - -898.0776699029127
+        - -947.9708737864078
+        - -997.8640776699029
+        - -1047.7572815533981
+        - -1097.6504854368932
+        - -1147.5436893203885
+        - -1197.4368932038835
+        - -1247.3300970873786
+        - -1297.2233009708739
+        - -1347.116504854369
+        - -1397.009708737864
+        - -1446.902912621359
+        - -1496.7961165048544
+        - -1546.6893203883494
+        - -1596.5825242718445
+        - -1646.47572815534
+        - -1696.368932038835
+        - -1746.2621359223301
+        - -1796.1553398058254
+        - -1846.0485436893205
+        - -1895.9417475728155
+        - -1945.8349514563106
+        - -1995.7281553398059
+        - -2045.621359223301
+        - -2095.5145631067962
+        - -2145.4077669902913
+        - -2195.3009708737864
+        - -2245.1941747572814
+        - -2295.087378640777
+        - -2344.980582524272
+        - -2394.873786407767
+        - -2444.766990291262
+        - -2494.660194174757
+        - -2544.5533980582522
+        - -2594.4466019417478
+        - -2644.339805825243
+        - -2694.233009708738
+        - -2744.126213592233
+        - -2794.019417475728
+        - -2843.912621359223
+        - -2893.805825242718
+        - -2943.6990291262136
+        - -2993.5922330097087
+        - -3043.4854368932038
+        - -3093.378640776699
+        - -3143.271844660194
+        - -3193.165048543689
+        - -3243.058252427185
+        - -3292.95145631068
+        - -3342.844660194175
+        - -3392.73786407767
+        - -3442.631067961165
+        - -3492.5242718446602
+        - -3542.4174757281553
+        - -3592.310679611651
+        - -3642.203883495146
+        - -3692.097087378641
+        - -3741.990291262136
+        - -3791.883495145631
+        - -3841.776699029126
+        - -3891.669902912621
+        - -3941.5631067961162
+        - -3991.4563106796118
+        - -4041.349514563107
+        - -4091.242718446602
+        - -4141.135922330097
+        - -4191.0291262135925
+        - -4240.922330097087
+        - -4290.815533980583
+        - -4340.708737864077
+        - -4390.601941747573
+        - -4440.495145631067
+        - -4490.388349514563
+        - -4540.281553398058
+        - -4590.174757281554
+        - -4640.0679611650485
+        - -4689.961165048544
+        - -4739.854368932039
+        - -4789.747572815534
+        - -4839.64077669903
+        - -4889.533980582524
+        - -4939.42718446602
+        - -4989.320388349514
+        - -5039.21359223301
+        - -5089.1067961165045
         - -5139.0
         unit: m
   casing:
@@ -899,7 +1133,7 @@ wells:
         unit: mm
       material: C-110 HC
       top_of_filler:
-        value: 0.0
+        value: 818.0
         unit: m
       filler_material: CM_cement
       material_above_filler: DFLT_FPBA_BARITE_10.00_300000
@@ -1148,7 +1382,7 @@ wells:
     top_node: GAS_LIFT_MASS_NODE
   formation:
     reference_y_coordinate:
-      value: 0.0
+      value: 2182.0
       unit: m
     layers:
     - name: formation_1
@@ -1787,7 +2021,7 @@ wells:
     thermal_model: steady_state_heat_transfer
     position_input_mode: position_by_tvd
     reference_y_coordinate:
-      value: 0.0
+      value: 2182.0
       unit: m
     md_properties_table: []
     tvd_properties_table:
