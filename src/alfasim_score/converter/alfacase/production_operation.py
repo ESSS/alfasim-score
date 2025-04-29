@@ -136,11 +136,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                 if self.has_water(alfacase)
                 else HydrodynamicModelType.FourFields
             ),
-            simulation_regime=(
-                SimulationRegimeType.Transient
-                if self.score_data.has_gas_lift()
-                else SimulationRegimeType.SteadyState
-            ),
+            simulation_regime=SimulationRegimeType.Transient,
         )
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:

@@ -201,7 +201,7 @@ class BaseOperationBuilder:
         alfacase.physics = PhysicsDescription(
             hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater,
             energy_model=EnergyModel.GlobalModel,
-            simulation_regime=SimulationRegimeType.SteadyState,
+            simulation_regime=SimulationRegimeType.Transient,
             initial_condition_strategy=InitialConditionStrategyType.Constant,
         )
 
