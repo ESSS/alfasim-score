@@ -136,7 +136,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                 if self.has_water(alfacase)
                 else HydrodynamicModelType.FourFields
             ),
-            # TODO: Switch to transient because the steady-state simulation is not converging.
+            # TODO PWPA-2556: Switch to transient because the steady-state simulation is not converging.
             # Need to check how this setting comes from SCORE,
             # since it's unclear why we always assume steady-state for the production.
             simulation_regime=SimulationRegimeType.Transient,
