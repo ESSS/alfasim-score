@@ -56,17 +56,17 @@ class ScoreAPBPluginConverter:
 
         formation_md_alfasim_reference = Array(
             [
-                self.score_data.get_position_in_well(depth).GetValue()
-                for depth in formation_md_score_reference
+                self.score_data.get_position_in_well(Scalar(depth, LENGTH_UNIT)).GetValue()
+                for depth in formation_md_score_reference.GetValues(LENGTH_UNIT)
             ],
             LENGTH_UNIT,
         )
 
         annulus_depth_md_alfasim_reference = [
             position
+            for depth in formation_md_score_reference.GetValues(LENGTH_UNIT)
             for position in (
-                self.score_data.get_position_in_well(d).GetValue()
-                for d in formation_md_score_reference
+                self.score_data.get_position_in_well(Scalar(depth, LENGTH_UNIT)).GetValue(),
             )
             if position < final_temperature_depth.GetValue()
         ]
