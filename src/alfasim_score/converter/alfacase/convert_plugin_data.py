@@ -31,7 +31,7 @@ class ScoreAPBPluginConverter:
         self.score_data = score_input_data
 
     def _build_annular_temperature_table(
-        self, final_temperature_depth: float
+        self, final_temperature_depth: Scalar
     ) -> AnnulusTemperatureTable:
         """
         Calculate the temperature of fluids based on temperature of formation coming from SCORE input file.
@@ -62,18 +62,17 @@ class ScoreAPBPluginConverter:
             LENGTH_UNIT,
         )
 
-        annulus_depth_md_alfasim_reference = Array(
-            [
-                self.score_data.get_position_in_well(depth).GetValue()
-                for depth in formation_md_score_reference
-            ],
-            LENGTH_UNIT,
-        )
         annulus_depth_md_alfasim_reference = [
-            depth for depth in annulus_depth_md_alfasim_reference if depth < final_temperature_depth
+            position
+            for position in (
+                self.score_data.get_position_in_well(d).GetValue()
+                for d in formation_md_score_reference
+            )
+            if position < final_temperature_depth.GetValue()
         ]
-        if final_temperature_depth not in annulus_depth_md_alfasim_reference:
-            annulus_depth_md_alfasim_reference.append(final_temperature_depth)
+
+        if final_temperature_depth.GetValue() not in annulus_depth_md_alfasim_reference:
+            annulus_depth_md_alfasim_reference.append(final_temperature_depth.GetValue())
         annulus_depth_md_alfasim_reference = Array(annulus_depth_md_alfasim_reference, LENGTH_UNIT)
 
         annulus_temperature = Array(
@@ -125,9 +124,12 @@ class ScoreAPBPluginConverter:
             # the annulus A uses data from tubing_strings section of SCORE file
             tubing_fluids_data = self.score_data.reader.read_tubing_fluid_data()
             annulus_data = annuli_data.pop(0)
-            final_temperature_depth = self._build_annular_fluid_depth_table(
-                tubing_fluids_data
-            ).final_depths.GetValues()
+            final_temperature_depth = Scalar(
+                self._build_annular_fluid_depth_table(tubing_fluids_data).final_depths.GetValues()[
+                    0
+                ],
+                LENGTH_UNIT,
+            )
             annuli.annulus_a = Annulus(
                 is_active=True,
                 mode_type=initial_conditions_data["mode"],
@@ -135,7 +137,7 @@ class ScoreAPBPluginConverter:
                 is_open_seabed=False,
                 annulus_depth_table=self._build_annular_fluid_depth_table(tubing_fluids_data),
                 annulus_temperature_table=self._build_annular_temperature_table(
-                    final_temperature_depth[0]
+                    final_temperature_depth
                 ),
                 has_fluid_return=HAS_FLUID_RETURN,
                 initial_leakoff=annulus_data["leakoff_volume"],
@@ -163,9 +165,12 @@ class ScoreAPBPluginConverter:
                 casing = casings.pop()
                 if self.score_data.has_annular_fluid(casing["annular_fluids"]):
                     is_open_seabed = casing["function"] == WellItemFunction.SURFACE
-                    final_temperature_depth = self._build_annular_fluid_depth_table(
-                        casing["annular_fluids"]
-                    ).final_depths.GetValues()
+                    final_temperature_depth = Scalar(
+                        self._build_annular_fluid_depth_table(
+                            casing["annular_fluids"]
+                        ).final_depths.GetValues()[0],
+                        LENGTH_UNIT,
+                    )
                     water_depth_pressure = (
                         self.score_data.get_seabed_hydrostatic_pressure()
                         if is_open_seabed
@@ -183,7 +188,7 @@ class ScoreAPBPluginConverter:
                                 casing["annular_fluids"]
                             ),
                             annulus_temperature_table=self._build_annular_temperature_table(
-                                final_temperature_depth[0]
+                                final_temperature_depth
                             ),
                             has_fluid_return=HAS_FLUID_RETURN,
                             initial_leakoff=annulus_data["leakoff_volume"],
