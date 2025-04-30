@@ -257,6 +257,8 @@ class ScoreAlfacaseConverter:
         """Create the description for the well."""
         return WellDescription(
             name=WELLBORE_NAME,
+            # TODO: For now, we are using ALFAsim's correlation as the wellbore fluid,
+            # since the provided PVT table is breaking the simulation.
             pvt_model=self.score_data.operation_data["fluid"],
             stagnant_fluid=FLUID_DEFAULT_NAME,
             profile=self._convert_well_trajectory(),
