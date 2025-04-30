@@ -45,13 +45,11 @@ class ScoreAPBPluginConverter:
         )
         formation_temperatures = formation_temperature_data["temperatures"].GetValues()
         trajectory = self.score_data.reader.read_well_trajectory()
+        x = np.abs(trajectory["x"])
+        y = np.abs(trajectory["y"])
+        interpolated_x = np.interp(formation_depths, y, x)
         formation_md_score_reference = Array(
-            np.interp(
-                formation_depths,
-                np.abs(trajectory["y"]),
-                np.abs(trajectory["md"]),
-            ),
-            LENGTH_UNIT,
+            np.sqrt(formation_depths**2 + interpolated_x**2), LENGTH_UNIT
         )
 
         formation_md_alfasim_reference = Array(
