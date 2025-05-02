@@ -118,7 +118,7 @@ plugins:
           temperature_a:
             values:
             - 4.44
-            - 98.58491607170144
+            - 95.28415492831805
             unit: degC
       has_fluid_return_a: True
       initial_leakoff_a:
@@ -164,7 +164,7 @@ plugins:
           temperature_b:
             values:
             - 4.44
-            - 80.7923629561403
+            - 78.11541635756674
             unit: degC
       has_fluid_return_b: True
       initial_leakoff_b:

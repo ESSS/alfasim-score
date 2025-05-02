@@ -47,9 +47,17 @@ class ScoreAPBPluginConverter:
         trajectory = self.score_data.reader.read_well_trajectory()
         x = np.abs(trajectory["x"])
         y = np.abs(trajectory["y"])
-        interpolated_x = np.interp(formation_depths, y, x)
+
+        md = [y[0]]
+        for i in range(1, len(x)):
+            dx = x[i] - x[i - 1]
+            dy = y[i] - y[i - 1]
+            md.append(md[-1] + np.sqrt(dx**2 + dy**2))
+        md = np.array(md)
+
         formation_md_score_reference = Array(
-            np.sqrt(formation_depths**2 + interpolated_x**2), LENGTH_UNIT
+            np.interp(formation_depths, y, md),
+            LENGTH_UNIT,
         )
 
         formation_md_alfasim_reference = Array(
