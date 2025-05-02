@@ -48,12 +48,8 @@ class ScoreAPBPluginConverter:
         x = np.abs(trajectory["x"])
         y = np.abs(trajectory["y"])
 
-        md = [y[0]]
-        for i in range(1, len(x)):
-            dx = x[i] - x[i - 1]
-            dy = y[i] - y[i - 1]
-            md.append(md[-1] + np.sqrt(dx**2 + dy**2))
-        md = np.array(md)
+        # Calulate the measured depth (MD) based on the trajectory
+        md = np.insert(np.cumsum(np.hypot(np.diff(x), np.diff(y))) + y[0], 0, y[0])
 
         formation_md_score_reference = Array(
             np.interp(formation_depths, y, md),
