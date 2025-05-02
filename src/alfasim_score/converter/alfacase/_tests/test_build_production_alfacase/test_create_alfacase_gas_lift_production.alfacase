@@ -723,6 +723,7 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   stagnant_fluid: fluid_default
   profile:
     x_and_y:

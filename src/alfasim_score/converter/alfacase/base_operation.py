@@ -201,7 +201,10 @@ class BaseOperationBuilder:
         alfacase.physics = PhysicsDescription(
             hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater,
             energy_model=EnergyModel.GlobalModel,
-            simulation_regime=SimulationRegimeType.SteadyState,
+            # TODO PWPA-2556: Switch to transient because the steady-state simulation is not converging.
+            # Need to check how this setting comes from SCORE,
+            # since it's unclear why we always assume steady-state for the production.
+            simulation_regime=SimulationRegimeType.Transient,
             initial_condition_strategy=InitialConditionStrategyType.Constant,
         )
 

@@ -136,11 +136,10 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                 if self.has_water(alfacase)
                 else HydrodynamicModelType.FourFields
             ),
-            simulation_regime=(
-                SimulationRegimeType.Transient
-                if self.score_data.has_gas_lift()
-                else SimulationRegimeType.SteadyState
-            ),
+            # TODO PWPA-2556: Switch to transient because the steady-state simulation is not converging.
+            # Need to check how this setting comes from SCORE,
+            # since it's unclear why we always assume steady-state for the production.
+            simulation_regime=SimulationRegimeType.Transient,
         )
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:

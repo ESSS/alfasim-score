@@ -1,7 +1,7 @@
 name: Teste Térmico
 physics:
   hydrodynamic_model: hydrodynamic_model_3_layers_gas_oil_water
-  simulation_regime: simulation_regime_steady_state
+  simulation_regime: simulation_regime_transient
   energy_model: global_model
   solids_model: no_model
   solids_model_plugin_id:
@@ -702,6 +702,7 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
+  pvt_model: DFLT_BLACK_OIL_27.40_230.00_1.17
   stagnant_fluid: fluid_default
   profile:
     x_and_y:

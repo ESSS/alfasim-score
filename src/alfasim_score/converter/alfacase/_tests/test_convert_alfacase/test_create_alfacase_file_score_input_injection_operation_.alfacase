@@ -1,7 +1,7 @@
 name: P27 - 3.0.0 - Teste (1)
 physics:
   hydrodynamic_model: hydrodynamic_model_3_layers_gas_oil_water
-  simulation_regime: simulation_regime_steady_state
+  simulation_regime: simulation_regime_transient
   energy_model: global_model
   solids_model: no_model
   solids_model_plugin_id:
@@ -786,6 +786,7 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
+  pvt_model: Water
   stagnant_fluid: fluid_default
   profile:
     x_and_y:
