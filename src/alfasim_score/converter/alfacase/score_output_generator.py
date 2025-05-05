@@ -4,14 +4,19 @@ from typing import List
 
 import numpy as np
 from alfasim_sdk.result_reader import Results
+from barril.units import Scalar
 from pathlib import Path
 
+from alfasim_score.common import WellItemFunction
 from alfasim_score.constants import TOTAL_WALLS
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
+from alfasim_score.units import DENSITY_UNIT_SCORE
 from alfasim_score.units import LENGTH_UNIT
+from alfasim_score.units import MASS_UNIT_SCORE
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
+from alfasim_score.units import VOLUME_UNIT_SCORE
 
 
 class ScoreOutputBuilder:
@@ -32,6 +37,28 @@ class ScoreOutputBuilder:
         ]
         annuli_pressure_profiles = [
             f"annulus_{annuli_label.value}_pressure" for annuli_label in active_annuli
+        ]
+        annulus_density_profiles = [
+            f"annulus_{annuli_label.value}_rho" for annuli_label in active_annuli
+        ]
+        annulus_apb_value = [f"annulus_{annuli_label.value}_apb" for annuli_label in active_annuli]
+        annulus_tlv_value = [f"annulus_{annuli_label.value}_tlv" for annuli_label in active_annuli]
+        annulus_vte_value = [f"annulus_{annuli_label.value}_vte" for annuli_label in active_annuli]
+        annulus_atv_value = [f"annulus_{annuli_label.value}_atv" for annuli_label in active_annuli]
+        final_time = self.score_data.operation_data["duration"]
+        casings_data = {
+            casing["function"]: casing for casing in self.score_data.reader.read_casings()
+        }
+        all_casing_types = [
+            WellItemFunction.CONDUCTOR,
+            WellItemFunction.SURFACE,
+            WellItemFunction.INTERMEDIATE,
+            WellItemFunction.PRODUCTION,
+        ]
+        casings = [
+            casings_data[casing_type]
+            for casing_type in all_casing_types
+            if casing_type in casings_data
         ]
         annuli_output: Dict[str, Any] = {}
         annulus_index = 0
@@ -62,8 +89,88 @@ class ScoreOutputBuilder:
                 .image.GetValues(PRESSURE_UNIT)
                 .tolist()
             )
+            pressure["diff"] = [
+                final - start for final, start in zip(pressure["final"], pressure["start"])
+            ]
+            pressure["APB"] = (
+                results.get_profile_curve(annulus_apb_value[annulus_index], self.element_name, -1)
+                .image.GetValues(PRESSURE_UNIT)
+                .tolist()[0]
+            )
+            density = {}
+            density["start"] = (
+                results.get_profile_curve(
+                    annulus_density_profiles[annulus_index], self.element_name, 0
+                )
+                .image.GetValues(DENSITY_UNIT_SCORE)
+                .tolist()
+            )
+            density["final"] = (
+                results.get_profile_curve(
+                    annulus_density_profiles[annulus_index], self.element_name, -1
+                )
+                .image.GetValues(DENSITY_UNIT_SCORE)
+                .tolist()
+            )
+            volume = {}
+            volume["start"] = (
+                results.get_profile_curve(annulus_atv_value[annulus_index], self.element_name, -1)
+                .image.GetValues(VOLUME_UNIT_SCORE)
+                .tolist()[0]
+                - results.get_profile_curve(annulus_vte_value[annulus_index], self.element_name, -1)
+                .image.GetValues(VOLUME_UNIT_SCORE)
+                .tolist()[0]
+            )
+            volume["final"] = (
+                results.get_profile_curve(annulus_atv_value[annulus_index], self.element_name, -1)
+                .image.GetValues(VOLUME_UNIT_SCORE)
+                .tolist()[0]
+            )
+            volume["diff"] = [volume["final"] - volume["start"]]
+            leakage = {}
+            leakage[str(final_time.GetValue("d") / 30)] = (
+                results.get_profile_curve(annulus_tlv_value[annulus_index], self.element_name, -1)
+                .image.GetValues(VOLUME_UNIT_SCORE)
+                .tolist()[0]
+            )
+            leakage_mass_value = None
+            # pressure relief and open to seabed are not available for Annulus A
+            if annulus_index >= 1:
+                leakage_value = (
+                    results.get_profile_curve(
+                        annulus_tlv_value[annulus_index], self.element_name, -1
+                    )
+                    .image.GetValues("galUS")
+                    .tolist()[0]
+                )
+                # if there is pressure relief
+                if casings[annulus_index]["pressure_relief"]["is_active"]:
+                    relief_position = casings[annulus_index]["pressure_relief"]["position"]
+                    density_at_relief = np.interp(
+                        relief_position.GetValue(LENGTH_UNIT), measured_depths, density["final"]
+                    )
+                    leakage_mass_value = Scalar(density_at_relief * leakage_value, MASS_UNIT_SCORE)
+                # if is open to seabed
+                if casings[annulus_index]["function"] == WellItemFunction.SURFACE:
+                    density_at_well_head = density["final"][0]
+                    leakage_mass_value = Scalar(
+                        density_at_well_head * leakage_value, MASS_UNIT_SCORE
+                    )
+            leakage_mass = {
+                # month is not available in barril
+                str(final_time.GetValue("d") / 30): (
+                    leakage_mass_value.GetValue(MASS_UNIT_SCORE)
+                    if leakage_mass_value is not None
+                    else 0.0
+                )
+            }
+
             annuli_output[str(annulus_index)]["temperature"] = temperature
             annuli_output[str(annulus_index)]["pressure"] = pressure
+            annuli_output[str(annulus_index)]["density"] = density
+            annuli_output[str(annulus_index)]["volume"] = volume
+            annuli_output[str(annulus_index)]["leakage"] = leakage
+            annuli_output[str(annulus_index)]["leakage_mass"] = leakage_mass
             annulus_index += 1
         return annuli_output
 
@@ -81,6 +188,13 @@ class ScoreOutputBuilder:
                 "final": (
                     results.get_profile_curve("pressure", self.element_name, -1)
                     .image.GetValues(PRESSURE_UNIT)
+                    .tolist()
+                )
+            },
+            "density": {
+                "final": (
+                    results.get_profile_curve("mixture_density", self.element_name, -1)
+                    .image.GetValues("lbm/galUS")
                     .tolist()
                 )
             },

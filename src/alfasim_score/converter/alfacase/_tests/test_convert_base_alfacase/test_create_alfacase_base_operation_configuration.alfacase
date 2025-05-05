@@ -412,6 +412,7 @@ outputs:
     - holdup
     - liquid volumetric flow rate std
     - mixture temperature
+    - mixture_density
     - pressure
     - environment temperature
     - annulus_a_temperature
@@ -424,6 +425,31 @@ outputs:
     - annulus_c_pressure
     - annulus_d_pressure
     - annulus_e_pressure
+    - annulus_a_apb
+    - annulus_b_apb
+    - annulus_c_apb
+    - annulus_d_apb
+    - annulus_e_apb
+    - annulus_a_tlv
+    - annulus_b_tlv
+    - annulus_c_tlv
+    - annulus_d_tlv
+    - annulus_e_tlv
+    - annulus_a_atv
+    - annulus_b_atv
+    - annulus_c_atv
+    - annulus_d_atv
+    - annulus_e_atv
+    - annulus_a_vte
+    - annulus_b_vte
+    - annulus_c_vte
+    - annulus_d_vte
+    - annulus_e_vte
+    - annulus_a_rho
+    - annulus_b_rho
+    - annulus_c_rho
+    - annulus_d_rho
+    - annulus_e_rho
     - wall_0_temperature
     - wall_1_temperature
     - wall_2_temperature
