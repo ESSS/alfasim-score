@@ -172,10 +172,10 @@ plugins:
         unit: m3
       has_pressure_relief_b: False
       pressure_relief_b:
-        value: 3490.0
+        value: 0.0
         unit: psi
       relief_position_b:
-        value: -2072.0
+        value: 1418.0
         unit: m
       water_depth_pressure_b:
         value: 0.0

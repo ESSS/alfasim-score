@@ -136,6 +136,7 @@ class ScoreOutputBuilder:
             leakage_mass_value = None
             # pressure relief and open to seabed are not available for Annulus A
             if annulus_index >= 1:
+                casing = casings.pop()
                 leakage_value = (
                     results.get_profile_curve(
                         annulus_tlv_value[annulus_index], self.element_name, -1
@@ -144,14 +145,14 @@ class ScoreOutputBuilder:
                     .tolist()[0]
                 )
                 # if there is pressure relief
-                if casings[annulus_index]["pressure_relief"]["is_active"]:
-                    relief_position = casings[annulus_index]["pressure_relief"]["position"]
+                if casing["pressure_relief"]["is_active"]:
+                    relief_position = casing["pressure_relief"]["position"]
                     density_at_relief = np.interp(
                         relief_position.GetValue(LENGTH_UNIT), measured_depths, density["final"]
                     )
                     leakage_mass_value = Scalar(density_at_relief * leakage_value, MASS_UNIT_SCORE)
                 # if is open to seabed
-                if casings[annulus_index]["function"] == WellItemFunction.SURFACE:
+                if casing["function"] == WellItemFunction.SURFACE:
                     density_at_well_head = density["final"][0]
                     leakage_mass_value = Scalar(
                         density_at_well_head * leakage_value, MASS_UNIT_SCORE

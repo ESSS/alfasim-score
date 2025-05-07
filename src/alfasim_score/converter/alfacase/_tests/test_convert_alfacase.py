@@ -11,6 +11,7 @@ from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScor
         "score_input_natural_flow",
         "score_input_injection_operation",
         "score_input_annulus_temp_table",
+        "score_input_B_relief_C_open",
     ],
 )
 def test_create_alfacase_file(
