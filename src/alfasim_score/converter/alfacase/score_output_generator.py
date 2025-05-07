@@ -161,7 +161,7 @@ class ScoreOutputBuilder:
                     )
             leakage_mass = {
                 # month is not available in barril
-                str(final_time.GetValue("d") / 30): (
+                str(final_time.GetValue(TIME_UNIT) / 30): (
                     leakage_mass_value.GetValue(MASS_UNIT_SCORE)
                     if leakage_mass_value is not None
                     else 0.0
