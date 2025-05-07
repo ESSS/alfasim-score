@@ -161,45 +161,44 @@ class ScoreAPBPluginConverter:
         # It iterates the data in the section operation/thermal_data/annuli_data and use it to check
         # correspondent annulus iterating over the casings in order to check which of them are active by checking there is annular fluid.
         for annulus_label, annulus_data in zip(["b", "c", "d", "e"], annuli_data):
-            while casings:
-                casing = casings.pop()
-                if self.score_data.has_annular_fluid(casing["annular_fluids"]):
-                    is_open_seabed = casing["function"] == WellItemFunction.SURFACE
-                    final_temperature_depth = Scalar(
-                        self._build_annular_fluid_depth_table(
+            casing = casings.pop()
+            if self.score_data.has_annular_fluid(casing["annular_fluids"]):
+                is_open_seabed = casing["function"] == WellItemFunction.SURFACE
+                final_temperature_depth = Scalar(
+                    self._build_annular_fluid_depth_table(
+                        casing["annular_fluids"]
+                    ).final_depths.GetValues()[0],
+                    LENGTH_UNIT,
+                )
+                water_depth_pressure = (
+                    self.score_data.get_seabed_hydrostatic_pressure()
+                    if is_open_seabed
+                    else Scalar(0.0, PRESSURE_UNIT)
+                )
+                setattr(
+                    annuli,
+                    f"annulus_{annulus_label}",
+                    Annulus(
+                        is_active=True,
+                        mode_type=initial_conditions_data["mode"],
+                        initial_top_pressure=annulus_data["initial_top_pressure"],
+                        is_open_seabed=is_open_seabed,
+                        annulus_depth_table=self._build_annular_fluid_depth_table(
                             casing["annular_fluids"]
-                        ).final_depths.GetValues()[0],
-                        LENGTH_UNIT,
-                    )
-                    water_depth_pressure = (
-                        self.score_data.get_seabed_hydrostatic_pressure()
-                        if is_open_seabed
-                        else Scalar(0.0, PRESSURE_UNIT)
-                    )
-                    setattr(
-                        annuli,
-                        f"annulus_{annulus_label}",
-                        Annulus(
-                            is_active=True,
-                            mode_type=initial_conditions_data["mode"],
-                            initial_top_pressure=annulus_data["initial_top_pressure"],
-                            is_open_seabed=is_open_seabed,
-                            annulus_depth_table=self._build_annular_fluid_depth_table(
-                                casing["annular_fluids"]
-                            ),
-                            annulus_temperature_table=self._build_annular_temperature_table(
-                                final_temperature_depth
-                            ),
-                            has_fluid_return=HAS_FLUID_RETURN,
-                            initial_leakoff=annulus_data["leakoff_volume"],
-                            has_pressure_relief=casing["pressure_relief"]["is_active"],
-                            pressure_relief=casing["pressure_relief"]["pressure"],
-                            relief_position=self.score_data.get_position_in_well(
-                                casing["pressure_relief"]["position"]
-                            ),
-                            water_depth_pressure=water_depth_pressure,
                         ),
-                    )
+                        annulus_temperature_table=self._build_annular_temperature_table(
+                            final_temperature_depth
+                        ),
+                        has_fluid_return=HAS_FLUID_RETURN,
+                        initial_leakoff=annulus_data["leakoff_volume"],
+                        has_pressure_relief=casing["pressure_relief"]["is_active"],
+                        pressure_relief=casing["pressure_relief"]["pressure"],
+                        relief_position=self.score_data.get_position_in_well(
+                            casing["pressure_relief"]["position"]
+                        ),
+                        water_depth_pressure=water_depth_pressure,
+                    ),
+                )
         return annuli
 
     def _convert_solid_mechanical_properties(self) -> List[SolidMechanicalProperties]:
