@@ -16,6 +16,7 @@ from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import MASS_UNIT_SCORE
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
+from alfasim_score.units import TIME_UNIT
 from alfasim_score.units import VOLUME_UNIT_SCORE
 from alfasim_score.units import VOLUME_UNIT_SCORE_GALUS
 
@@ -129,7 +130,7 @@ class ScoreOutputBuilder:
             )
             volume["diff"] = [volume["final"] - volume["start"]]
             leakage = {}
-            leakage[str(final_time.GetValue("d") / 30)] = (
+            leakage[str(final_time.GetValue(TIME_UNIT) / 30)] = (
                 results.get_profile_curve(annulus_tlv_value[annulus_index], self.element_name, -1)
                 .image.GetValues(VOLUME_UNIT_SCORE)
                 .tolist()[0]
