@@ -171,7 +171,7 @@ class ScoreOutputBuilder:
             annuli_output[str(annulus_index)]["pressure"] = pressure
             annuli_output[str(annulus_index)]["density"] = density
             annuli_output[str(annulus_index)]["volume"] = volume
-            annuli_output[str(annulus_index)]["leakage"] = leakage
+            annuli_output[str(annulus_index)]["leakage_bbl"] = leakage
             annuli_output[str(annulus_index)]["leakage_mass"] = leakage_mass
             annulus_index += 1
         return annuli_output
