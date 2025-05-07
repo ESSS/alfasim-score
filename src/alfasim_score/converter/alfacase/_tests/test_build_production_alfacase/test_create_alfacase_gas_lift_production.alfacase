@@ -51,8 +51,8 @@ time_options:
     value: 0.0
     unit: s
   final_time:
-    value: 60.0
-    unit: min
+    value: 1800.0
+    unit: d
   initial_timestep:
     value: 0.1
     unit: s

@@ -10,16 +10,10 @@ from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScor
 @pytest.mark.parametrize(
     "case_filename, input_filename, element_name",
     [
-        pytest.param(
-            "case.data",
-            "score_input_natural_flow.json",
-            "7-SRR-2-RJS (2022-07-28_15-01-27)",
-            id="natural_flow",
-        ),
-        pytest.param(
-            "case2.data", "score_input_B_relief_C_open.json", "WELLBORE", id="B_relief_C_open"
-        ),
+        ("case.data", "score_input_natural_flow.json", "7-SRR-2-RJS (2022-07-28_15-01-27)"),
+        ("case2.data", "score_input_B_relief_C_open.json", "WELLBORE"),
     ],
+    ids=["natural_flow", "B_relief_C_open"],
 )
 def test_generate_output_file_results(
     shared_datadir: Path,

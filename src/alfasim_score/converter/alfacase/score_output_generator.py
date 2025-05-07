@@ -17,6 +17,7 @@ from alfasim_score.units import MASS_UNIT_SCORE
 from alfasim_score.units import PRESSURE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import VOLUME_UNIT_SCORE
+from alfasim_score.units import VOLUME_UNIT_SCORE_GALUS
 
 
 class ScoreOutputBuilder:
@@ -141,7 +142,7 @@ class ScoreOutputBuilder:
                     results.get_profile_curve(
                         annulus_tlv_value[annulus_index], self.element_name, -1
                     )
-                    .image.GetValues("galUS")
+                    .image.GetValues(VOLUME_UNIT_SCORE_GALUS)
                     .tolist()[0]
                 )
                 # if there is pressure relief
@@ -195,7 +196,7 @@ class ScoreOutputBuilder:
             "density": {
                 "final": (
                     results.get_profile_curve("mixture_density", self.element_name, -1)
-                    .image.GetValues("lbm/galUS")
+                    .image.GetValues(DENSITY_UNIT_SCORE)
                     .tolist()
                 )
             },
