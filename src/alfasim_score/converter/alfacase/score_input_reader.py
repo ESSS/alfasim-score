@@ -29,7 +29,7 @@ from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
-from alfasim_score.units import TIME_UNIT
+from alfasim_score.units import TIME_UNIT_SCORE
 from alfasim_score.units import VOLUME_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
 
@@ -299,7 +299,7 @@ class ScoreInputReader:
         """Read data for production operation registered in SCORE input file."""
         operation = self.input_content["operation"]["data"]
         operation_type = self.read_operation_type()
-        duration_unit = operation.get("duration_unit", TIME_UNIT)
+        duration_unit = operation.get("duration_unit", TIME_UNIT_SCORE)
         operation_data = {
             "name": self.input_content["operation"]["name"],
             "type": operation_type,
