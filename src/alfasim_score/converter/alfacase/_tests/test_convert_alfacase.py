@@ -6,7 +6,13 @@ from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScor
 
 
 @pytest.mark.parametrize(
-    "score_filename", ["score_input_natural_flow", "score_input_injection_operation"]
+    "score_filename",
+    [
+        "score_input_natural_flow",
+        "score_input_injection_operation",
+        "score_input_annulus_temp_table",
+        "score_input_B_relief_C_open",
+    ],
 )
 def test_create_alfacase_file(
     shared_datadir: Path, datadir: Path, file_regression: FileRegressionFixture, score_filename: str

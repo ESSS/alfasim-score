@@ -3,7 +3,6 @@ from typing import Dict
 from typing import List
 from typing import Union
 
-import csv
 import json
 from barril.units import Array
 from barril.units import Scalar
@@ -18,7 +17,6 @@ from alfasim_score.common import WellItemFunction
 from alfasim_score.common import WellItemType
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import CEMENT_PREFIX
-from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import FORMATION_PREFIX
 from alfasim_score.units import DENSITY_UNIT
 from alfasim_score.units import DIAMETER_UNIT
@@ -31,9 +29,17 @@ from alfasim_score.units import STD_VOLUMETRIC_FLOW_RATE_UNIT
 from alfasim_score.units import TEMPERATURE_UNIT
 from alfasim_score.units import THERMAL_CONDUCTIVITY_UNIT
 from alfasim_score.units import THERMAL_EXPANSION_UNIT
-from alfasim_score.units import TIME_UNIT
+from alfasim_score.units import TIME_UNIT_SCORE
 from alfasim_score.units import VOLUME_UNIT
 from alfasim_score.units import YOUNG_MODULUS_UNIT
+
+
+def encode_formation_name(name: str) -> str:
+    return FORMATION_PREFIX + name
+
+
+def encode_cement_name(name: str) -> str:
+    return CEMENT_PREFIX + name
 
 
 class ScoreInputReader:
@@ -119,7 +125,7 @@ class ScoreInputReader:
         properties = well_strings[0]["cementing"]["first_slurry"]["thermomechanical_properties"]
         return [
             {
-                "name": CEMENT_PREFIX + CEMENT_NAME,
+                "name": encode_cement_name(CEMENT_NAME),
                 "type": "solid",
                 "density": Scalar(properties["density"], DENSITY_UNIT),
                 "thermal_conductivity": Scalar(
@@ -141,7 +147,7 @@ class ScoreInputReader:
             properties = lithology["thermomechanical_properties"]
             lithology_data.append(
                 {
-                    "name": FORMATION_PREFIX + lithology["display_name"],
+                    "name": encode_formation_name(lithology["display_name"]),
                     "type": "solid",
                     "density": Scalar(properties["density"], DENSITY_UNIT),
                     "thermal_conductivity": Scalar(
@@ -155,19 +161,6 @@ class ScoreInputReader:
                 }
             )
         return lithology_data
-
-    def read_packer_fluid(self) -> List[Dict[str, Union[Scalar, str]]]:
-        """Get the properties of default fluid above packer."""
-        return [
-            {
-                "name": FLUID_DEFAULT_NAME,
-                "type": "fluid",
-                "density": Scalar(1000.0, "kg/m3", "density"),
-                "thermal_conductivity": Scalar(0.6, THERMAL_CONDUCTIVITY_UNIT),
-                "specific_heat": Scalar(4181.0, SPECIFIC_HEAT_UNIT),
-                "thermal_expansion": Scalar(0.0004, THERMAL_EXPANSION_UNIT),
-            }
-        ]
 
     def read_casings(self) -> List[Dict[str, Any]]:
         """Read the data for the casing from SCORE input file."""
@@ -195,10 +188,11 @@ class ScoreInputReader:
                         "pressure_relief": {
                             "is_active": item["pressure_relief"].get("active", False),
                             "pressure": Scalar(
-                                item["pressure_relief"].get("depth", 0.0), PRESSURE_UNIT
+                                item["pressure_relief"].get("considered_pressure", 0.0),
+                                PRESSURE_UNIT,
                             ),
                             "position": Scalar(
-                                item["pressure_relief"].get("considered_pressure", 0.0),
+                                item["pressure_relief"].get("depth", 0.0),
                                 LENGTH_UNIT,
                             ),
                         },
@@ -270,7 +264,7 @@ class ScoreInputReader:
         """Read data for formations from SCORE input file."""
         return [
             {
-                "material": lithology["display_name"],
+                "material": encode_formation_name(lithology["display_name"]),
                 # elevations are given in quota
                 "top_elevation": Scalar(lithology["top_elevation"], LENGTH_UNIT, "length"),
                 "base_elevation": Scalar(lithology["base_elevation"], LENGTH_UNIT, "length"),
@@ -305,12 +299,16 @@ class ScoreInputReader:
         """Read data for production operation registered in SCORE input file."""
         operation = self.input_content["operation"]["data"]
         operation_type = self.read_operation_type()
+        duration_unit = operation.get("duration_unit", TIME_UNIT_SCORE)
         operation_data = {
             "name": self.input_content["operation"]["name"],
             "type": operation_type,
             "fluid_type": FluidType(operation["fluid"]),
             "fluid": operation["fluid_type"],
-            "duration": Scalar(operation["duration"], TIME_UNIT),
+            "duration": Scalar(
+                operation["duration"] * 30 if duration_unit == "month" else operation["duration"],
+                "d" if duration_unit == "month" else duration_unit,
+            ),
             "flow_initial_temperature": Scalar(
                 operation["flow_initial_temperature"], TEMPERATURE_UNIT
             ),
@@ -391,6 +389,9 @@ class ScoreInputReader:
         ]
 
     def read_initial_condition(self) -> Dict[str, AnnulusModeType]:
+        """
+        Get the initial condition data from the input file.
+        """
         initial_conditions_data = self.input_content["initial_conditions"][0]
         return {"mode": AnnulusModeType(initial_conditions_data["reference"])}
 
@@ -414,24 +415,3 @@ class ScoreInputReader:
                 ),
             }
         return {}
-
-    def export_profile_curve(self, filepath: Path, curve_name: str) -> None:
-        """
-        Export the result of a curve to a file.
-        This function export the measured depth related to the well start positions.
-        The exported output file is used to check cases results.
-        """
-        curves = self.read_output_curves()
-        if len(curves):
-            general_data = self.read_general_data()
-            start_position = general_data["water_depth"] + general_data["air_gap"]
-            with open(filepath, "w", encoding="utf-8") as csv_file:
-                writer = csv.DictWriter(csv_file, fieldnames=["measured_depth", curve_name])
-                writer.writeheader()
-                for md, value in zip(curves["measured_depth"], curves[curve_name]):
-                    writer.writerow(
-                        {
-                            "measured_depth": md - start_position.GetValue(LENGTH_UNIT),
-                            curve_name: value,
-                        }
-                    )

@@ -1,15 +1,11 @@
 from typing import Any
 from typing import Dict
 from typing import List
-from typing import Union
 
 import numpy as np
 from barril.curve.curve import Curve
 from barril.units import Array
 from barril.units import Scalar
-from dataclasses import asdict
-from dataclasses import dataclass
-from dataclasses import field
 from enum import Enum
 
 from alfasim_score.constants import AIR_DENSITY_STANDARD
@@ -85,108 +81,9 @@ class AnnulusLabel(str, Enum):
     E = "e"
 
 
-@dataclass
-class FluidModelPvt:
-    name: str
-
-    def to_dict(self) -> Dict[str, Union[str, Scalar]]:
-        """Convert data to dict in order to write data to the alfacase."""
-        return {
-            "name": self.name,
-            "fluid_type": FluidModelType.PVT.value,
-        }
-
-
-@dataclass
-class SolidMechanicalProperties:
-    name: str
-    young_modulus: Scalar
-    poisson_ratio: Scalar
-    thermal_expansion_coefficient: Scalar
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert data to dict in order to write data to the alfacase."""
-        return asdict(self)
-
-
-@dataclass
-class AnnulusDepthTable:
-    fluid_names: List[str] = field(default_factory=lambda: [])
-    fluid_ids: List[float] = field(default_factory=lambda: [])
-    initial_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
-    final_depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
-
-    def to_dict(self, annulus_label: AnnulusLabel) -> Dict[str, Any]:
-        """Convert data to dict in order to write data to the alfacase."""
-        columns = {
-            f"fluid_id_{annulus_label.value}": self.fluid_ids,
-            f"fluid_initial_measured_depth_{annulus_label.value}": self.initial_depths,
-            f"fluid_final_measured_depth_{annulus_label.value}": self.final_depths,
-        }
-        return {"columns": columns}
-
-
-@dataclass
-class AnnulusTemperatureTable:
-    depths: Array = field(default_factory=lambda: Array([], LENGTH_UNIT))
-    temperatures: Array = field(default_factory=lambda: Array([], TEMPERATURE_UNIT))
-
-    def to_dict(self, annulus_label: AnnulusLabel) -> Dict[str, Any]:
-        """Convert data to dict in order to write data to the alfacase."""
-        columns = {
-            f"temperature_depth_{annulus_label.value}": self.depths,
-            f"temperature_{annulus_label.value}": self.temperatures,
-        }
-        return {"columns": columns}
-
-
-@dataclass
-class Annulus:
-    is_active: bool = False
-    mode_type: AnnulusModeType = AnnulusModeType.UNDISTURBED
-    initial_top_pressure: Scalar = Scalar(0.0, PRESSURE_UNIT)
-    is_open_seabed: bool = False
-    annulus_depth_table: AnnulusDepthTable = field(default_factory=lambda: AnnulusDepthTable())
-    annulus_temperature_table: AnnulusTemperatureTable = field(
-        default_factory=lambda: AnnulusTemperatureTable()
-    )
-    has_fluid_return: bool = False
-    initial_leakoff: Scalar = Scalar(0.0, VOLUME_UNIT)
-    has_pressure_relief: bool = False
-    pressure_relief: Scalar = Scalar(0.0, PRESSURE_UNIT)
-    relief_position: Scalar = Scalar(0.0, LENGTH_UNIT)
-
-    def to_dict(self, annulus_label: AnnulusLabel) -> Dict[str, Any]:
-        """Convert data to dict in order to write data to the alfacase."""
-        output = {}
-        for key, value in asdict(self).items():
-            if key == "annulus_depth_table":
-                value = self.annulus_depth_table.to_dict(annulus_label)
-            elif key == "annulus_temperature_table":
-                value = self.annulus_temperature_table.to_dict(annulus_label)
-            output[f"{key}_{annulus_label.value}"] = value
-
-        # the annular A doesn't have these parameters in plugin
-        if annulus_label == AnnulusLabel.A:
-            output.pop("pressure_relief_a")
-            output.pop("relief_position_a")
-        return output
-
-
-@dataclass
-class Annuli:
-    annulus_a: Annulus = field(default_factory=lambda: Annulus())
-    annulus_b: Annulus = field(default_factory=lambda: Annulus())
-    annulus_c: Annulus = field(default_factory=lambda: Annulus())
-    annulus_d: Annulus = field(default_factory=lambda: Annulus())
-    annulus_e: Annulus = field(default_factory=lambda: Annulus())
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert data to dict in order to write data to the alfacase."""
-        data = {}
-        for annulus_label in AnnulusLabel:
-            data.update(getattr(self, f"annulus_{annulus_label.value}").to_dict(annulus_label))
-        return data
+class PvtTableNumberOfPhases(Enum):
+    Two = 2
+    Three = 3
 
 
 def prepare_for_regression(values: Dict[str, Any]) -> Dict[str, Any]:

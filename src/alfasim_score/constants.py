@@ -66,3 +66,6 @@ HAS_FLUID_RETURN = True
 
 # total number of walls in the output
 TOTAL_WALLS = 6
+
+# total size of refined trajectory section
+MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS = Scalar(50.0, LENGTH_UNIT)

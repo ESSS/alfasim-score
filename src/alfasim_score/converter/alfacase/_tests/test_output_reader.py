@@ -3,16 +3,17 @@ import pytest
 from pathlib import Path
 from pytest_regressions.num_regression import NumericRegressionFixture
 
+from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 
 
 def test_output_reader(
     datadir: Path,
     num_regression: NumericRegressionFixture,
-    score_input_gas_lift: ScoreInputReader,
+    score_data_gas_lift: ScoreInputData,
 ) -> None:
     example_exported_filepath = datadir / "pressure_example.csv"
-    score_input_gas_lift.export_profile_curve(example_exported_filepath, "pressure")
+    score_data_gas_lift.export_profile_curve(example_exported_filepath, "pressure")
 
     results = pd.read_csv(example_exported_filepath)
     num_regression.check(

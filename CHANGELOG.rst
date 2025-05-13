@@ -10,3 +10,9 @@
 
 * Improvements on API.
 * Add documentation on how to use the API.
+
+1.0.0 (2025-04-11)
+------------------
+
+* Update the alfacase converter to create files compatible with ALFAsim APB plugin v1.0.1
+* Add new converter for pvt tables from wellprops to `.tab` format
