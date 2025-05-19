@@ -19,7 +19,7 @@ def test_convert_well_environment(
 
     assert environment.thermal_model == PipeThermalModelType.SteadyState
     assert environment.position_input_mode == PipeThermalPositionInput.Tvd
-    assert environment.reference_y_coordinate.GetValue() == pytest.approx(2072.0)
+    assert environment.reference_y_coordinate.GetValue() == pytest.approx(0.0)
     data_regression.check(
         [
             prepare_for_regression(attr.asdict(environment))

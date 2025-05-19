@@ -55,7 +55,7 @@ MAXIMUM_TIMESTEP_CHANGE_FACTOR = 1.2
 NUMERICAL_TOLERANCE = 1.0e-3
 INITIAL_TIMESTEP = Scalar(0.1, "s")
 MINIMUM_TIMESTEP = Scalar(1.0e-4, "s")
-MAXIMUM_TIMESTEP = Scalar(2.0, "s")
+MAXIMUM_TIMESTEP = Scalar(10.0, "s")
 
 # tolerance of depth to be considered an active annulus
 ANNULUS_DEPTH_TOLERANCE = Scalar(10.0, LENGTH_UNIT)
@@ -69,3 +69,4 @@ TOTAL_WALLS = 6
 
 # total size of refined trajectory section
 MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS = Scalar(50.0, LENGTH_UNIT)
+MINIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS = Scalar(2.0, LENGTH_UNIT)

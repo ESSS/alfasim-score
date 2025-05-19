@@ -30,9 +30,12 @@ def test_get_seabed_hydrostatic_pressure(
 @pytest.mark.parametrize(
     "trajectory_data",
     [
-        {"x": Array([0, 0, 0, 0], LENGTH_UNIT), "y": Array([0, 20, 30, 40], LENGTH_UNIT)},
-        {"x": Array([0, 0, 0, 0], LENGTH_UNIT), "y": Array([0, 60, 130, 200], LENGTH_UNIT)},
-        {"x": Array([0, 50, 150, 300], LENGTH_UNIT), "y": Array([0, 50, 150, 300], LENGTH_UNIT)},
+        {"x": Array([0, 0, 0, 0], LENGTH_UNIT), "y": Array([2072, 2092, 2102, 2112], LENGTH_UNIT)},
+        {"x": Array([0, 0, 0, 0], LENGTH_UNIT), "y": Array([2072, 2132, 2202, 2272], LENGTH_UNIT)},
+        {
+            "x": Array([0, 50, 150, 300], LENGTH_UNIT),
+            "y": Array([2072, 2122, 2222, 2372], LENGTH_UNIT),
+        },
     ],
 )
 def test_get_refined_trajectory(

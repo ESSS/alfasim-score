@@ -14,6 +14,7 @@ from alfasim_score.common import LiftMethod
 from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
 from alfasim_score.constants import FLUID_DEFAULT_NAME
 from alfasim_score.constants import MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS
+from alfasim_score.constants import MINIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS
 from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 from alfasim_score.units import LENGTH_UNIT
 from alfasim_score.units import SPECIFIC_HEAT_UNIT
@@ -55,7 +56,8 @@ class ScoreInputData:
         all_fluids = set([fluid["name"] for fluid in self.reader.read_tubing_fluid_data()])
         for casings in self.reader.read_casings():
             for fluid in casings["annular_fluids"]:
-                all_fluids.add(fluid["name"])
+                if fluid["extension"].value > 0:
+                    all_fluids.add(fluid["name"])
         return sorted(all_fluids)
 
     def get_fluid_id(self, fluid_name: str) -> int:
@@ -137,7 +139,39 @@ class ScoreInputData:
         max_distance = MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS.GetValue(LENGTH_UNIT)
         x_array = np.array(trajectory["x"].GetValues(LENGTH_UNIT), dtype=float)
         y_array = np.array(trajectory["y"].GetValues(LENGTH_UNIT), dtype=float)
+        md_array = np.array(
+            np.insert(
+                np.cumsum(np.hypot(np.diff(x_array), np.diff(y_array))) - y_array[0], 0, -y_array[0]
+            ),
+            dtype=float,
+        )
         points = np.stack((x_array, y_array), axis=1)
+
+        # Add important points to trajectory
+        important_mds = np.array(self.reader.read_important_mds())
+        important_x = np.interp(important_mds, md_array, x_array)
+        important_y = np.interp(important_mds, md_array, y_array)
+        important_points = np.stack((important_x, important_y), axis=1)
+
+        points = np.concatenate((points, important_points), axis=0)
+
+        # remove duplicates
+        _, unique_indices = np.unique(points[:, 1], return_index=True)
+        points = points[unique_indices[np.argsort(points[unique_indices, 1])[::-1]]]
+
+        # remove points above the seabed
+        start_position = self.get_well_start_position()
+        points = points[np.abs(points[:, 1]) >= start_position.GetValue(LENGTH_UNIT)]
+
+        # remove points too close to each other, keeping the first and last points
+        filtered_points = [points[0]]
+        min_distance = MINIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS.GetValue(LENGTH_UNIT)
+        for point in points[1:-1]:
+            if np.abs(point[1] - filtered_points[-1][1]) >= min_distance:
+                filtered_points.append(point)
+        filtered_points.append(points[-1])
+        points = np.array(filtered_points)
+
         interpolated_points = [points[0]]
         for i in range(1, len(points)):
             previous_point = interpolated_points[-1]

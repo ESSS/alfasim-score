@@ -68,6 +68,35 @@ class ScoreInputReader:
             "md": Array(md, LENGTH_UNIT),
         }
 
+    def read_important_mds(self) -> List[Any]:
+        """Read the important MDs from SCORE input file."""
+        valid_keys = {
+            "top_md",
+            "base_md",
+            "toc_md",
+            "shoe_md",
+            "final_md",
+            "hanger_md",
+            "leakage_md",
+        }
+        results: List[Any] = []
+        stack = [self.input_content]
+
+        while stack:
+            obj = stack.pop()
+            if not isinstance(obj, (dict, list)):
+                continue
+
+            items = obj.items() if isinstance(obj, dict) else ((None, item) for item in obj)
+            for key, value in items:
+                if value is None:
+                    continue
+                if key in valid_keys:
+                    results.append(value)
+                stack.append(value)
+
+        return results
+
     def read_tubing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Read the data for the tubings from SCORE input file."""
         tubing_data = []

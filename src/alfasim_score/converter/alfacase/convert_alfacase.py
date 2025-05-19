@@ -102,9 +102,7 @@ class ScoreAlfacaseConverter:
             )
             for i, formation in enumerate(self.score_data.reader.read_formations(), start=1)
         ]
-        return FormationDescription(
-            reference_y_coordinate=self.score_data.get_well_start_position(), layers=layers
-        )
+        return FormationDescription(reference_y_coordinate=Scalar(0.0, LENGTH_UNIT), layers=layers)
 
     def _convert_well_environment(self) -> EnvironmentDescription:
         """Create the description for the formations environment."""
@@ -129,7 +127,7 @@ class ScoreAlfacaseConverter:
         return EnvironmentDescription(
             thermal_model=PipeThermalModelType.SteadyState,
             position_input_mode=PipeThermalPositionInput.Tvd,
-            reference_y_coordinate=self.score_data.get_well_start_position(),
+            reference_y_coordinate=Scalar(0.0, LENGTH_UNIT),
             tvd_properties_table=environment_description,
         )
 
@@ -157,7 +155,11 @@ class ScoreAlfacaseConverter:
                         material=section["material"],
                         top_of_filler=top_of_filler,
                         filler_material=cement["name"],
-                        material_above_filler=casing["annular_fluids"][-1]["name"],
+                        **(
+                            {"material_above_filler": casing["annular_fluids"][-1]["name"]}
+                            if casing["annular_fluids"][-1]["extension"].value > 0
+                            else {}
+                        ),
                     )
                 )
                 i += 1
