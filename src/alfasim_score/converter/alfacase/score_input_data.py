@@ -136,7 +136,6 @@ class ScoreInputData:
         with sections equal or less then some maximum length.
         """
         trajectory = self.reader.read_well_trajectory()
-        max_distance = MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS.GetValue(LENGTH_UNIT)
         x_array = np.array(trajectory["x"].GetValues(LENGTH_UNIT), dtype=float)
         y_array = np.array(trajectory["y"].GetValues(LENGTH_UNIT), dtype=float)
         md_array = np.array(
@@ -165,6 +164,7 @@ class ScoreInputData:
 
         # remove points too close to each other, keeping the first and last points
         filtered_points = [points[0]]
+        max_distance = MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS.GetValue(LENGTH_UNIT)
         min_distance = MINIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS.GetValue(LENGTH_UNIT)
         for point in points[1:-1]:
             if np.abs(point[1] - filtered_points[-1][1]) >= min_distance:
