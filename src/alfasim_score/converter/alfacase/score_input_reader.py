@@ -69,7 +69,6 @@ class ScoreInputReader:
         }
 
     def read_important_mds(self) -> List[Any]:
-        """Read the important MDs from SCORE input file."""
         valid_keys = {
             "top_md",
             "base_md",
@@ -79,23 +78,32 @@ class ScoreInputReader:
             "hanger_md",
             "leakage_md",
         }
-        results: List[Any] = []
-        stack = [self.input_content]
 
-        while stack:
-            obj = stack.pop()
-            if not isinstance(obj, (dict, list)):
-                continue
+        def find_md_values(obj: object) -> List[Any]:
+            if isinstance(obj, dict):
+                matched_values = [
+                    value for key, value in obj.items() if key in valid_keys and value is not None
+                ]
 
-            items = obj.items() if isinstance(obj, dict) else ((None, item) for item in obj)
-            for key, value in items:
-                if value is None:
-                    continue
-                if key in valid_keys:
-                    results.append(value)
-                stack.append(value)
+                nested_values = [
+                    nested_value
+                    for nested_item in obj.values()
+                    for nested_value in find_md_values(nested_item)
+                ]
 
-        return results
+                return matched_values + nested_values
+
+            elif isinstance(obj, list):
+                return [
+                    nested_value
+                    for element in obj
+                    if element is not None
+                    for nested_value in find_md_values(element)
+                ]
+
+            return []
+
+        return find_md_values(self.input_content)
 
     def read_tubing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Read the data for the tubings from SCORE input file."""
