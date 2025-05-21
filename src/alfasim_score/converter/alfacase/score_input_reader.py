@@ -68,6 +68,50 @@ class ScoreInputReader:
             "md": Array(md, LENGTH_UNIT),
         }
 
+    def read_important_mds(self) -> List[Any]:
+        """
+        Read the important measured depths from SCORE input file.
+        """
+        valid_keys = {
+            "top_md",
+            "base_md",
+            "toc_md",
+            "shoe_md",
+            "final_md",
+            "hanger_md",
+            "leakage_md",
+            "valve_md",
+        }
+
+        def find_md_values(obj: object) -> List[Any]:
+            """
+            Recursively find and return a list of measured depth values from the given object.
+            """
+            if isinstance(obj, dict):
+                matched_values = [
+                    value for key, value in obj.items() if key in valid_keys and value is not None
+                ]
+
+                nested_values = [
+                    nested_value
+                    for nested_item in obj.values()
+                    for nested_value in find_md_values(nested_item)
+                ]
+
+                return matched_values + nested_values
+
+            elif isinstance(obj, list):
+                return [
+                    nested_value
+                    for element in obj
+                    if element is not None
+                    for nested_value in find_md_values(element)
+                ]
+
+            return []
+
+        return find_md_values(self.input_content)
+
     def read_tubing_materials(self) -> List[Dict[str, Union[Scalar, str]]]:
         """Read the data for the tubings from SCORE input file."""
         tubing_data = []

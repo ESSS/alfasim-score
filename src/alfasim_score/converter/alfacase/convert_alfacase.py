@@ -64,6 +64,7 @@ class ScoreAlfacaseConverter:
         from the input SCORE file.
         """
         trajectory = self.score_data.get_refined_trajectory()
+        # x starts at 0 and y starts at -(air gap + water depth)
         return ProfileDescription(x_and_y=XAndYDescription(x=trajectory["x"], y=trajectory["y"]))
 
     def _convert_materials(self) -> List[MaterialDescription]:
@@ -102,9 +103,9 @@ class ScoreAlfacaseConverter:
             )
             for i, formation in enumerate(self.score_data.reader.read_formations(), start=1)
         ]
-        return FormationDescription(
-            reference_y_coordinate=self.score_data.get_well_start_position(), layers=layers
-        )
+        # the reference_y_coordinate coordinate is set to 0.0 in formation
+        # while the initial position (formation->layers->start->value) starts at air gap + water depth
+        return FormationDescription(reference_y_coordinate=Scalar(0.0, LENGTH_UNIT), layers=layers)
 
     def _convert_well_environment(self) -> EnvironmentDescription:
         """Create the description for the formations environment."""
@@ -129,7 +130,9 @@ class ScoreAlfacaseConverter:
         return EnvironmentDescription(
             thermal_model=PipeThermalModelType.SteadyState,
             position_input_mode=PipeThermalPositionInput.Tvd,
-            reference_y_coordinate=self.score_data.get_well_start_position(),
+            # the reference_y_coordinate is set to 0.0 in enviroment
+            # while the position y starts at air gap + water depth
+            reference_y_coordinate=Scalar(0.0, LENGTH_UNIT),
             tvd_properties_table=environment_description,
         )
 
@@ -157,7 +160,11 @@ class ScoreAlfacaseConverter:
                         material=section["material"],
                         top_of_filler=top_of_filler,
                         filler_material=cement["name"],
-                        material_above_filler=casing["annular_fluids"][-1]["name"],
+                        **(
+                            {"material_above_filler": casing["annular_fluids"][-1]["name"]}
+                            if casing["annular_fluids"][-1]["extension"].value > 0
+                            else {}
+                        ),
                     )
                 )
                 i += 1

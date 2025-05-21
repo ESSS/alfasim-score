@@ -12,7 +12,7 @@
     unit: mm
     value: 0.05
   material: B
-  material_above_filler: Brine_860
+  material_above_filler: null
   name: CONDUCTOR_DRILLING_1
   outer_diameter:
     unit: in
@@ -37,7 +37,7 @@
     unit: mm
     value: 0.05
   material: X-80
-  material_above_filler: Brine_860
+  material_above_filler: null
   name: SURFACE_CASING_1
   outer_diameter:
     unit: in
