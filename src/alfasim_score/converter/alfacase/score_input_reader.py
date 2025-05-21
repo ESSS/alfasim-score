@@ -69,6 +69,9 @@ class ScoreInputReader:
         }
 
     def read_important_mds(self) -> List[Any]:
+        """
+        Read the important measured depths from SCORE input file.
+        """
         valid_keys = {
             "top_md",
             "base_md",
@@ -80,6 +83,9 @@ class ScoreInputReader:
         }
 
         def find_md_values(obj: object) -> List[Any]:
+            """
+            Recursively find and return a list of measured depth values from the given object.
+            """
             if isinstance(obj, dict):
                 matched_values = [
                     value for key, value in obj.items() if key in valid_keys and value is not None

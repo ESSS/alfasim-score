@@ -102,6 +102,8 @@ class ScoreAlfacaseConverter:
             )
             for i, formation in enumerate(self.score_data.reader.read_formations(), start=1)
         ]
+        # the reference_y_coordinate coordinate is set to 0.0 in formation
+        # while the initial position (formation->layers->start->value) starts at air gap + water depth
         return FormationDescription(reference_y_coordinate=Scalar(0.0, LENGTH_UNIT), layers=layers)
 
     def _convert_well_environment(self) -> EnvironmentDescription:
@@ -127,6 +129,8 @@ class ScoreAlfacaseConverter:
         return EnvironmentDescription(
             thermal_model=PipeThermalModelType.SteadyState,
             position_input_mode=PipeThermalPositionInput.Tvd,
+            # the reference_y_coordinate is set to 0.0 in enviroment
+            # while the position y starts at air gap + water depth
             reference_y_coordinate=Scalar(0.0, LENGTH_UNIT),
             tvd_properties_table=environment_description,
         )
