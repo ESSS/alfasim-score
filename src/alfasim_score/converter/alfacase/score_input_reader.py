@@ -80,6 +80,7 @@ class ScoreInputReader:
             "final_md",
             "hanger_md",
             "leakage_md",
+            "valve_md",
         }
 
         def find_md_values(obj: object) -> List[Any]:

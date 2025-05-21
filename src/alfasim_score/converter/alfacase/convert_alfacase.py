@@ -64,6 +64,7 @@ class ScoreAlfacaseConverter:
         from the input SCORE file.
         """
         trajectory = self.score_data.get_refined_trajectory()
+        # x starts at 0 and y starts at -(air gap + water depth)
         return ProfileDescription(x_and_y=XAndYDescription(x=trajectory["x"], y=trajectory["y"]))
 
     def _convert_materials(self) -> List[MaterialDescription]:
