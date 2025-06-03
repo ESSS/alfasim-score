@@ -6,7 +6,15 @@ from pytest_regressions.file_regression import FileRegressionFixture
 from alfasim_score.converter.wellprop.wellprop_pvt_table_converter import WellpropToPvtConverter
 
 
-@pytest.mark.parametrize("fluid_name", ("N2_LIFT", "DFLT_FCBA_9.90", "DFLT_FPBNA_OLEO_NACL_10.00"))
+@pytest.mark.parametrize(
+    "fluid_name",
+    (
+        "N2_LIFT",
+        "DFLT_FCBA_9.90",
+        "DFLT_FPBNA_OLEO_NACL_10.00",
+        "DFLT_BLACK_OIL_29.00_0_225.00_0.92",
+    ),
+)
 def test_generate_pvt_table_content(
     shared_datadir: Path,
     file_regression: FileRegressionFixture,
