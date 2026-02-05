@@ -230,6 +230,9 @@ class ScoreAPBPluginConverter:
         return Options(
             thermal_property_update_mode=ThermalPropertyUpdateMode.FIRST_TIME_STEP,
             is_gas_lift_on=self.score_data.has_gas_lift(),
+            is_convert_pvt_on=True,
+            is_periodic_run_on=True,
+            periodic_run_interval=Scalar(10.0, "-"),
         )
 
     def build_plugin_description(self) -> PluginDescription:
@@ -251,7 +254,7 @@ class ScoreAPBPluginConverter:
                 "name": "Mechanical Properties",
                 "_children_list": [material.to_dict() for material in materials],
             },
-            "Options": {"name": "Options", **options.to_dict()},
+            "OptionsModel": {"name": "Options", **options.to_dict()},
         }
         return PluginDescription(
             name="apb",
