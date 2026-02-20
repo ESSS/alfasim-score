@@ -16,3 +16,12 @@
 
 * Update the alfacase converter to create files compatible with ALFAsim APB plugin v1.0.1
 * Add new converter for pvt tables from wellprops to `.tab` format
+
+1.1.0 (2026-02-20)
+------------------
+
+* Update the alfacase converter to support ALFAsim APB plugin v2025.2.1
+* Update convert to improve ALFAsim simulation performance:
+  * Use Zamora correlation for PVT table input
+  * Periodic calculation for APB  
+  * Update of thermal properties only in initalization
