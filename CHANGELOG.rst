@@ -23,5 +23,10 @@
 * Update the alfacase converter to support ALFAsim APB plugin v2025.2.1
 * Update convert to improve ALFAsim simulation performance:
   * Use Zamora correlation for PVT table input
-  * Periodic calculation for APB  
+  * Periodic calculation for APB
   * Update of thermal properties only in initalization
+
+1.1.1 (2026-03-19)
+------------------
+
+* Ignore walls with NaN or negative dummy values from ALFAsim output to build output JSON layers.
