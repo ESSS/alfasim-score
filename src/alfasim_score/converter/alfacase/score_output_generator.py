@@ -216,8 +216,8 @@ class ScoreOutputBuilder:
             wall_temperatures = results.get_profile_curve(
                 wall_name, self.element_name, -1
             ).image.GetValues(TEMPERATURE_UNIT)
-            # Ignore walls with NaN dummy values from ALFAsim
-            if not np.all(np.isnan(wall_temperatures)):
+            # Ignore walls with NaN or negative dummy values from ALFAsim
+            if not np.all(np.isnan(wall_temperatures)) and not np.all(wall_temperatures < 0):
                 wall["temperature"] = wall_temperatures.tolist()
                 walls_output[str(wall_index)] = wall
                 wall_index += 1
