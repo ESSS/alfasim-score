@@ -12,8 +12,9 @@ from alfasim_score.converter.alfacase.alfasim_score_converter import AlfasimScor
     [
         ("case.data", "score_input_natural_flow.json", "7-SRR-2-RJS (2022-07-28_15-01-27)"),
         ("case2.data", "score_input_B_relief_C_open.json", "WELLBORE"),
+        ("nan_results.data", "nan_results.json", "WELLBORE"),
     ],
-    ids=["natural_flow", "B_relief_C_open"],
+    ids=["natural_flow", "B_relief_C_open", "nan_results"],
 )
 def test_generate_output_file_results(
     shared_datadir: Path,
