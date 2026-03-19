@@ -70,7 +70,7 @@ time_options:
     unit: s
 numerical_options:
   nonlinear_solver_type: nonlinear_solver_alfasim_quasi_newton
-  tolerance: 0.001
+  tolerance: 0.0001
   maximum_iterations: 5
   maximum_timestep_change_factor: 1.2
   maximum_cfl_value: 1.0
@@ -379,10 +379,15 @@ plugins:
         thermal_expansion_coefficient:
           value: 0.0
           unit: 1/K
-    Options:
+    OptionsModel:
       name: Options
       thermal_property_update_mode: First time step
       is_gas_lift_on: False
+      is_convert_pvt_on: True
+      is_periodic_run_on: True
+      periodic_run_interval:
+        value: 10.0
+        unit: '-'
   is_enabled: True
 pvt_models:
   default_model: base

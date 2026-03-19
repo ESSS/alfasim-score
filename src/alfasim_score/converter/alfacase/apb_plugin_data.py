@@ -145,6 +145,9 @@ class Annuli:
 class Options:
     thermal_property_update_mode: ThermalPropertyUpdateMode
     is_gas_lift_on: bool
+    is_convert_pvt_on: bool
+    is_periodic_run_on: bool
+    periodic_run_interval: Scalar
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert data to dict in order to write data to the alfacase."""
