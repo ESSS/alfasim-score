@@ -1,0 +1,2057 @@
+{
+	"name": "Térmico - Produtor",
+	"air_gap": 26,
+	"final_md": 5139,
+	"trajectory": {
+		"data": [
+			{
+				"depth": 0.0,
+				"displacement": 0.0,
+				"vertical_depth": 0.0
+			},
+			{
+				"depth": 5139.0,
+				"displacement": 0.0,
+				"vertical_depth": 5139.0
+			}
+		]
+	},
+	"lithologies": [
+		{
+			"display_name": "Argila",
+			"top_elevation": -2156,
+			"base_elevation": -2535.61,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -2535.61,
+			"base_elevation": -2744.59,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Arenito",
+			"top_elevation": -2744.59,
+			"base_elevation": -2747.77,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -2747.77,
+			"base_elevation": -2766.55,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Arenito",
+			"top_elevation": -2766.55,
+			"base_elevation": -2769.54,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -2769.54,
+			"base_elevation": -2774.69,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Arenito",
+			"top_elevation": -2774.69,
+			"base_elevation": -2778.54,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -2778.54,
+			"base_elevation": -2784.33,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Arenito",
+			"top_elevation": -2784.33,
+			"base_elevation": -2789.48,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -2789.48,
+			"base_elevation": -2794.62,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Arenito",
+			"top_elevation": -2794.62,
+			"base_elevation": -2799.77,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -2799.77,
+			"base_elevation": -2811.34,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Arenito",
+			"top_elevation": -2811.34,
+			"base_elevation": -2814.87,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -2814.87,
+			"base_elevation": -2833.98,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -2833.98,
+			"base_elevation": -3111.69,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3111.69,
+			"base_elevation": -3114.91,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3114.91,
+			"base_elevation": -3124.56,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3124.56,
+			"base_elevation": -3128.41,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3128.41,
+			"base_elevation": -3138.06,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3138.06,
+			"base_elevation": -3141.92,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3141.92,
+			"base_elevation": -3154.14,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3154.14,
+			"base_elevation": -3159.93,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3159.93,
+			"base_elevation": -3169.58,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3169.58,
+			"base_elevation": -3176.01,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3176.01,
+			"base_elevation": -3184.37,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3184.37,
+			"base_elevation": -3191.44,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3191.44,
+			"base_elevation": -3197.23,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3197.23,
+			"base_elevation": -3200.45,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3200.45,
+			"base_elevation": -3208.16,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3208.16,
+			"base_elevation": -3210.74,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3210.74,
+			"base_elevation": -3216.52,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3216.52,
+			"base_elevation": -3219.74,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3219.74,
+			"base_elevation": -3229.39,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Folhelho",
+			"top_elevation": -3229.39,
+			"base_elevation": -3231.96,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Marga",
+			"top_elevation": -3231.96,
+			"base_elevation": -3238.95,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Packstone",
+			"top_elevation": -3238.95,
+			"base_elevation": -3243.34,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3243.34,
+			"base_elevation": -3248.41,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Packstone",
+			"top_elevation": -3248.41,
+			"base_elevation": -3252.46,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3252.46,
+			"base_elevation": -3269.68,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Packstone",
+			"top_elevation": -3269.68,
+			"base_elevation": -3273.3,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3273.3,
+			"base_elevation": -3279.24,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Packstone",
+			"top_elevation": -3279.24,
+			"base_elevation": -3301.88,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3301.88,
+			"base_elevation": -3307.29,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3307.29,
+			"base_elevation": -3355.61,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3355.61,
+			"base_elevation": -3363.38,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3363.38,
+			"base_elevation": -3410.35,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3410.35,
+			"base_elevation": -3421.84,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3421.84,
+			"base_elevation": -3426.91,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3426.91,
+			"base_elevation": -3445.16,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3445.16,
+			"base_elevation": -3450.56,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3450.56,
+			"base_elevation": -3474.89,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3474.89,
+			"base_elevation": -3477.93,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3477.93,
+			"base_elevation": -3490.44,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3490.44,
+			"base_elevation": -3492.46,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3492.46,
+			"base_elevation": -3498.55,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3498.55,
+			"base_elevation": -3500.57,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3500.57,
+			"base_elevation": -3504.29,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Taquidrita",
+			"top_elevation": -3504.29,
+			"base_elevation": -3506.99,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3506.99,
+			"base_elevation": -3510.71,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Taquidrita",
+			"top_elevation": -3510.71,
+			"base_elevation": -3514.43,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3514.43,
+			"base_elevation": -3517.47,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3517.47,
+			"base_elevation": -3576.26,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3576.26,
+			"base_elevation": -3597.89,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3597.89,
+			"base_elevation": -3679.67,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3679.67,
+			"base_elevation": -3683.04,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3683.04,
+			"base_elevation": -3756.03,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3756.03,
+			"base_elevation": -3760.76,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3760.76,
+			"base_elevation": -3765.16,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3765.16,
+			"base_elevation": -3767.52,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3767.52,
+			"base_elevation": -3846.93,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3846.93,
+			"base_elevation": -3850.99,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3850.99,
+			"base_elevation": -3917.55,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3917.55,
+			"base_elevation": -3922.28,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3922.28,
+			"base_elevation": -3926.34,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3926.34,
+			"base_elevation": -3931.75,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3931.75,
+			"base_elevation": -3976.01,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -3976.01,
+			"base_elevation": -3983.11,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3983.11,
+			"base_elevation": -3986.15,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -3986.15,
+			"base_elevation": -3991.22,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -3991.22,
+			"base_elevation": -4005.75,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4005.75,
+			"base_elevation": -4009.13,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4009.13,
+			"base_elevation": -4016.56,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4016.56,
+			"base_elevation": -4021.63,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4021.63,
+			"base_elevation": -4066.23,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4066.23,
+			"base_elevation": -4071.64,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4071.64,
+			"base_elevation": -4090.23,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4090.23,
+			"base_elevation": -4093.94,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4093.94,
+			"base_elevation": -4107.46,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -4107.46,
+			"base_elevation": -4112.53,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4112.53,
+			"base_elevation": -4149.02,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -4149.02,
+			"base_elevation": -4163.89,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4163.89,
+			"base_elevation": -4193.29,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4193.29,
+			"base_elevation": -4196.67,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4196.67,
+			"base_elevation": -4249.38,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4249.38,
+			"base_elevation": -4253.77,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4253.77,
+			"base_elevation": -4298.38,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4298.38,
+			"base_elevation": -4302.77,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4302.77,
+			"base_elevation": -4346.7,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4346.7,
+			"base_elevation": -4354.13,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4354.13,
+			"base_elevation": -4452.13,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4452.13,
+			"base_elevation": -4466.99,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4466.99,
+			"base_elevation": -4586.95,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Taquidrita",
+			"top_elevation": -4586.95,
+			"base_elevation": -4595.74,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4595.74,
+			"base_elevation": -4598.1,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -4598.1,
+			"base_elevation": -4600.81,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4600.81,
+			"base_elevation": -4636.96,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -4636.96,
+			"base_elevation": -4645.41,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4645.41,
+			"base_elevation": -4647.1,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Taquidrita",
+			"top_elevation": -4647.1,
+			"base_elevation": -4649.8,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4649.8,
+			"base_elevation": -4652.17,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Carnalita",
+			"top_elevation": -4652.17,
+			"base_elevation": -4656.56,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4656.56,
+			"base_elevation": -4658.93,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4658.93,
+			"base_elevation": -4660.28,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4660.28,
+			"base_elevation": -4711.3,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4711.3,
+			"base_elevation": -4717.05,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4717.05,
+			"base_elevation": -4756.58,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4756.58,
+			"base_elevation": -4761.31,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4761.31,
+			"base_elevation": -4812.34,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4812.34,
+			"base_elevation": -4817.07,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4817.07,
+			"base_elevation": -4909.32,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4909.32,
+			"base_elevation": -4914.39,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Halita",
+			"top_elevation": -4914.39,
+			"base_elevation": -4943.83,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4943.83,
+			"base_elevation": -4949.15,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Calcario",
+			"top_elevation": -4949.15,
+			"base_elevation": -4952.61,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Anidrita",
+			"top_elevation": -4952.61,
+			"base_elevation": -4956.08,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 3.0,
+				"specific_heat": 4.0,
+				"thermal_conductivity": 2.0,
+				"thermal_expansion_coefficient": null
+			}
+		},
+		{
+			"display_name": "Calcario",
+			"top_elevation": -4956.08,
+			"base_elevation": -5245.42,
+			"thermomechanical_properties": {
+				"e": 30000000.0,
+				"nu": 0.28,
+				"density": 1.0,
+				"specific_heat": 5.0,
+				"thermal_conductivity": 50.0,
+				"thermal_expansion_coefficient": null
+			}
+		}
+	],
+	"temperature": {
+		"ground_thermal_profiles": [
+			{
+				"data": [
+					{
+						"elevation": -2156,
+						"temperature": 4
+					},
+					{
+						"elevation": -3243,
+						"temperature": 47
+					},
+					{
+						"elevation": -4956,
+						"temperature": 62.01
+					},
+					{
+						"elevation": -5113,
+						"temperature": 69.3
+					}
+				],
+				"name": "Geotérmico (default)",
+				"is_default": true
+			}
+		]
+	},
+	"water_depth": 2156,
+	"well_strings": [
+		{
+			"type": "JETTING",
+			"toc_md": 2182,
+			"shoe_md": 2226,
+			"final_md": 2226,
+			"interval": "CONDUCTOR",
+			"cementing": {
+				"first_slurry": {
+					"thermomechanical_properties": {
+						"e": 1500000.0,
+						"thermal_conductivity": 0.983057,
+						"density": 15.7743,
+						"specific_heat": 837.9,
+						"thermal_expansion_coefficient": 1e-06,
+						"nu": 0.28
+					}
+				}
+			},
+			"hanger_md": 2182,
+			"annular_fluids": [
+				{
+					"top": 2182,
+					"base": 2182,
+					"fluid": "Brine_860",
+					"extension": 0
+				}
+			],
+			"string_sections": [
+				{
+					"pipe": {
+						"od": 36,
+						"wt": 1.5,
+						"grade": {
+							"name": "X-60",
+							"thermomechanical_properties": {
+								"e": 30000000.0,
+								"nu": 0.31,
+								"density": 65.5035,
+								"specific_heat": 460.9,
+								"thermal_conductivity": 45.345257,
+								"thermal_expansion_coefficient": 1.2e-05
+							}
+						}
+					},
+					"top_md": 2182,
+					"base_md": 2206
+				},
+				{
+					"pipe": {
+						"od": 36,
+						"wt": 1.5,
+						"grade": {
+							"name": "B",
+							"thermomechanical_properties": {
+								"e": 30000000.0,
+								"nu": 0.31,
+								"density": 65.5035,
+								"specific_heat": 460.9,
+								"thermal_conductivity": 45.345257,
+								"thermal_expansion_coefficient": 1.2e-05
+							}
+						}
+					},
+					"top_md": 2206,
+					"base_md": 2226
+				}
+			],
+			"hole_size": 36.001,
+			"pressure_relief": {}
+		},
+		{
+			"type": "CASING",
+			"toc_md": 3000,
+			"shoe_md": 3405,
+			"final_md": 3420,
+			"interval": "SURFACE",
+			"cementing": {
+				"first_slurry": {
+					"thermomechanical_properties": {
+						"e": 1500000,
+						"nu": 0.28,
+						"density": 15.7743,
+						"specific_heat": 837.9,
+						"thermal_conductivity": 0.983057,
+						"thermal_expansion_coefficient": 1e-06
+					}
+				}
+			},
+			"hanger_md": 2182,
+			"hole_size": 16,
+			"annular_fluids": [
+				{
+					"top": 2182,
+					"base": 3000,
+					"fluid": "DFLT_FCBA_10.00",
+					"weight": 10,
+					"salinity": null,
+					"extension": 818,
+					"is_custom": false,
+					"fluid_type": "FCBA",
+					"solid_ratio": null,
+					"solid_density": null,
+					"oil_water_ratio": null,
+					"is_weight_custom": false,
+					"is_salinity_custom": null,
+					"corrected_solid_ratio": null,
+					"is_solid_ratio_custom": null,
+					"is_oil_water_ratio_custom": null
+				}
+			],
+			"pressure_relief": {
+				"_id": "7adKkWKbG1",
+				"active": false,
+				"representation": {
+					"_id": "jXMp2Epeaj"
+				},
+				"safety_margin_unit": "LB_GAL",
+				"can_calc_safety_margin": true,
+				"can_calc_pressure_without_safety_margin": true
+			},
+			"string_sections": [
+				{
+					"pipe": {
+						"od": 13.625,
+						"wt": 0.625,
+						"grade": {
+							"name": "C-110 HC",
+							"thermomechanical_properties": {
+								"e": 30000000.0,
+								"nu": 0.31,
+								"density": 65.5035,
+								"specific_heat": 460.9,
+								"thermal_conductivity": 45.345257,
+								"thermal_expansion_coefficient": 1.2e-05
+							}
+						}
+					},
+					"top_md": 2182,
+					"base_md": 3405
+				}
+			]
+		},
+		{
+			"type": "CASING",
+			"toc_md": 4000,
+			"shoe_md": 4982,
+			"final_md": 4987,
+			"interval": "PRODUCTION",
+			"cementing": {
+				"first_slurry": {
+					"thermomechanical_properties": {
+						"e": 1500000,
+						"nu": 0.28,
+						"density": 15.7743,
+						"specific_heat": 837.9,
+						"thermal_conductivity": 0.983057,
+						"thermal_expansion_coefficient": 1e-06
+					}
+				}
+			},
+			"hanger_md": 2182,
+			"hole_size": 12.25,
+			"annular_fluids": [
+				{
+					"top": 2182,
+					"base": 4000,
+					"fluid": "DFLT_FPBA_BARITE_10.00_300000",
+					"weight": 10,
+					"salinity": 300000,
+					"extension": 1818,
+					"is_custom": false,
+					"fluid_type": "FPBA_BARITE",
+					"solid_ratio": null,
+					"solid_density": null,
+					"oil_water_ratio": null,
+					"is_weight_custom": false,
+					"is_salinity_custom": null,
+					"corrected_solid_ratio": null,
+					"is_solid_ratio_custom": null,
+					"is_oil_water_ratio_custom": null
+				}
+			],
+			"pressure_relief": {
+				"_id": "GoDRQ8nlBk",
+				"depth": 3405,
+				"active": true,
+				"relief_point": "PREVIOUS_SHOE",
+				"safety_margin": 20,
+				"representation": {
+					"_id": "oJXN7apVvE",
+					"type": "ball",
+					"index": 3
+				},
+				"safety_margin_unit": "PERCENTAGE",
+				"considered_pressure": 8117.403006442376,
+				"pressure_without_safety_margin": 11.6564
+			},
+			"string_sections": [
+				{
+					"pipe": {
+						"od": 10.75,
+						"wt": 0.595,
+						"grade": {
+							"name": "C-110 HC",
+							"thermomechanical_properties": {
+								"e": 30000000.0,
+								"nu": 0.31,
+								"density": 65.5035,
+								"specific_heat": 460.9,
+								"thermal_conductivity": 45.345257,
+								"thermal_expansion_coefficient": 1.2e-05
+							}
+						}
+					},
+					"top_md": 2182,
+					"base_md": 3160
+				},
+				{
+					"pipe": {
+						"od": 10.75,
+						"wt": 0.797,
+						"grade": {
+							"name": "C-110 HC",
+							"thermomechanical_properties": {
+								"e": 30000000.0,
+								"nu": 0.31,
+								"density": 65.5035,
+								"specific_heat": 460.9,
+								"thermal_conductivity": 45.345257,
+								"thermal_expansion_coefficient": 1.2e-05
+							}
+						}
+					},
+					"top_md": 3160,
+					"base_md": 4817
+				},
+				{
+					"pipe": {
+						"od": 9.875,
+						"wt": 0.668,
+						"grade": {
+							"name": "SMSS/110KSI",
+							"thermomechanical_properties": {
+								"e": 30000000.0,
+								"nu": 0.31,
+								"density": 65.5035,
+								"specific_heat": 460.9,
+								"thermal_conductivity": 45.345257,
+								"thermal_expansion_coefficient": 1.2e-05
+							}
+						}
+					},
+					"top_md": 4817,
+					"base_md": 4982
+				}
+			]
+		},
+		{
+			"final_md": 5139,
+			"interval": "OPEN",
+			"cementing": {},
+			"hole_size": 8.5,
+			"annular_fluids": [
+				{
+					"top": 5139,
+					"base": 5139,
+					"fluid": "Brine_860",
+					"extension": 0
+				}
+			],
+			"pressure_relief": {},
+			"string_sections": [],
+			"shoe_md": 5139,
+			"toc_md": 5139
+		}
+	],
+	"initial_conditions": [
+		{
+			"reference": "Undisturbed"
+		}
+	],
+	"operation": {
+		"data": {
+			"gor": 225,
+			"fluid": "OIL",
+			"method": "NATURALFLOW",
+			"duration": 0.008333333,
+			"flow_rate": 2686.0,
+			"method_data": {},
+			"oil_flow_rate": 2686,
+			"water_flow_rate": 0,
+			"perforation_base_depth": 5139,
+			"flow_initial_pressure": 4907.0385,
+			"flow_initial_temperature": 69.3,
+			"fluid_type": "DFLT_BLACK_OIL_29.00_0_225.00_0.92_Standing"
+		},
+		"name": "Produção de Óleo - Canhoneio 1 - Surgente (pico de óleo)",
+		"type": "PRODUCTION",
+		"thermal_data": {
+			"fluid": "DFLT_BLACK_OIL_29.00_0_225.00_0.92_Standing",
+			"fluid_type": "BLACK_OIL",
+			"annuli_data": [
+				{
+					"string_name": "COP/COI",
+					"apb_bled_volume": null,
+					"initial_top_pressure": 3272.590926134233
+				},
+				{
+					"string_name": "Rev. Prod. 10 3/4\"",
+					"apb_bled_volume": null,
+					"initial_top_pressure": 3718.8533251525373
+				},
+				{
+					"string_name": "Rev. Sup. 13 5/8\"",
+					"apb_bled_volume": null,
+					"initial_top_pressure": 3141.7322834645674
+				}
+			],
+			"api_gravity": 29,
+			"gas_gravity": 0.92,
+			"gas_oil_ratio": 225
+		},
+		"tubing_string": {
+			"components": [
+				{
+					"name": "PACKER #1",
+					"depth": 4970,
+					"component": {
+						"type": "PACKER"
+					}
+				}
+			],
+			"annular_fluids": [
+				{
+					"_id": "QMpE26kzdx",
+					"top": 2182,
+					"base": 4970,
+					"fluid": "DFLT_FCBA_8.80",
+					"weight": 8.8,
+					"extension": 2788,
+					"is_custom": false,
+					"fluid_type": "FCBA",
+					"solid_ratio": null,
+					"oil_water_ratio": null,
+					"is_weight_custom": false
+				}
+			],
+			"string_sections": [
+				{
+					"pipe": {
+						"od": 6.625,
+						"wt": 0.417,
+						"grade": {
+							"name": "SDSS/125KSI",
+							"thermomechanical_properties": {
+								"e": 30000000,
+								"nu": 0.31,
+								"density": 65.5035,
+								"specific_heat": 460.9,
+								"thermal_conductivity": 45.345257,
+								"thermal_expansion_coefficient": 1.2e-05
+							}
+						}
+					},
+					"top_md": 2182,
+					"base_md": 4970
+				}
+			]
+		}
+	}
+}
