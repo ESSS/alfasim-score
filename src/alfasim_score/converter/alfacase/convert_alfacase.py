@@ -22,7 +22,9 @@ from alfasim_sdk import TubingDescription
 from alfasim_sdk import WellDescription
 from alfasim_sdk import XAndYDescription
 from barril.units import Scalar
+from typing_extensions import assert_never
 
+from alfasim_score.common import ScoreSimulationRegime
 from alfasim_score.common import convert_quota_to_tvd
 from alfasim_score.common import filter_duplicated_materials_by_name
 from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
@@ -107,6 +109,18 @@ class ScoreAlfacaseConverter:
         # while the initial position (formation->layers->start->value) starts at air gap + water depth
         return FormationDescription(reference_y_coordinate=Scalar(0.0, LENGTH_UNIT), layers=layers)
 
+    def _get_pipe_thermal_model(self) -> PipeThermalModelType:
+        """Map the SCORE simulation regime to the ALFAsim pipe thermal model type."""
+        regime = self.score_data.reader.read_simulation_regime()
+        if regime is ScoreSimulationRegime.STEADY_STATE:
+            return PipeThermalModelType.SteadyState
+        elif regime is ScoreSimulationRegime.TRANSIENT:
+            return PipeThermalModelType.Transient
+        elif regime is ScoreSimulationRegime.PSEUDO_TRANSIENT:
+            return PipeThermalModelType.Transient
+        else:
+            assert_never(regime)
+
     def _convert_well_environment(self) -> EnvironmentDescription:
         """Create the description for the formations environment."""
         environment_description = []
@@ -128,7 +142,7 @@ class ScoreAlfacaseConverter:
                 )
             )
         return EnvironmentDescription(
-            thermal_model=PipeThermalModelType.SteadyState,
+            thermal_model=self._get_pipe_thermal_model(),
             position_input_mode=PipeThermalPositionInput.Tvd,
             # the reference_y_coordinate is set to 0.0 in enviroment
             # while the position y starts at air gap + water depth

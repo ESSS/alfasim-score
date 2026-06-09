@@ -13,6 +13,7 @@ from alfasim_score.common import FluidType
 from alfasim_score.common import LiftMethod
 from alfasim_score.common import ModelFluidType
 from alfasim_score.common import OperationType
+from alfasim_score.common import ScoreSimulationRegime
 from alfasim_score.common import WellItemFunction
 from alfasim_score.common import WellItemType
 from alfasim_score.constants import CEMENT_NAME
@@ -438,6 +439,22 @@ class ScoreInputReader:
         """
         initial_conditions_data = self.input_content["initial_conditions"][0]
         return {"mode": AnnulusModeType(initial_conditions_data["reference"])}
+
+    def read_simulation_regime(self) -> ScoreSimulationRegime:
+        """
+        Read the simulation regime from ``operation.thermal_data.pwpa_simulator.config``.
+
+        Falls back to ``TRANSIENT`` when the ``pwpa_simulator`` block or
+        ``simulation_regime`` key is absent, ensuring backwards compatibility
+        with older SCORE files that predate this field.
+        """
+        thermal_data = self.input_content["operation"]["thermal_data"]
+        pwpa_simulator = thermal_data.get("pwpa_simulator") or {}
+        config = pwpa_simulator.get("config") or {}
+        value = config.get("simulation_regime")
+        if value is None:
+            return ScoreSimulationRegime.TRANSIENT
+        return ScoreSimulationRegime(value)
 
     def read_output_curves(self) -> Dict[str, Array]:
         """

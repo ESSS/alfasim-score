@@ -38,8 +38,10 @@ from barril.units import Array
 from barril.units import Scalar
 from copy import deepcopy
 from pathlib import Path
+from typing_extensions import assert_never
 
 from alfasim_score.common import OperationType
+from alfasim_score.common import ScoreSimulationRegime
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import INITIAL_TIMESTEP
 from alfasim_score.constants import MAXIMUM_TIMESTEP
@@ -47,6 +49,7 @@ from alfasim_score.constants import MAXIMUM_TIMESTEP_CHANGE_FACTOR
 from alfasim_score.constants import MINIMUM_TIMESTEP
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import NUMERICAL_TOLERANCE
+from alfasim_score.constants import STEADY_STATE_FINAL_TIME
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.constants import WELLBORE_TOP_NODE_NAME
@@ -181,6 +184,46 @@ class BaseOperationBuilder:
             ),
         )
 
+    def _get_simulation_regime(self) -> SimulationRegimeType:
+        """
+        Map the SCORE simulation regime to the ALFAsim simulation regime type.
+
+        TODO PWPA-2556: APB plugin is not supported for steady state regime yet.
+        Some hooks must be updated or implemented in ALFAsim to support it, thus
+        a transient simulation is required.
+        Another points is that in next versions ALFAsim can present a
+        pseudo-transient regime, thus this code must be updated.
+        """
+        regime = self.score_data.reader.read_simulation_regime()
+        if regime is ScoreSimulationRegime.TRANSIENT:
+            return SimulationRegimeType.Transient
+        elif regime is ScoreSimulationRegime.STEADY_STATE:
+            return SimulationRegimeType.Transient
+        elif regime is ScoreSimulationRegime.PSEUDO_TRANSIENT:
+            return SimulationRegimeType.Transient
+        else:
+            assert_never(regime)
+
+    def _get_initial_condition_strategy(self) -> InitialConditionStrategyType:
+        """
+        Map the SCORE simulation regime to the ALFAsim initial condition strategy.
+
+        TODO PWPA-2556: APB plugin is not supported for steady state regime yet.
+        Some hooks must be updated or implemented in ALFAsim to support it, thus
+        a transient simulation is required.
+        Thus, in order to have a faster solution in steady-state, it is using a short
+        transient simulation (10 min), but initialized with the steady-state regime.
+        """
+        regime = self.score_data.reader.read_simulation_regime()
+        if regime is ScoreSimulationRegime.STEADY_STATE:
+            return InitialConditionStrategyType.SteadyState
+        elif regime is ScoreSimulationRegime.TRANSIENT:
+            return InitialConditionStrategyType.Constant
+        elif regime is ScoreSimulationRegime.PSEUDO_TRANSIENT:
+            return InitialConditionStrategyType.Constant
+        else:
+            assert_never(regime)
+
     def configure_pvt_model(self, alfacase: CaseDescription) -> None:
         """
         Configure the pvt fluid for the model.
@@ -230,17 +273,20 @@ class BaseOperationBuilder:
         alfacase.physics = PhysicsDescription(
             hydrodynamic_model=HydrodynamicModelType.ThreeLayersGasOilWater,
             energy_model=EnergyModel.GlobalModel,
-            # TODO PWPA-2556: Switch to transient because the steady-state simulation is not converging.
-            # Need to check how this setting comes from SCORE,
-            # since it's unclear why we always assume steady-state for the production.
-            simulation_regime=SimulationRegimeType.Transient,
-            initial_condition_strategy=InitialConditionStrategyType.Constant,
+            simulation_regime=self._get_simulation_regime(),
+            initial_condition_strategy=self._get_initial_condition_strategy(),
         )
 
     def configure_time_options(self, alfacase: CaseDescription) -> None:
         """Configure the description for the time options data."""
+        regime = self.score_data.reader.read_simulation_regime()
+        final_time = (
+            STEADY_STATE_FINAL_TIME
+            if regime is ScoreSimulationRegime.STEADY_STATE
+            else self.score_data.operation_data["duration"]
+        )
         alfacase.time_options = TimeOptionsDescription(
-            final_time=self.score_data.operation_data["duration"],
+            final_time=final_time,
             initial_timestep=INITIAL_TIMESTEP,
             minimum_timestep=MINIMUM_TIMESTEP,
             maximum_timestep=MAXIMUM_TIMESTEP,

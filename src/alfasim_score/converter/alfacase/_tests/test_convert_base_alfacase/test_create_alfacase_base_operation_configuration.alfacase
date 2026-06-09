@@ -1475,7 +1475,7 @@ wells:
   top_node: WELLBORE_TOP_NODE
   bottom_node: WELLBORE_BOTTOM_NODE
   environment:
-    thermal_model: steady_state_heat_transfer
+    thermal_model: transient_heat_transfer
     position_input_mode: position_by_tvd
     reference_y_coordinate:
       value: 0.0

@@ -23494,7 +23494,12 @@
                 "ic4": 0.7
             },
             "gas_gravity": 1.17,
-            "fluid_type": "BLACK_OIL"
+            "fluid_type": "BLACK_OIL",
+			"pwpa_simulator": {
+				"config": {
+					"simulation_regime": "TRANSIENT"
+				}
+			}
         },
         "thermal_simulation": {
             "status": "SUCCESS",

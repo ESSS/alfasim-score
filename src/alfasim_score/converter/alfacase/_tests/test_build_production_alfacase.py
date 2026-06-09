@@ -22,3 +22,25 @@ def test_create_alfacase_natural_flow_production(
     file_regression.check(
         convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
     )
+
+
+def test_create_alfacase_steady_state_production(
+    file_regression: FileRegressionFixture,
+    production_operation_steady_state: ProductionOperationBuilder,
+) -> None:
+    case_description = production_operation_steady_state.generate_operation_alfacase_description()
+    file_regression.check(
+        convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
+    )
+
+
+def test_create_alfacase_pseudo_transient_production(
+    file_regression: FileRegressionFixture,
+    production_operation_pseudo_transient: ProductionOperationBuilder,
+) -> None:
+    case_description = (
+        production_operation_pseudo_transient.generate_operation_alfacase_description()
+    )
+    file_regression.check(
+        convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
+    )

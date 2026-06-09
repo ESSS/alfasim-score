@@ -60,6 +60,13 @@ MAXIMUM_TIMESTEP = Scalar(10.0, "s")
 # tolerance of depth to be considered an active annulus
 ANNULUS_DEPTH_TOLERANCE = Scalar(10.0, LENGTH_UNIT)
 
+# TODO PWPA-2556: APB plugin is not supported for steady state regime yet.
+# Some hooks must be updated or implemented in ALFAsim to support it, thus
+# a transient simulation is required.
+# Thus, in order to have a faster solution in steady-state, it is using a short
+# transient simulation (10 min), but initialized with the steady-state regime.
+STEADY_STATE_FINAL_TIME = Scalar(10.0, "min")
+
 # set default value for annulus for the plugin APB
 # there is no such option in the SCORE input so use this default value
 HAS_FLUID_RETURN = True
