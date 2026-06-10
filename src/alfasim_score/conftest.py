@@ -11,6 +11,8 @@ from alfasim_score.converter.alfacase.score_input_reader import ScoreInputReader
 SCORE_GAS_LIFT_EXAMPLE_FILENAME = "score_input_gas_lift.json"
 SCORE_NATURAL_FLOW_EXAMPLE_FILENAME = "score_input_natural_flow.json"
 SCORE_INJECTION_EXAMPLE_FILENAME = "score_input_injection_operation.json"
+SCORE_STEADY_STATE_EXAMPLE_FILENAME = "score_input_steady_state.json"
+SCORE_PSEUDO_TRANSIENT_EXAMPLE_FILENAME = "score_input_pseudo_transient.json"
 
 
 @pytest.fixture
@@ -50,3 +52,15 @@ def production_operation_natural_flow(shared_datadir: Path) -> ProductionOperati
 def injection_operation(shared_datadir: Path) -> InjectionOperationBuilder:
     score_input_reader = ScoreInputReader(shared_datadir / SCORE_INJECTION_EXAMPLE_FILENAME)
     return InjectionOperationBuilder(ScoreInputData(score_input_reader))
+
+
+@pytest.fixture
+def production_operation_steady_state(shared_datadir: Path) -> ProductionOperationBuilder:
+    score_input_reader = ScoreInputReader(shared_datadir / SCORE_STEADY_STATE_EXAMPLE_FILENAME)
+    return ProductionOperationBuilder(ScoreInputData(score_input_reader))
+
+
+@pytest.fixture
+def production_operation_pseudo_transient(shared_datadir: Path) -> ProductionOperationBuilder:
+    score_input_reader = ScoreInputReader(shared_datadir / SCORE_PSEUDO_TRANSIENT_EXAMPLE_FILENAME)
+    return ProductionOperationBuilder(ScoreInputData(score_input_reader))

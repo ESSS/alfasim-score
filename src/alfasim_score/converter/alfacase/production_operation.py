@@ -18,7 +18,6 @@ from alfasim_sdk import MultiInputType
 from alfasim_sdk import PressureContainerDescription
 from alfasim_sdk import PressureNodePropertiesDescription
 from alfasim_sdk import PvtModelCorrelationDescription
-from alfasim_sdk import SimulationRegimeType
 from alfasim_sdk import TableInputType
 from alfasim_sdk import TemperaturesContainerDescription
 from alfasim_sdk import ValveType
@@ -136,10 +135,6 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                 if self.has_water(alfacase)
                 else HydrodynamicModelType.FourFields
             ),
-            # TODO PWPA-2556: Switch to transient because the steady-state simulation is not converging.
-            # Need to check how this setting comes from SCORE,
-            # since it's unclear why we always assume steady-state for the production.
-            simulation_regime=SimulationRegimeType.Transient,
         )
 
     def configure_nodes(self, alfacase: CaseDescription) -> None:

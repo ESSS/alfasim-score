@@ -81,6 +81,12 @@ class AnnulusLabel(str, Enum):
     E = "e"
 
 
+class ScoreSimulationRegime(str, Enum):
+    TRANSIENT = "TRANSIENT"
+    STEADY_STATE = "STEADY_STATE"
+    PSEUDO_TRANSIENT = "PSEUDO_TRANSIENT"
+
+
 class PvtTableNumberOfPhases(Enum):
     Two = 2
     Three = 3
