@@ -74,6 +74,9 @@ HAS_FLUID_RETURN = True
 # total number of walls in the output
 TOTAL_WALLS = 6
 
+# ALFAsim fills MDs outside an annulus with dummy values; valid temperatures (degC) are above 0 K
+ABSOLUTE_ZERO_TEMPERATURE = -273.15
+
 # total size of refined trajectory section
 MAXIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS = Scalar(50.0, LENGTH_UNIT)
 MINIMUM_DISTANCE_BETWEEN_TRAJECTORY_POINTS = Scalar(2.0, LENGTH_UNIT)

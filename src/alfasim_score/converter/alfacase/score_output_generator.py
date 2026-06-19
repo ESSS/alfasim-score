@@ -8,6 +8,7 @@ from barril.units import Scalar
 from pathlib import Path
 
 from alfasim_score.common import WellItemFunction
+from alfasim_score.constants import ABSOLUTE_ZERO_TEMPERATURE
 from alfasim_score.constants import TOTAL_WALLS
 from alfasim_score.constants import WELLBORE_NAME
 from alfasim_score.converter.alfacase.score_input_data import ScoreInputData
@@ -30,6 +31,21 @@ class ScoreOutputBuilder:
         self.score_data = score_input_data
         self.score_output_filepath = score_output_filepath
         self.element_name = WELLBORE_NAME
+
+    def _get_annulus_valid_length(self, temperature: np.ndarray, pressure: np.ndarray) -> int:
+        """Return the number of leading MDs that fall inside the annulus.
+
+        MDs beyond the annulus end carry ALFAsim fill values (NaN, or dummies such as
+        -273.15 degC / 0 psi). Those trailing rows must be dropped from the output.
+        """
+        valid = (
+            np.isfinite(temperature)
+            & np.isfinite(pressure)
+            & (temperature > ABSOLUTE_ZERO_TEMPERATURE)  # rules out the -273.15 degC dummy
+            & (pressure > 0.0)  # rules out the 0 / -0 dummy
+        )
+        invalid = np.nonzero(~valid)[0]
+        return int(invalid[0]) if invalid.size else int(valid.size)
 
     def _generate_annuli_output(self, results: Results, measured_depths: List) -> Dict[str, Any]:
         """Create data for the output results of annuli."""
@@ -68,29 +84,36 @@ class ScoreOutputBuilder:
             annuli_temperature_profiles, annuli_pressure_profiles
         ):
             annuli_output[str(annulus_index)] = {}
-            annuli_output[str(annulus_index)]["MD"] = measured_depths
-            temperature = {}
-            temperature["start"] = (
-                results.get_profile_curve(temperature_profile_name, self.element_name, 0)
-                .image.GetValues(TEMPERATURE_UNIT)
-                .tolist()
-            )
-            temperature["final"] = (
-                results.get_profile_curve(temperature_profile_name, self.element_name, -1)
-                .image.GetValues(TEMPERATURE_UNIT)
-                .tolist()
-            )
-            pressure = {}
-            pressure["start"] = (
-                results.get_profile_curve(pressure_profile_name, self.element_name, 0)
-                .image.GetValues(PRESSURE_UNIT)
-                .tolist()
-            )
-            pressure["final"] = (
-                results.get_profile_curve(pressure_profile_name, self.element_name, -1)
-                .image.GetValues(PRESSURE_UNIT)
-                .tolist()
-            )
+            temperature_start = results.get_profile_curve(
+                temperature_profile_name, self.element_name, 0
+            ).image.GetValues(TEMPERATURE_UNIT)
+            temperature_final = results.get_profile_curve(
+                temperature_profile_name, self.element_name, -1
+            ).image.GetValues(TEMPERATURE_UNIT)
+            pressure_start = results.get_profile_curve(
+                pressure_profile_name, self.element_name, 0
+            ).image.GetValues(PRESSURE_UNIT)
+            pressure_final = results.get_profile_curve(
+                pressure_profile_name, self.element_name, -1
+            ).image.GetValues(PRESSURE_UNIT)
+            density_start = results.get_profile_curve(
+                annulus_density_profiles[annulus_index], self.element_name, 0
+            ).image.GetValues(DENSITY_UNIT_SCORE)
+            density_final = results.get_profile_curve(
+                annulus_density_profiles[annulus_index], self.element_name, -1
+            ).image.GetValues(DENSITY_UNIT_SCORE)
+            # Drop MDs beyond the annulus end (filled by ALFAsim with NaN/dummy values).
+            valid_length = self._get_annulus_valid_length(temperature_final, pressure_final)
+            annulus_measured_depths = measured_depths[:valid_length]
+            annuli_output[str(annulus_index)]["MD"] = annulus_measured_depths
+            temperature = {
+                "start": temperature_start[:valid_length].tolist(),
+                "final": temperature_final[:valid_length].tolist(),
+            }
+            pressure = {
+                "start": pressure_start[:valid_length].tolist(),
+                "final": pressure_final[:valid_length].tolist(),
+            }
             pressure["diff"] = [
                 final - start for final, start in zip(pressure["final"], pressure["start"])
             ]
@@ -99,21 +122,10 @@ class ScoreOutputBuilder:
                 .image.GetValues(PRESSURE_UNIT)
                 .tolist()[0]
             )
-            density = {}
-            density["start"] = (
-                results.get_profile_curve(
-                    annulus_density_profiles[annulus_index], self.element_name, 0
-                )
-                .image.GetValues(DENSITY_UNIT_SCORE)
-                .tolist()
-            )
-            density["final"] = (
-                results.get_profile_curve(
-                    annulus_density_profiles[annulus_index], self.element_name, -1
-                )
-                .image.GetValues(DENSITY_UNIT_SCORE)
-                .tolist()
-            )
+            density = {
+                "start": density_start[:valid_length].tolist(),
+                "final": density_final[:valid_length].tolist(),
+            }
             volume = {}
             volume["start"] = (
                 results.get_profile_curve(annulus_atv_value[annulus_index], self.element_name, -1)
@@ -128,7 +140,7 @@ class ScoreOutputBuilder:
                 .image.GetValues(VOLUME_UNIT_SCORE)
                 .tolist()[0]
             )
-            volume["diff"] = [volume["final"] - volume["start"]]
+            volume["diff"] = volume["final"] - volume["start"]
             leakage = {}
             leakage[str(final_time.GetValue(TIME_UNIT) / 30)] = (
                 results.get_profile_curve(annulus_tlv_value[annulus_index], self.element_name, -1)
@@ -150,7 +162,9 @@ class ScoreOutputBuilder:
                 if casing["pressure_relief"]["is_active"]:
                     relief_position = casing["pressure_relief"]["position"]
                     density_at_relief = np.interp(
-                        relief_position.GetValue(LENGTH_UNIT), measured_depths, density["final"]
+                        relief_position.GetValue(LENGTH_UNIT),
+                        annulus_measured_depths,
+                        density["final"],
                     )
                     leakage_mass_value = Scalar(density_at_relief * leakage_value, MASS_UNIT_SCORE)
                 # if is open to seabed
