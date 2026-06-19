@@ -8,7 +8,7 @@ physics:
   initial_condition_strategy: steady_state
   keep_former_results: False
   emulsion_model_enabled: True
-  emulsion_relative_viscosity_model: model_default
+  emulsion_relative_viscosity_model: brinkman1952
   emulsion_pal_rhodes_phi_rel_100:
     value: 0.765
     unit: '-'
@@ -36,14 +36,17 @@ physics:
       values:
       - 0.0
       unit: m3/m3
-  emulsion_droplet_size_model: model_default
-  emulsion_inversion_point_model: model_default
+  emulsion_droplet_size_model: brauner2001
+  emulsion_inversion_point_model: brauner_and_ullmann_2002
   emulsion_inversion_water_cut:
     value: 0.4
     unit: m3/m3
+  friction_factor_correlation_model: model_default
+  friction_factor_correlation_plugin_id:
   flash_model: hydrocarbon_and_water
   correlations_package: correlation_package_classical
   fluid_material_convection_correlation: Hasan and Kabir 1994
+  steady_state_guess_initialization: quasi_hydrostatic
 time_options:
   stop_on_steady_state: False
   automatic_restart_autosave_frequency: True
@@ -72,8 +75,12 @@ numerical_options:
   nonlinear_solver_type: nonlinear_solver_alfasim_quasi_newton
   tolerance: 0.0001
   maximum_iterations: 5
-  maximum_timestep_change_factor: 1.2
-  maximum_cfl_value: 1.0
+  maximum_timestep_change_factor:
+    value: 1.2
+    unit: '-'
+  maximum_cfl_value:
+    value: 1.0
+    unit: '-'
   relaxed_tolerance: 0.0
   divergence_tolerance: -1.0
   friction_factor_evaluation_strategy: time_explicit
@@ -82,6 +89,7 @@ numerical_options:
   caching_rtol: 0.01
   caching_atol: 0.0001
   always_repeat_timestep: False
+  damp_slug_flow: False
   enable_fast_compositional: True
 plugins:
 - name: apb

@@ -1,7 +1,8 @@
 from typing import cast
 
 import pytest
-from alfasim_sdk import convert_description_to_alfacase
+from alfasim_sdk import generate_alfacase_file
+from pathlib import Path
 from pytest_mock import MockerFixture
 from pytest_regressions.file_regression import FileRegressionFixture
 
@@ -33,21 +34,27 @@ def test_get_initial_condition_strategy_raises_on_unknown_value(
 
 def test_create_alfacase_base(
     file_regression: FileRegressionFixture,
+    tmp_path: Path,
     alfacase_gas_lift: ScoreAlfacaseConverter,
 ) -> None:
     case_description = alfacase_gas_lift.build_base_alfacase_description()
+    alfacase_file = tmp_path / "case.alfacase"
+    generate_alfacase_file(case_description, alfacase_file)
     file_regression.check(
-        convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
+        alfacase_file.read_text(encoding="utf-8"), encoding="utf-8", extension=".alfacase"
     )
 
 
 def test_create_alfacase_base_operation_configuration(
     file_regression: FileRegressionFixture,
+    tmp_path: Path,
     base_operation_gas_lift: BaseOperationBuilder,
 ) -> None:
     configured_alfacase = base_operation_gas_lift.generate_operation_alfacase_description()
+    alfacase_file = tmp_path / "case.alfacase"
+    generate_alfacase_file(configured_alfacase, alfacase_file)
     file_regression.check(
-        convert_description_to_alfacase(configured_alfacase),
+        alfacase_file.read_text(encoding="utf-8"),
         encoding="utf-8",
         extension=".alfacase",
     )
