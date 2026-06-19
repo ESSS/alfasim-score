@@ -1,3 +1,9 @@
+1.2.1 (2026-06-19)
+------------------
+
+* Fix output results JSON dropping annuli MDs beyond the annulus end and emitting ``volume.diff`` as a scalar.
+
+
 1.2.0 (2026-06-10)
 ------------------
 
@@ -15,7 +21,7 @@
 * Update the alfacase converter to support ALFAsim APB plugin v2025.2.1
 * Update convert to improve ALFAsim simulation performance:
   * Use Zamora correlation for PVT table input
-  * Periodic calculation for APB  
+  * Periodic calculation for APB
   * Update of thermal properties only in initalization
 
 1.0.0 (2025-04-11)
