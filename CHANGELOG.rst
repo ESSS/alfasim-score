@@ -1,3 +1,9 @@
+1.2.2 (2026-06-19)
+------------------
+
+* No functional changes. Re-release of 1.2.1 to publish the release artifacts and attestations that failed to upload under immutable releases.
+
+
 1.2.1 (2026-06-19)
 ------------------
 
