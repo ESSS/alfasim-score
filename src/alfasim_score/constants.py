@@ -74,7 +74,9 @@ HAS_FLUID_RETURN = True
 # total number of walls in the output
 TOTAL_WALLS = 6
 
-# ALFAsim fills MDs outside an annulus with dummy values; valid temperatures (degC) are above 0 K
+# ALFAsim now fills MDs outside an annulus with NaN, but older results used dummy values
+# (e.g. 0 or -273.15 degC, i.e. 0 K). Comparing temperatures (degC) against this absolute-zero
+# threshold is kept broad on purpose so it also handles those older cases that rely on dummies.
 ABSOLUTE_ZERO_TEMPERATURE = -273.15
 
 # total size of refined trajectory section
