@@ -1,3 +1,10 @@
+1.3.1 (2026-06-19)
+------------------
+
+* Update ``alfasim-sdk`` dependency to 1.6.0 and migrate to the ``generate_alfacase_file`` API.
+* Drop support for Python 3.8 and 3.9 (``alfasim-sdk`` requires Python >= 3.10).
+
+
 1.2.1 (2026-06-19)
 ------------------
 
