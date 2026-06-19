@@ -1,4 +1,4 @@
-from alfasim_sdk import convert_description_to_alfacase
+from alfasim_sdk._internal.alfacase.alfacase import _convert_description_to_yaml
 from pytest_regressions.file_regression import FileRegressionFixture
 
 from alfasim_score.converter.alfacase.production_operation import ProductionOperationBuilder
@@ -10,7 +10,7 @@ def test_create_alfacase_gas_lift_production(
 ) -> None:
     case_description = production_operation_gas_lift.generate_operation_alfacase_description()
     file_regression.check(
-        convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
+        _convert_description_to_yaml(case_description), encoding="utf-8", extension=".alfacase"
     )
 
 
@@ -20,7 +20,7 @@ def test_create_alfacase_natural_flow_production(
 ) -> None:
     case_description = production_operation_natural_flow.generate_operation_alfacase_description()
     file_regression.check(
-        convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
+        _convert_description_to_yaml(case_description), encoding="utf-8", extension=".alfacase"
     )
 
 
@@ -30,7 +30,7 @@ def test_create_alfacase_steady_state_production(
 ) -> None:
     case_description = production_operation_steady_state.generate_operation_alfacase_description()
     file_regression.check(
-        convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
+        _convert_description_to_yaml(case_description), encoding="utf-8", extension=".alfacase"
     )
 
 
@@ -42,5 +42,5 @@ def test_create_alfacase_pseudo_transient_production(
         production_operation_pseudo_transient.generate_operation_alfacase_description()
     )
     file_regression.check(
-        convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
+        _convert_description_to_yaml(case_description), encoding="utf-8", extension=".alfacase"
     )

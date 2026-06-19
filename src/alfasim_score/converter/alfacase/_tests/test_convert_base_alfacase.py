@@ -1,7 +1,7 @@
 from typing import cast
 
 import pytest
-from alfasim_sdk import convert_description_to_alfacase
+from alfasim_sdk._internal.alfacase.alfacase import _convert_description_to_yaml
 from pytest_mock import MockerFixture
 from pytest_regressions.file_regression import FileRegressionFixture
 
@@ -37,7 +37,7 @@ def test_create_alfacase_base(
 ) -> None:
     case_description = alfacase_gas_lift.build_base_alfacase_description()
     file_regression.check(
-        convert_description_to_alfacase(case_description), encoding="utf-8", extension=".alfacase"
+        _convert_description_to_yaml(case_description), encoding="utf-8", extension=".alfacase"
     )
 
 
@@ -47,7 +47,7 @@ def test_create_alfacase_base_operation_configuration(
 ) -> None:
     configured_alfacase = base_operation_gas_lift.generate_operation_alfacase_description()
     file_regression.check(
-        convert_description_to_alfacase(configured_alfacase),
+        _convert_description_to_yaml(configured_alfacase),
         encoding="utf-8",
         extension=".alfacase",
     )
