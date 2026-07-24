@@ -28,6 +28,7 @@ from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Array
 from barril.units import Scalar
+from pathlib import Path
 
 from alfasim_score.common import LiftMethod
 from alfasim_score.common import OperationType
@@ -103,6 +104,9 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                 co2_mol_frac=CO2_MOLAR_FRACTION_DEFAULT,
             )
         }
+        if self.score_data.has_gas_lift():
+            gas_lift_fluid = self.lift_method_data["fluid"]
+            alfacase.pvt_models.tables[gas_lift_fluid] = Path(f"{gas_lift_fluid}.tab")
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
@@ -182,7 +186,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                         FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
                     },
                 ),
-                pvt_model=BASE_PVT_TABLE_NAME,
+                pvt_model=self.lift_method_data["fluid"],
             )
         configured_nodes.append(gas_lift_node)
         alfacase.nodes = configured_nodes

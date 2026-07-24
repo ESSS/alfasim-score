@@ -475,6 +475,7 @@ pvt_models:
   default_model: base
   tables:
     base: Water.tab
+    Water: Water.tab
 outputs:
   automatic_trend_frequency: True
   trends:
@@ -549,7 +550,7 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: pressure_boundary
-  pvt_model: base
+  pvt_model: Water
   pressure_properties:
     pressure:
       value: 2417.4
@@ -640,7 +641,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: mass_source_boundary
-  pvt_model: base
+  pvt_model: Water
   pressure_properties:
     pressure:
       value: 100000.0
