@@ -549,7 +549,7 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: pressure_boundary
-  pvt_model: Water
+  pvt_model: base
   pressure_properties:
     pressure:
       value: 2417.4
@@ -640,7 +640,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: mass_source_boundary
-  pvt_model: Water
+  pvt_model: base
   pressure_properties:
     pressure:
       value: 100000.0
@@ -731,7 +731,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: GAS_LIFT_MASS_NODE
   node_type: mass_source_boundary
-  pvt_model: Water
+  pvt_model: base
   pressure_properties:
     pressure:
       value: 100000.0
@@ -822,7 +822,7 @@ nodes:
       max_rate_of_change: 1e+50
 wells:
 - name: WELLBORE
-  pvt_model: Water
+  pvt_model: base
   stagnant_fluid: fluid_default
   profile:
     x_and_y:

@@ -28,6 +28,7 @@ from alfasim_score.common import ScoreSimulationRegime
 from alfasim_score.common import convert_quota_to_tvd
 from alfasim_score.common import filter_duplicated_materials_by_name
 from alfasim_score.constants import ANNULUS_DEPTH_TOLERANCE
+from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CASING_DEFAULT_ROUGHNESS
 from alfasim_score.constants import CEMENT_NAME
 from alfasim_score.constants import FLUID_DEFAULT_NAME
@@ -278,9 +279,7 @@ class ScoreAlfacaseConverter:
         """Create the description for the well."""
         return WellDescription(
             name=WELLBORE_NAME,
-            # TODO PWPA-2545: For now, we are using ALFAsim's correlation as the wellbore fluid,
-            # since the provided PVT table is breaking the simulation.
-            pvt_model=self.score_data.operation_data["fluid"],
+            pvt_model=BASE_PVT_TABLE_NAME,
             stagnant_fluid=FLUID_DEFAULT_NAME,
             profile=self._convert_well_trajectory(),
             casing=self._convert_casings(),

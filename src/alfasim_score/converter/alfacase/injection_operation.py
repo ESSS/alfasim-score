@@ -13,6 +13,7 @@ from barril.units import Scalar
 
 from alfasim_score.common import FluidType
 from alfasim_score.common import OperationType
+from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
@@ -73,7 +74,7 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                     pressure=self.score_data.operation_data["flow_initial_pressure"],
                     split_type=MassInflowSplitType.Pvt,
                 ),
-                pvt_model=self.score_data.operation_data["fluid"],
+                pvt_model=BASE_PVT_TABLE_NAME,
             ),
             attr.evolve(
                 default_nodes.pop(WELLBORE_BOTTOM_NODE_NAME),
@@ -95,7 +96,7 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                         ),
                     },
                 ),
-                pvt_model=self.score_data.operation_data["fluid"],
+                pvt_model=BASE_PVT_TABLE_NAME,
             ),
         ]
         # just use the original gas lift node with zero flow rate
