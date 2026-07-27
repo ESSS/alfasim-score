@@ -1,0 +1,5 @@
+PVT table 'N2_LIFT' (20 points)
+  LIQUID phase does not exist in 20 of 20 points (100.0%)
+    the phase does not exist anywhere, its properties were copied from the other phase
+    filled columns: ROHL, DROHLDP, DROHLDT, VISHL, CPHL, HHL, TCHL
+  Columns of an existing phase that are zero in every point (reported only, they are not fixed): SIGGHL

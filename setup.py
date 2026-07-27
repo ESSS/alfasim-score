@@ -40,6 +40,11 @@ setup(
         "Programming Language :: Python :: 3.12",
     ],
     description="Python package to convert the SCORE input JSON to Alfacase",
+    entry_points={
+        "console_scripts": [
+            "alfasim-score-fix-pvt-table=alfasim_score.cli:main",
+        ],
+    },
     extras_require=extras_require,
     install_requires=requirements,
     license="MIT license",

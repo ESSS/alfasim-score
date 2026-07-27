@@ -1,0 +1,21 @@
+inconsistent_mass_fraction_points: 0
+number_of_points: 20
+out_of_bound_columns: {}
+phase_issues:
+- absent_points: 20
+  discarded_out_of_bound_columns: {}
+  fixed_columns:
+  - ROG
+  - DROGDP
+  - DROGDT
+  - VISG
+  - CPG
+  - HG
+  - TCG
+  is_fully_absent: true
+  phase: GAS
+  total_points: 20
+table_name: DFLT_FCBA_9.90
+zeroed_columns:
+- HHL
+- SIGGHL

@@ -1,0 +1,6 @@
+PVT table 'BLACK_OIL_TWO_PHASE' (12 points)
+  All the phases exist in every point, there is nothing to fix.
+  Columns of an existing phase that are zero in every point (reported only, they are not fixed): SIGGHL
+  DROGDP is out of the physical bounds in 1 point of an existing phase (reported only, it is not fixed)
+  DROHLDP is out of the physical bounds in 12 points of an existing phase (reported only, it is not fixed)
+  DROHLDT is out of the physical bounds in 2 points of an existing phase (reported only, it is not fixed)

@@ -1,0 +1,20 @@
+inconsistent_mass_fraction_points: 0
+number_of_points: 20
+out_of_bound_columns: {}
+phase_issues:
+- absent_points: 20
+  discarded_out_of_bound_columns: {}
+  fixed_columns:
+  - ROHL
+  - DROHLDP
+  - DROHLDT
+  - VISHL
+  - CPHL
+  - HHL
+  - TCHL
+  is_fully_absent: true
+  phase: LIQUID
+  total_points: 20
+table_name: N2_LIFT
+zeroed_columns:
+- SIGGHL
