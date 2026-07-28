@@ -146,7 +146,10 @@ def write_pvt_table_file(pvt_table_data: PvtTableData, output_filepath: Path) ->
     """
     content = generate_pvt_table_content(pvt_table_data)
     newline = pvt_table_data.layout.newline if pvt_table_data.layout is not None else None
-    with open(output_filepath, "w", newline=newline) as file:
+    resolved_filepath = output_filepath.resolve()
+    if not resolved_filepath.parent.is_dir():
+        raise PvtTableError(f"The directory {resolved_filepath.parent} does not exist.")
+    with open(resolved_filepath, "w", newline=newline) as file:
         file.write(content.getvalue())
 
 
@@ -161,7 +164,10 @@ def _get_newline(content: str) -> str:
 
 def read_pvt_table_file(pvt_table_filepath: Path) -> PvtTableData:
     """Read a pvt table file in the OLGA keyword format."""
-    with open(pvt_table_filepath, encoding="utf-8", newline="") as file:
+    resolved_filepath = pvt_table_filepath.resolve(strict=True)
+    if not resolved_filepath.is_file():
+        raise PvtTableError(f"{resolved_filepath} is not a file.")
+    with open(resolved_filepath, encoding="utf-8", newline="") as file:
         content = file.read()
     return parse_pvt_table_content(content, default_name=pvt_table_filepath.stem)
 

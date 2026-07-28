@@ -42,6 +42,22 @@ def test_write_keeps_the_line_ending_of_the_file(
     assert output_filepath.read_bytes() == original_bytes
 
 
+def test_read_raises_when_the_path_is_not_a_file(tmp_path: Path) -> None:
+    with pytest.raises(PvtTableError, match="is not a file"):
+        read_pvt_table_file(tmp_path)
+
+
+def test_write_raises_when_the_output_directory_does_not_exist(tmp_path: Path) -> None:
+    pvt_table_data = parse_pvt_table_content(
+        'PVTTABLE LABEL = "A", PHASE = TWO,\n'
+        "COLUMNS = (PT, TM, ROG)\n"
+        "PVTTABLE POINT = (1.0, 2.0, 3.0)\n"
+    )
+    output_filepath = tmp_path / "missing_directory" / "output.tab"
+    with pytest.raises(PvtTableError, match="does not exist"):
+        write_pvt_table_file(pvt_table_data, output_filepath)
+
+
 def test_read_table_grid(shared_datadir: Path) -> None:
     pvt_table_data = read_pvt_table_file(shared_datadir / "partially_absent_gas.tab")
     assert pvt_table_data.name == "BLACK_OIL_PARTIALLY_ABSENT_GAS"
