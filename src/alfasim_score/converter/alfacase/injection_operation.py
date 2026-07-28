@@ -10,10 +10,10 @@ from alfasim_sdk._internal.constants import FLUID_GAS
 from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Scalar
-from pathlib import Path
 
 from alfasim_score.common import FluidType
 from alfasim_score.common import OperationType
+from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import NULL_VOLUMETRIC_FLOW_RATE
 from alfasim_score.constants import WELLBORE_BOTTOM_NODE_NAME
@@ -34,17 +34,6 @@ class InjectionOperationBuilder(BaseOperationBuilder):
         """Check if the operation has water or gas injected into the well."""
         has_inlet_flow = self.score_data.operation_data["flow_rate"].GetValue() > 0.0
         return has_inlet_flow and self.score_data.operation_data["fluid_type"] == fluid_type
-
-    def configure_pvt_model(self, alfacase: CaseDescription) -> None:
-        """
-        Configure the pvt model for the injected fluid.
-        The injection table is also duplicated under the fluid name because, unlike the
-        black-oil correlation used for production, its internal table name does not match
-        the "base" alias. This is a workaround until PVT tables are fully functional.
-        """
-        super().configure_pvt_model(alfacase)
-        operation_fluid = self.score_data.operation_data["fluid"]
-        alfacase.pvt_models.tables[operation_fluid] = Path(f"{operation_fluid}.tab")
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
@@ -75,7 +64,6 @@ class InjectionOperationBuilder(BaseOperationBuilder):
     def configure_nodes(self, alfacase: CaseDescription) -> None:
         """Configure the nodes with data from SCORE operation."""
         super().configure_nodes(alfacase)
-        operation_fluid = self.score_data.operation_data["fluid"]
         default_nodes = {node.name: node for node in alfacase.nodes}
         configured_nodes = [
             attr.evolve(
@@ -86,7 +74,7 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                     pressure=self.score_data.operation_data["flow_initial_pressure"],
                     split_type=MassInflowSplitType.Pvt,
                 ),
-                pvt_model=operation_fluid,
+                pvt_model=BASE_PVT_TABLE_NAME,
             ),
             attr.evolve(
                 default_nodes.pop(WELLBORE_BOTTOM_NODE_NAME),
@@ -108,7 +96,7 @@ class InjectionOperationBuilder(BaseOperationBuilder):
                         ),
                     },
                 ),
-                pvt_model=operation_fluid,
+                pvt_model=BASE_PVT_TABLE_NAME,
             ),
         ]
         # just use the original gas lift node with zero flow rate

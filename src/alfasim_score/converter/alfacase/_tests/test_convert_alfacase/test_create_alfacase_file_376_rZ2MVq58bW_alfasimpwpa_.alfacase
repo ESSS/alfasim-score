@@ -585,7 +585,6 @@ pvt_models:
   default_model: base
   tables:
     base: Brine_860.tab
-    Brine_860: Brine_860.tab
 outputs:
   automatic_trend_frequency: True
   trends:
@@ -660,7 +659,7 @@ pipes: []
 nodes:
 - name: WELLBORE_TOP_NODE
   node_type: pressure_boundary
-  pvt_model: Brine_860
+  pvt_model: base
   pressure_properties:
     pressure:
       value: 6399.0
@@ -751,7 +750,7 @@ nodes:
       max_rate_of_change: 1e+50
 - name: WELLBORE_BOTTOM_NODE
   node_type: mass_source_boundary
-  pvt_model: Brine_860
+  pvt_model: base
   pressure_properties:
     pressure:
       value: 100000.0
