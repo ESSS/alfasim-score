@@ -256,6 +256,32 @@ def _parse_point_values(values_text: str, column_names: List[str], line_number: 
     return values
 
 
+def _parse_point_line(
+    joined_text: str, column_names: Optional[List[str]], line_number: int
+) -> Optional[List[float]]:
+    """Parse a PVTTABLE POINT line, or return None when the line is not one."""
+    point_match = _POINT_PATTERN.match(joined_text)
+    if point_match is None:
+        return None
+    if column_names is None:
+        raise PvtTableError(
+            f"The pvt table point at line {line_number} was found before the COLUMNS keyword."
+        )
+    return _parse_point_values(point_match.group(1), column_names, line_number)
+
+
+def _parse_header_line(
+    joined_text: str, column_names: Optional[List[str]]
+) -> Tuple[int, Optional[List[str]]]:
+    """Parse a header line, returning the number of LABEL keywords found and the column names."""
+    columns_match = _COLUMNS_PATTERN.search(joined_text)
+    if columns_match is not None:
+        if column_names is not None:
+            raise PvtTableError("The pvt table file has more than one COLUMNS keyword.")
+        column_names = _parse_column_names(columns_match.group(1))
+    return len(_LABEL_PATTERN.findall(joined_text)), column_names
+
+
 def _read_header_and_points(
     logical_lines: List[Tuple[str, str, int]]
 ) -> Tuple[List[str], List[str], List[List[float]]]:
@@ -265,28 +291,20 @@ def _read_header_and_points(
     points: List[List[float]] = []
     number_of_labels = 0
     for original_text, joined_text, line_number in logical_lines:
-        point_match = _POINT_PATTERN.match(joined_text)
-        if point_match is not None:
-            if column_names is None:
-                raise PvtTableError(
-                    f"The pvt table point at line {line_number} was found before the COLUMNS "
-                    "keyword."
-                )
-            points.append(_parse_point_values(point_match.group(1), column_names, line_number))
-        elif points:
+        point_values = _parse_point_line(joined_text, column_names, line_number)
+        if point_values is not None:
+            points.append(point_values)
+            continue
+        if points:
             if _is_meaningful(joined_text):
                 raise PvtTableError(
                     f"Found the unsupported content '{joined_text.strip()}' at line {line_number}, "
                     "after the pvt table points."
                 )
-        else:
-            number_of_labels += len(_LABEL_PATTERN.findall(joined_text))
-            columns_match = _COLUMNS_PATTERN.search(joined_text)
-            if columns_match is not None:
-                if column_names is not None:
-                    raise PvtTableError("The pvt table file has more than one COLUMNS keyword.")
-                column_names = _parse_column_names(columns_match.group(1))
-            header_lines.append(original_text)
+            continue
+        label_count, column_names = _parse_header_line(joined_text, column_names)
+        number_of_labels += label_count
+        header_lines.append(original_text)
 
     if number_of_labels > 1:
         raise PvtTableError(

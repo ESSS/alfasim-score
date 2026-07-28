@@ -2,6 +2,7 @@ import pytest
 from pathlib import Path
 
 from alfasim_score.converter.pvt_table.pvt_table_file import PvtTableError
+from alfasim_score.converter.pvt_table.pvt_table_file import _parse_table_name
 from alfasim_score.converter.pvt_table.pvt_table_file import generate_pvt_table_content
 from alfasim_score.converter.pvt_table.pvt_table_file import parse_pvt_table_content
 from alfasim_score.converter.pvt_table.pvt_table_file import read_pvt_table_file
@@ -24,7 +25,7 @@ def test_read_and_write_round_trip(shared_datadir: Path, filename: str) -> None:
     assert content.getvalue() == pvt_table_filepath.read_text(encoding="utf-8")
 
 
-@pytest.mark.parametrize("newline", ["\n", "\r\n"], ids=["lf", "crlf"])
+@pytest.mark.parametrize("newline", ["\n", "\r\n", "\r"], ids=["lf", "crlf", "cr"])
 def test_write_keeps_the_line_ending_of_the_file(
     shared_datadir: Path, tmp_path: Path, newline: str
 ) -> None:
@@ -142,6 +143,28 @@ def test_read_unsupported_file_raises(
             "PVTTABLE POINT = (1.0, 2.0, 3.0)\n",
             "unit 'FURLONG' of the PRESSURE keyword is not supported",
         ),
+        (
+            'PVTTABLE LABEL = "A", PHASE = TWO,\n',
+            "has no COLUMNS keyword",
+        ),
+        (
+            'PVTTABLE LABEL = "A", PHASE = TWO,\n'
+            "COLUMNS = (PT, TM, ROG)\n"
+            "COLUMNS = (PT, TM, ROG)\n"
+            "PVTTABLE POINT = (1.0, 2.0, 3.0)\n",
+            "has more than one COLUMNS keyword",
+        ),
+        (
+            'PVTTABLE LABEL = "A", PHASE = TWO,\n' "COLUMNS = (PT, , TM)\n",
+            "Found an entry without a name in the COLUMNS keyword",
+        ),
+        (
+            'PVTTABLE LABEL = "A", PHASE = TWO,\n'
+            "COLUMNS = (PT, TM, ROG)\n"
+            "PVTTABLE POINT = (1.0, 2.0, 3.0)\n"
+            "SOMETHING ELSE = 1,\\",
+            "after the pvt table points",
+        ),
     ],
     ids=[
         "empty",
@@ -155,8 +178,32 @@ def test_read_unsupported_file_raises(
         "grid_that_is_not_rectangular",
         "content_after_the_points",
         "unsupported_unit",
+        "no_columns_keyword",
+        "more_than_one_columns_keyword",
+        "columns_entry_without_a_name",
+        "dangling_continuation_after_the_points",
     ],
 )
 def test_parse_invalid_content_raises(content: str, expected_message: str) -> None:
     with pytest.raises(PvtTableError, match=expected_message):
         parse_pvt_table_content(content)
+
+
+def test_trailing_blank_line_after_the_points_is_allowed() -> None:
+    content = (
+        'PVTTABLE LABEL = "A", PHASE = TWO,\n'
+        "COLUMNS = (PT, TM, ROG)\n"
+        "PVTTABLE POINT = (1.0, 2.0, 3.0)\n"
+        "\n"
+    )
+    pvt_table_data = parse_pvt_table_content(content)
+    assert len(pvt_table_data.table) == 1
+
+
+def test_parse_table_name_falls_back_to_the_default_name_when_there_is_no_label() -> None:
+    """
+    Defensive branch: `_parse_table_name` is only ever called with text already known to have a
+    LABEL keyword, since `parse_pvt_table_content` checks that before calling it. Tested directly
+    since it is unreachable through the public API.
+    """
+    assert _parse_table_name("no label here", default_name="default") == "default"

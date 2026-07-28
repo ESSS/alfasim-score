@@ -63,15 +63,14 @@ def test_fix_more_than_one_table(shared_datadir: Path, tmp_path: Path) -> None:
 
 
 def test_output_is_not_allowed_for_more_than_one_table(shared_datadir: Path) -> None:
+    argv = [
+        str(shared_datadir / "gas_only.tab"),
+        str(shared_datadir / "liquid_only.tab"),
+        "--output",
+        "fixed.tab",
+    ]
     with pytest.raises(SystemExit):
-        main(
-            [
-                str(shared_datadir / "gas_only.tab"),
-                str(shared_datadir / "liquid_only.tab"),
-                "--output",
-                "fixed.tab",
-            ]
-        )
+        main(argv)
 
 
 @pytest.mark.parametrize("filename", ["three_phase.tab", "malformed_point_arity.tab"])

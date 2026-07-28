@@ -67,6 +67,29 @@ def _get_output_filepath(pvt_table_filepath: Path, output: Optional[Path], in_pl
     )
 
 
+def _check_and_fix_one_file(pvt_table_filepath: Path, args: argparse.Namespace) -> int:
+    """Check and, unless --check-only was given, fix one pvt table file."""
+    try:
+        fixer = PvtTableFixer.from_file(pvt_table_filepath)
+        if args.check_only:
+            check_result = fixer.check()
+            output_filepath = None
+        else:
+            output_filepath = _get_output_filepath(pvt_table_filepath, args.output, args.in_place)
+            check_result = fixer.generate_fixed_pvt_table_file(output_filepath)
+    except (PvtTableError, OSError) as error:
+        print(f"{pvt_table_filepath}: {error}", file=sys.stderr)
+        return EXIT_CODE_INVALID_FILE
+
+    if not args.quiet:
+        print(check_result.describe())
+        if output_filepath is not None:
+            print(f"  Written to {output_filepath}")
+    if args.check_only and check_result.has_issues:
+        return EXIT_CODE_ISSUES_FOUND
+    return EXIT_CODE_SUCCESS
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """Check and fix the pvt table files given in the command line."""
     parser = _create_parser()
@@ -76,28 +99,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     exit_code = EXIT_CODE_SUCCESS
     for pvt_table_filepath in args.pvt_table_filepaths:
-        try:
-            fixer = PvtTableFixer.from_file(pvt_table_filepath)
-            if args.check_only:
-                check_result = fixer.check()
-                output_filepath = None
-            else:
-                output_filepath = _get_output_filepath(
-                    pvt_table_filepath, args.output, args.in_place
-                )
-                check_result = fixer.generate_fixed_pvt_table_file(output_filepath)
-        except (PvtTableError, OSError) as error:
-            print(f"{pvt_table_filepath}: {error}", file=sys.stderr)
-            exit_code = max(exit_code, EXIT_CODE_INVALID_FILE)
-            continue
-        if not args.quiet:
-            print(check_result.describe())
-            if output_filepath is not None:
-                print(f"  Written to {output_filepath}")
-        if args.check_only and check_result.has_issues:
-            exit_code = max(exit_code, EXIT_CODE_ISSUES_FOUND)
+        exit_code = max(exit_code, _check_and_fix_one_file(pvt_table_filepath, args))
     return exit_code
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(main())

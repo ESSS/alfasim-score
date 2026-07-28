@@ -39,6 +39,43 @@ TABLE_WITHOUT_ANY_PHASE = (
     "PVTTABLE POINT = (2.0e5, 2.0e1, 0.0e0, 0.0e0, 0.0e0)\n"
 )
 
+# The gas phase is absent at (2e5, 2e1) and its VISG is out of bounds (negative) at (2e5, 1e1),
+# which is discarded and filled along with the absent point. The gas mass fraction at (2e5, 1e1)
+# does not agree with the density, which is present there (ROG > 0) despite RS being 0.0.
+TABLE_WITH_A_DISCARDED_VALUE_AND_AN_INCONSISTENT_MASS_FRACTION = (
+    'PVTTABLE LABEL = "PARTIALLY_ABSENT_GAS_WITH_ISSUES", PHASE = TWO,\n'
+    "COLUMNS = (PT, TM, ROG, ROHL, RS, VISG, VISHL)\n"
+    "PVTTABLE POINT = (1.0e5, 1.0e1, 1.2e0, 9.00e2, 5.0e-1, 1.00e-5, 1.00e-3)\n"
+    "PVTTABLE POINT = (2.0e5, 1.0e1, 1.3e0, 9.01e2, 0.0e0, -2.00e-5, 1.10e-3)\n"
+    "PVTTABLE POINT = (1.0e5, 2.0e1, 1.1e0, 8.95e2, 5.5e-1, 1.10e-5, 0.90e-3)\n"
+    "PVTTABLE POINT = (2.0e5, 2.0e1, 0.0e0, 8.96e2, 0.0e0, 0.00e-5, 0.95e-3)\n"
+)
+
+# VISG is out of the physical bounds (negative) in every point where the gas phase is present, so
+# neither the pressure-fixed nor the temperature-fixed pass has a valid value to fill it with.
+TABLE_WHERE_A_FILLED_COLUMN_HAS_NO_VALID_VALUE = (
+    'PVTTABLE LABEL = "GAS_VISCOSITY_ALWAYS_OUT_OF_BOUNDS", PHASE = TWO,\n'
+    "COLUMNS = (PT, TM, ROG, ROHL, VISG, VISHL)\n"
+    "PVTTABLE POINT = (1.0e5, 1.0e1, 1.2e0, 9.00e2, -1.0e-5, 1.00e-3)\n"
+    "PVTTABLE POINT = (2.0e5, 1.0e1, 1.3e0, 9.01e2, -1.2e-5, 1.10e-3)\n"
+    "PVTTABLE POINT = (1.0e5, 2.0e1, 1.1e0, 8.95e2, -1.1e-5, 0.90e-3)\n"
+    "PVTTABLE POINT = (2.0e5, 2.0e1, 0.0e0, 8.96e2, 0.0e0, 0.95e-3)\n"
+)
+
+TABLE_WITHOUT_LIQUID_DENSITY_COLUMN = (
+    'PVTTABLE LABEL = "NO_LIQUID_DENSITY", PHASE = TWO,\n'
+    "COLUMNS = (PT, TM, ROG, RS)\n"
+    "PVTTABLE POINT = (1.0e5, 1.0e1, 1.2e0, 1.0e0)\n"
+    "PVTTABLE POINT = (2.0e5, 1.0e1, 1.3e0, 1.0e0)\n"
+)
+
+TABLE_WITHOUT_MASS_FRACTION_COLUMN = (
+    'PVTTABLE LABEL = "WITHOUT_MASS_FRACTION", PHASE = TWO,\n'
+    "COLUMNS = (PT, TM, ROG, ROHL)\n"
+    "PVTTABLE POINT = (1.0e5, 1.0e1, 1.2e0, 9.00e2)\n"
+    "PVTTABLE POINT = (1.0e5, 2.0e1, 1.1e0, 8.95e2)\n"
+)
+
 
 @pytest.mark.parametrize("filename", TABLE_FILENAMES)
 def test_check_pvt_table(
@@ -178,6 +215,43 @@ def test_fix_table_without_any_phase_raises() -> None:
     fixer = PvtTableFixer(parse_pvt_table_content(TABLE_WITHOUT_ANY_PHASE))
     with pytest.raises(PvtTableError, match="Neither the gas nor the liquid phase exists"):
         fixer.fix()
+
+
+def test_discarded_out_of_bound_value_and_inconsistent_mass_fraction_are_reported() -> None:
+    pvt_table_data = parse_pvt_table_content(
+        TABLE_WITH_A_DISCARDED_VALUE_AND_AN_INCONSISTENT_MASS_FRACTION
+    )
+    check_result = PvtTableFixer(pvt_table_data).check()
+
+    assert len(check_result.phase_issues) == 1
+    gas_issue = check_result.phase_issues[0]
+    assert gas_issue.phase is PvtTablePhase.GAS
+    assert gas_issue.discarded_out_of_bound_columns == {"VISG": 1}
+    assert check_result.inconsistent_mass_fraction_points == 1
+    description = check_result.describe()
+    assert "VISG was out of the physical bounds in 1 point and was filled again" in description
+    assert "RS does not agree with the densities in 1 point" in description
+
+
+def test_fix_raises_when_a_filled_column_has_no_value_to_fill_with() -> None:
+    fixer = PvtTableFixer(parse_pvt_table_content(TABLE_WHERE_A_FILLED_COLUMN_HAS_NO_VALID_VALUE))
+    with pytest.raises(PvtTableError, match="The column VISG has no value at all to fill"):
+        fixer.fix()
+
+
+def test_check_raises_when_a_density_column_is_missing() -> None:
+    fixer = PvtTableFixer(parse_pvt_table_content(TABLE_WITHOUT_LIQUID_DENSITY_COLUMN))
+    with pytest.raises(PvtTableError, match="has no ROHL column"):
+        fixer.check()
+
+
+def test_check_result_has_no_inconsistent_mass_fraction_points_without_a_mass_fraction_column() -> (
+    None
+):
+    fixer = PvtTableFixer(parse_pvt_table_content(TABLE_WITHOUT_MASS_FRACTION_COLUMN))
+    check_result = fixer.check()
+    assert not check_result.has_issues
+    assert check_result.inconsistent_mass_fraction_points == 0
 
 
 def test_generate_fixed_pvt_table_file(shared_datadir: Path, tmp_path: Path) -> None:
