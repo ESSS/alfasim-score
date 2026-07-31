@@ -1,7 +1,4 @@
-from typing import Dict
-from typing import List
 from typing import Optional
-from typing import Tuple
 
 import numpy as np
 import pandas as pd
@@ -20,6 +17,14 @@ PVT_TABLE_VALUE_FORMAT = "{:.6e}"
 
 PRESSURE_COLUMN = "PT"
 TEMPERATURE_COLUMN = "TM"
+
+# Comments written at the top of the tables this package generates, so that the origin of a file can
+# be told apart from a table delivered by WELLBOREPROPS.
+WELLPROP_CONVERSION_COMMENT = "! tab file converted from WELLBOREPROPS csv files by alfasim-score"
+FIXED_TABLE_COMMENT = (
+    "! tab file fixed by alfasim-score, the properties of the points where a phase does not exist "
+    "were filled"
+)
 
 # Columns of the water phase, only written by three phase tables.
 WATER_COLUMNS = frozenset(
@@ -83,7 +88,7 @@ class PvtTableFileLayout:
     table differs from the original one only in the values of the table points.
     """
 
-    header_lines: List[str]
+    header_lines: list[str]
     newline: str = "\n"
 
 
@@ -100,14 +105,32 @@ def _format_number(number: float) -> str:
     return PVT_TABLE_VALUE_FORMAT.format(number)
 
 
-def generate_pvt_table_content(pvt_table_data: PvtTableData) -> StringIO:
+def _has_header_line(pvt_table_data: PvtTableData, line: str) -> bool:
+    """Whether the header of the file the table was read from already has the given line."""
+    if pvt_table_data.layout is None:
+        return False
+    return any(header_line.strip() == line for header_line in pvt_table_data.layout.header_lines)
+
+
+def generate_pvt_table_content(
+    pvt_table_data: PvtTableData, header_comments: tuple[str, ...] = ()
+) -> StringIO:
     """
     Generate the content of a pvt table file in the OLGA keyword format.
 
     When the table carries the layout of the file it was read from, the original header is written
     back verbatim and only the table points are generated again.
+
+    :param pvt_table_data: the pvt table to be written
+    :param header_comments: comment lines written at the top of the file, skipped when the header
+        read from the original file already has them, so that fixing a file twice does not repeat
+        the same comment
+    :return: the content of the pvt table file
     """
     file_buffer = StringIO()
+    for comment in header_comments:
+        if not _has_header_line(pvt_table_data, comment):
+            file_buffer.write(f"{comment}\n")
     if pvt_table_data.layout is not None:
         for header_line in pvt_table_data.layout.header_lines:
             file_buffer.write(f"{header_line}\n")
@@ -137,14 +160,22 @@ def generate_pvt_table_content(pvt_table_data: PvtTableData) -> StringIO:
     return file_buffer
 
 
-def write_pvt_table_file(pvt_table_data: PvtTableData, output_filepath: Path) -> None:
+def write_pvt_table_file(
+    pvt_table_data: PvtTableData,
+    output_filepath: Path,
+    header_comments: tuple[str, ...] = (),
+) -> None:
     """
     Write the pvt table to a file in the OLGA keyword format.
 
     A table read from a file is written back with the line ending it originally had, so that fixing
     a table does not rewrite every line of the file.
+
+    :param pvt_table_data: the pvt table to be written
+    :param output_filepath: where the pvt table file is written
+    :param header_comments: comment lines written at the top of the file
     """
-    content = generate_pvt_table_content(pvt_table_data)
+    content = generate_pvt_table_content(pvt_table_data, header_comments)
     newline = pvt_table_data.layout.newline if pvt_table_data.layout is not None else None
     resolved_filepath = output_filepath.resolve()
     if not resolved_filepath.parent.is_dir():
@@ -172,7 +203,7 @@ def read_pvt_table_file(pvt_table_filepath: Path) -> PvtTableData:
     return parse_pvt_table_content(content, default_name=pvt_table_filepath.stem)
 
 
-def _join_continuation_lines(content: str) -> List[Tuple[str, str, int]]:
+def _join_continuation_lines(content: str) -> list[tuple[str, str, int]]:
     """
     Group the physical lines of the file into logical lines, joining the ones continued with a
     trailing backslash.
@@ -181,8 +212,8 @@ def _join_continuation_lines(content: str) -> List[Tuple[str, str, int]]:
     text with the continuations joined (to be parsed) and the number of the first physical line.
     """
     logical_lines = []
-    original_lines: List[str] = []
-    joined_parts: List[str] = []
+    original_lines: list[str] = []
+    joined_parts: list[str] = []
     first_line_number = 1
     for line_number, physical_line in enumerate(content.splitlines(), start=1):
         if not original_lines:
@@ -206,7 +237,7 @@ def _is_meaningful(joined_text: str) -> bool:
     return bool(stripped_text) and not stripped_text.startswith(_COMMENT_PREFIX)
 
 
-def _parse_column_names(columns_text: str) -> List[str]:
+def _parse_column_names(columns_text: str) -> list[str]:
     """
     Read the column names from the content of the COLUMNS keyword.
 
@@ -231,7 +262,7 @@ def _parse_table_name(joined_text: str, default_name: str) -> str:
 def _parse_unit(
     header_text: str,
     pattern: "re.Pattern[str]",
-    unit_by_label: Dict[str, str],
+    unit_by_label: dict[str, str],
     default_unit: str,
     keyword: str,
 ) -> str:
@@ -246,7 +277,7 @@ def _parse_unit(
     return unit_by_label[unit_label]
 
 
-def _parse_point_values(values_text: str, column_names: List[str], line_number: int) -> List[float]:
+def _parse_point_values(values_text: str, column_names: list[str], line_number: int) -> list[float]:
     """Read the values of a PVTTABLE POINT keyword."""
     try:
         values = [float(value) for value in values_text.split(",")]
@@ -263,8 +294,8 @@ def _parse_point_values(values_text: str, column_names: List[str], line_number: 
 
 
 def _parse_point_line(
-    joined_text: str, column_names: Optional[List[str]], line_number: int
-) -> Optional[List[float]]:
+    joined_text: str, column_names: Optional[list[str]], line_number: int
+) -> Optional[list[float]]:
     """Parse a PVTTABLE POINT line, or return None when the line is not one."""
     point_match = _POINT_PATTERN.match(joined_text)
     if point_match is None:
@@ -277,8 +308,8 @@ def _parse_point_line(
 
 
 def _parse_header_line(
-    joined_text: str, column_names: Optional[List[str]]
-) -> Tuple[int, Optional[List[str]]]:
+    joined_text: str, column_names: Optional[list[str]]
+) -> tuple[int, Optional[list[str]]]:
     """Parse a header line, returning the number of LABEL keywords found and the column names."""
     columns_match = _COLUMNS_PATTERN.search(joined_text)
     if columns_match is not None:
@@ -289,12 +320,12 @@ def _parse_header_line(
 
 
 def _read_header_and_points(
-    logical_lines: List[Tuple[str, str, int]]
-) -> Tuple[List[str], List[str], List[List[float]]]:
+    logical_lines: list[tuple[str, str, int]]
+) -> tuple[list[str], list[str], list[list[float]]]:
     """Split the lines of the file into the header, the column names and the table points."""
-    header_lines: List[str] = []
-    column_names: Optional[List[str]] = None
-    points: List[List[float]] = []
+    header_lines: list[str] = []
+    column_names: Optional[list[str]] = None
+    points: list[list[float]] = []
     number_of_labels = 0
     for original_text, joined_text, line_number in logical_lines:
         point_values = _parse_point_line(joined_text, column_names, line_number)
@@ -324,7 +355,7 @@ def _read_header_and_points(
     return header_lines, column_names, points
 
 
-def _check_table_is_supported(header_text: str, column_names: List[str]) -> None:
+def _check_table_is_supported(header_text: str, column_names: list[str]) -> None:
     """Check that the pvt table is a two phase table in the pressure/temperature formulation."""
     phase_match = _PHASE_PATTERN.search(header_text)
     if phase_match is not None and phase_match.group(1).upper() != LABEL_NUMBER_OF_PHASES:

@@ -3,7 +3,6 @@ number_of_points: 12
 out_of_bound_columns:
   DROGDP: 1
   DROHLDP: 12
-  DROHLDT: 2
 phase_issues: []
 table_name: BLACK_OIL_TWO_PHASE
 zeroed_columns:

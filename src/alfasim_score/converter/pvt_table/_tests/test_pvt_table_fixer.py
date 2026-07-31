@@ -155,14 +155,13 @@ def test_fix_gas_that_does_not_exist_in_some_points(shared_datadir: Path) -> Non
     assert not check_result.phase_issues[0].is_fully_absent
     assert check_result.phase_issues[0].absent_points == 10
     assert not fixed_table.isna().to_numpy().any()
-    assert check_result.phase_issues[0].fixed_columns == ["ROG", "VISG", "CPG", "TCG"]
+    assert check_result.phase_issues[0].fixed_columns == ["ROG", "VISG", "CPG", "HG", "TCG"]
     for column in ("ROG", "VISG", "CPG", "TCG"):
         assert (fixed_table[column].to_numpy() > 0.0).all(), f"{column} still has a zero"
     unchanged_columns = (
         "RS",
         "DROGDP",
         "DROGDT",
-        "HG",
         "ROHL",
         "DROHLDP",
         "DROHLDT",
@@ -195,8 +194,16 @@ def test_zeroed_column_of_an_existing_phase_is_only_reported(shared_datadir: Pat
 def test_out_of_bound_column_of_an_existing_phase_is_only_reported(shared_datadir: Path) -> None:
     fixer = PvtTableFixer.from_file(shared_datadir / "partially_absent_gas.tab")
     fixed_pvt_table_data, check_result = fixer.fix()
-    assert check_result.out_of_bound_columns == {"DROHLDP": 12, "DROHLDT": 10}
+    assert check_result.out_of_bound_columns == {"DROHLDP": 12}
     assert (fixed_pvt_table_data.table["DROHLDP"].to_numpy() < 0.0).any()
+
+
+def test_density_growing_with_the_temperature_is_not_reported(shared_datadir: Path) -> None:
+    """Water gets denser between 0 and 4 degC, so a positive density derivative is valid."""
+    fixer = PvtTableFixer.from_file(shared_datadir / "partially_absent_gas.tab")
+    _, check_result = fixer.fix()
+    assert (fixer.pvt_table_data.table["DROHLDT"].to_numpy() > 0.0).any()
+    assert "DROHLDT" not in check_result.out_of_bound_columns
 
 
 def test_fix_keeps_the_order_of_the_points() -> None:

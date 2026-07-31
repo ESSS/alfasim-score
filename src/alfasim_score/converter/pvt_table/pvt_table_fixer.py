@@ -1,8 +1,5 @@
 from typing import Any
-from typing import Dict
-from typing import List
 from typing import Optional
-from typing import Tuple
 
 import numpy as np
 import pandas as pd
@@ -12,6 +9,7 @@ from dataclasses import replace
 from enum import Enum
 from pathlib import Path
 
+from alfasim_score.converter.pvt_table.pvt_table_file import FIXED_TABLE_COMMENT
 from alfasim_score.converter.pvt_table.pvt_table_file import PRESSURE_COLUMN
 from alfasim_score.converter.pvt_table.pvt_table_file import TEMPERATURE_COLUMN
 from alfasim_score.converter.pvt_table.pvt_table_file import PvtTableData
@@ -42,14 +40,14 @@ GAS_LIQUID_PROPERTY_PAIRS = (
     ),
 )
 
-# Properties filled in the points where the phase does not exist, which are the ones ALFAsim needs
-# to be positive. The density derivatives and the specific enthalpy are deliberately left as they
-# are: the filled density is constant over the filled points, so a derivative of zero is exactly
-# what it should be, and the specific enthalpy has an arbitrary reference.
+# Properties filled in the points where the phase does not exist. The density derivatives are
+# deliberately left as they are, because the filled density is constant over the filled points, so a
+# derivative of zero is exactly what it should be.
 FILLED_PROPERTY_PAIRS = (
     (PvtTableProperties.GasDensity.value, PvtTableProperties.LiquidDensity.value),
     (PvtTableProperties.GasViscosity.value, PvtTableProperties.LiquidViscosity.value),
     (PvtTableProperties.GasSpecificHeat.value, PvtTableProperties.LiquidSpecificHeat.value),
+    (PvtTableProperties.GasSpecificEnthalpy.value, PvtTableProperties.LiquidSpecificEnthalpy.value),
     (
         PvtTableProperties.GasThermalConductivity.value,
         PvtTableProperties.LiquidThermalConductivity.value,
@@ -73,9 +71,14 @@ NOT_FIXABLE_COLUMNS = (
     SURFACE_TENSION_COLUMN,
 )
 
-# Properties that are not allowed to be negative and properties that are not allowed to be
-# positive. The values out of these bounds are discarded before filling the missing points, so that
-# the artifacts calculated on the phase boundary are not propagated over the table.
+# Properties that are not allowed to be negative. The values out of these bounds are discarded
+# before filling the missing points, so that the artifacts calculated on the phase boundary are not
+# propagated over the table.
+#
+# The specific enthalpy has an arbitrary reference and the density derivatives have no bound: the
+# derivative with respect to the pressure is checked because a fluid cannot expand when compressed,
+# but the derivative with respect to the temperature is not, since water between 0 and 4 degC gets
+# denser as the temperature grows.
 NON_NEGATIVE_COLUMNS = frozenset(
     {
         PvtTableProperties.GasDensity.value,
@@ -90,12 +93,6 @@ NON_NEGATIVE_COLUMNS = frozenset(
         PvtTableProperties.LiquidThermalConductivity.value,
     }
 )
-NON_POSITIVE_COLUMNS = frozenset(
-    {
-        PvtTableProperties.GasDensityDT.value,
-        PvtTableProperties.LiquidDensityDT.value,
-    }
-)
 
 
 @dataclass(frozen=True)
@@ -106,10 +103,10 @@ class PvtTablePhaseIssue:
     absent_points: int
     total_points: int
     is_fully_absent: bool
-    fixed_columns: List[str] = field(default_factory=list)
-    discarded_out_of_bound_columns: Dict[str, int] = field(default_factory=dict)
+    fixed_columns: list[str] = field(default_factory=list)
+    discarded_out_of_bound_columns: dict[str, int] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the issue to a dict in order to be used in regression tests."""
         return {
             "phase": self.phase.value,
@@ -127,9 +124,9 @@ class PvtTableCheckResult:
 
     table_name: str
     number_of_points: int
-    phase_issues: List[PvtTablePhaseIssue] = field(default_factory=list)
-    zeroed_columns: List[str] = field(default_factory=list)
-    out_of_bound_columns: Dict[str, int] = field(default_factory=dict)
+    phase_issues: list[PvtTablePhaseIssue] = field(default_factory=list)
+    zeroed_columns: list[str] = field(default_factory=list)
+    out_of_bound_columns: dict[str, int] = field(default_factory=dict)
     inconsistent_mass_fraction_points: int = 0
 
     @property
@@ -137,7 +134,7 @@ class PvtTableCheckResult:
         """Whether the table has a phase that does not exist and therefore has to be fixed."""
         return bool(self.phase_issues)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the result to a dict in order to be used in regression tests."""
         return {
             "table_name": self.table_name,
@@ -197,13 +194,11 @@ def _get_out_of_bound_points(column: str, values: np.ndarray) -> np.ndarray:
     """Get the points in which the values of a column are out of its physical bounds."""
     if column in NON_NEGATIVE_COLUMNS:
         return np.asarray(values < 0.0)
-    if column in NON_POSITIVE_COLUMNS:
-        return np.asarray(values > 0.0)
     return np.zeros(len(values), dtype=bool)
 
 
 def _fill_at_fixed_condition(
-    frame: pd.DataFrame, fixed_column: str, columns_to_fill: List[str]
+    frame: pd.DataFrame, fixed_column: str, columns_to_fill: list[str]
 ) -> None:
     """
     Fill the missing values of the columns using the previous (or the next) value of the sequence
@@ -249,15 +244,21 @@ class PvtTableFixer:
         _, check_result = self._fix_table()
         return check_result
 
-    def fix(self) -> Tuple[PvtTableData, PvtTableCheckResult]:
+    def fix(self) -> tuple[PvtTableData, PvtTableCheckResult]:
         """Fix the pvt table, returning the fixed table and the result of the check."""
         table, check_result = self._fix_table()
         return replace(self.pvt_table_data, table=table), check_result
 
     def generate_fixed_pvt_table_file(self, output_filepath: Path) -> PvtTableCheckResult:
-        """Fix the pvt table and write it to a file in the OLGA keyword format."""
+        """
+        Fix the pvt table and write it to a file in the OLGA keyword format.
+
+        A comment telling the file was fixed is written at the top of the file, but only when there
+        was something to fix, so that a table that is already correct is written back unchanged.
+        """
         fixed_pvt_table_data, check_result = self.fix()
-        write_pvt_table_file(fixed_pvt_table_data, output_filepath)
+        header_comments = (FIXED_TABLE_COMMENT,) if check_result.has_issues else ()
+        write_pvt_table_file(fixed_pvt_table_data, output_filepath, header_comments)
         return check_result
 
     def _get_absent_points(self, table: pd.DataFrame, phase: PvtTablePhase) -> np.ndarray:
@@ -271,8 +272,8 @@ class PvtTableFixer:
         self,
         table: pd.DataFrame,
         phase: PvtTablePhase,
-        property_pairs: Tuple[Tuple[str, str], ...] = GAS_LIQUID_PROPERTY_PAIRS,
-    ) -> List[str]:
+        property_pairs: tuple[tuple[str, str], ...] = GAS_LIQUID_PROPERTY_PAIRS,
+    ) -> list[str]:
         """Get the columns of the table that hold properties of the phase and can be fixed."""
         index = 0 if phase is PvtTablePhase.GAS else 1
         return [
@@ -283,7 +284,7 @@ class PvtTableFixer:
 
     def _copy_properties_from_other_phase(
         self, table: pd.DataFrame, phase: PvtTablePhase
-    ) -> List[str]:
+    ) -> list[str]:
         """Copy the properties of the other phase into a phase that does not exist anywhere."""
         copied_columns = []
         for gas_column, liquid_column in GAS_LIQUID_PROPERTY_PAIRS:
@@ -324,7 +325,7 @@ class PvtTableFixer:
         table: pd.DataFrame,
         phase: PvtTablePhase,
         absent_points: np.ndarray,
-        columns_to_fix: List[str],
+        columns_to_fix: list[str],
     ) -> PvtTablePhaseIssue:
         """Fill the points in which the phase does not exist with the values of the closest ones."""
         frame = table.sort_values([PRESSURE_COLUMN, TEMPERATURE_COLUMN], kind="stable")
@@ -361,8 +362,8 @@ class PvtTableFixer:
         )
 
     def _get_columns_only_reported(
-        self, table: pd.DataFrame, absent_points_by_phase: Dict[PvtTablePhase, np.ndarray]
-    ) -> Tuple[List[str], Dict[str, int]]:
+        self, table: pd.DataFrame, absent_points_by_phase: dict[PvtTablePhase, np.ndarray]
+    ) -> tuple[list[str], dict[str, int]]:
         """
         Get the columns that look wrong but are not fixed: the ones of an existing phase that are
         zero in every point and the ones of an existing phase out of the physical bounds.
@@ -405,7 +406,7 @@ class PvtTableFixer:
         )
         return int(is_inconsistent.sum())
 
-    def _fix_table(self) -> Tuple[pd.DataFrame, PvtTableCheckResult]:
+    def _fix_table(self) -> tuple[pd.DataFrame, PvtTableCheckResult]:
         """Fix a copy of the table and report what was fixed and what was only reported."""
         original_table = self.pvt_table_data.table
         absent_points_by_phase = {

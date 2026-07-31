@@ -9,10 +9,17 @@ from barril.units import Scalar
 from io import StringIO
 from pathlib import Path
 
+from alfasim_score.converter.pvt_table.pvt_table_file import FIXED_TABLE_COMMENT
+from alfasim_score.converter.pvt_table.pvt_table_file import WELLPROP_CONVERSION_COMMENT
 from alfasim_score.converter.pvt_table.pvt_table_file import PvtTableData
 from alfasim_score.converter.pvt_table.pvt_table_file import PvtTableProperties
 from alfasim_score.converter.pvt_table.pvt_table_file import generate_pvt_table_content
 from alfasim_score.converter.pvt_table.pvt_table_file import write_pvt_table_file
+from alfasim_score.converter.pvt_table.pvt_table_fixer import PvtTableFixer
+
+# The tables converted from wellprop csv files are always fixed before being saved, since the csv
+# files have the properties of a phase that does not exist filled with zeros.
+WELLPROP_HEADER_COMMENTS = (WELLPROP_CONVERSION_COMMENT, FIXED_TABLE_COMMENT)
 
 WELLPROP_FILES = [
     "temperature_GAS_conductivity.csv",
@@ -197,9 +204,19 @@ class WellpropToPvtConverter:
         )
 
     def _generate_pvt_table_content(self, pvt_table_data: PvtTableData) -> StringIO:
-        return generate_pvt_table_content(pvt_table_data)
+        return generate_pvt_table_content(pvt_table_data, WELLPROP_HEADER_COMMENTS)
+
+    def _convert_and_fix_pvt_table_data(self) -> PvtTableData:
+        """
+        Convert the data from the wellprop csv files and fill the properties of the phases that do
+        not exist in the table, which the csv files leave as zero and ALFAsim is not able to use.
+        """
+        fixed_pvt_table_data, _ = PvtTableFixer(self._convert_pvt_table_data()).fix()
+        return fixed_pvt_table_data
 
     def generate_pvt_table_file(self, destiny_folder: Path) -> None:
         """Create a pvt table file with data from welprop csv files."""
-        pvt_data = self._convert_pvt_table_data()
-        write_pvt_table_file(pvt_data, destiny_folder / f"{pvt_data.name}.tab")
+        pvt_data = self._convert_and_fix_pvt_table_data()
+        write_pvt_table_file(
+            pvt_data, destiny_folder / f"{pvt_data.name}.tab", WELLPROP_HEADER_COMMENTS
+        )
