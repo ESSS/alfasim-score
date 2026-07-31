@@ -1,0 +1,19 @@
+inconsistent_mass_fraction_points: 0
+number_of_points: 16
+out_of_bound_columns:
+  DROHLDP: 12
+phase_issues:
+- absent_points: 10
+  discarded_out_of_bound_columns: {}
+  fixed_columns:
+  - ROG
+  - VISG
+  - CPG
+  - HG
+  - TCG
+  is_fully_absent: false
+  phase: GAS
+  total_points: 16
+table_name: BLACK_OIL_PARTIALLY_ABSENT_GAS
+zeroed_columns:
+- SIGGHL

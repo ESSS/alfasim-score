@@ -6,14 +6,20 @@ import numpy as np
 import pandas as pd
 from barril.units import Array
 from barril.units import Scalar
-from dataclasses import dataclass
-from enum import Enum
 from io import StringIO
 from pathlib import Path
 
-LABEL_NUMBER_OF_PHASES = "TWO"
-STDPRESSURE = Scalar(1.0, "atm")
-STDTEMPERATURE = Scalar(2.887100e02, "K")
+from alfasim_score.converter.pvt_table.pvt_table_file import FIXED_TABLE_COMMENT
+from alfasim_score.converter.pvt_table.pvt_table_file import WELLPROP_CONVERSION_COMMENT
+from alfasim_score.converter.pvt_table.pvt_table_file import PvtTableData
+from alfasim_score.converter.pvt_table.pvt_table_file import PvtTableProperties
+from alfasim_score.converter.pvt_table.pvt_table_file import generate_pvt_table_content
+from alfasim_score.converter.pvt_table.pvt_table_file import write_pvt_table_file
+from alfasim_score.converter.pvt_table.pvt_table_fixer import PvtTableFixer
+
+# The tables converted from wellprop csv files are always fixed before being saved, since the csv
+# files have the properties of a phase that does not exist filled with zeros.
+WELLPROP_HEADER_COMMENTS = (WELLPROP_CONVERSION_COMMENT, FIXED_TABLE_COMMENT)
 
 WELLPROP_FILES = [
     "temperature_GAS_conductivity.csv",
@@ -38,33 +44,6 @@ WELLPROP_FILES = [
     "temperature_WATER_mass_fraction.csv",
     "temperature_WATER_viscosity.csv",
 ]
-
-
-class PvtTableProperties(Enum):
-    GasDensity = "ROG"
-    LiquidDensity = "ROHL"
-    GasDensityDP = "DROGDP"
-    LiquidDensityDP = "DROHLDP"
-    GasDensityDT = "DROGDT"
-    LiquidDensityDT = "DROHLDT"
-    GasMassFraction = "RS"
-    GasViscosity = "VISG"
-    LiquidViscosity = "VISHL"
-    GasSpecificHeat = "CPG"
-    LiquidSpecificHeat = "CPHL"
-    GasSpecificEnthalpy = "HG"
-    LiquidSpecificEnthalpy = "HHL"
-    GasThermalConductivity = "TCG"
-    LiquidThermalConductivity = "TCHL"
-    GasLiquidSurfaceTension = "SIGGHL"
-
-
-@dataclass
-class PvtTableData:
-    name: str
-    pressures: Array
-    temperatures: Array
-    table: pd.DataFrame
 
 
 class WellpropToPvtConverter:
@@ -225,37 +204,19 @@ class WellpropToPvtConverter:
         )
 
     def _generate_pvt_table_content(self, pvt_table_data: PvtTableData) -> StringIO:
-        format_numbers = lambda number: "{:.6e}".format(number)
-        file_buffer = StringIO(f"{pvt_table_data.name}.tab")
-        file_buffer.write(
-            f'PVTTABLE LABEL = "{pvt_table_data.name}", PHASE = {LABEL_NUMBER_OF_PHASES},\n'
-        )
-        file_buffer.write(
-            "STDPRESSURE = {} ATM,\\\n".format(format_numbers(STDPRESSURE.GetValue("atm")))
-        )
-        file_buffer.write(
-            "STDTEMPERATURE = {} K,\\\n".format(format_numbers(STDTEMPERATURE.GetValue("K")))
-        )
-        file_buffer.write(
-            "PRESSURE = ({}) Pa,\\\n".format(
-                ", ".join(map(format_numbers, pvt_table_data.pressures.GetValues("Pa")))
-            )
-        )
-        file_buffer.write(
-            "TEMPERATURE = ({}) C,\\\n".format(
-                ", ".join(map(format_numbers, pvt_table_data.temperatures.GetValues("degC")))
-            )
-        )
-        file_buffer.write("COLUMNS = ({})\n".format(", ".join(pvt_table_data.table.columns)))
-        for _, row in pvt_table_data.table.iterrows():
-            file_buffer.write(
-                f"PVTTABLE POINT = ({', '.join(map(format_numbers, row.tolist()))})\n"
-            )
-        return file_buffer
+        return generate_pvt_table_content(pvt_table_data, WELLPROP_HEADER_COMMENTS)
+
+    def _convert_and_fix_pvt_table_data(self) -> PvtTableData:
+        """
+        Convert the data from the wellprop csv files and fill the properties of the phases that do
+        not exist in the table, which the csv files leave as zero and ALFAsim is not able to use.
+        """
+        fixed_pvt_table_data, _ = PvtTableFixer(self._convert_pvt_table_data()).fix()
+        return fixed_pvt_table_data
 
     def generate_pvt_table_file(self, destiny_folder: Path) -> None:
         """Create a pvt table file with data from welprop csv files."""
-        pvt_data = self._convert_pvt_table_data()
-        content = self._generate_pvt_table_content(pvt_data)
-        with open(destiny_folder / f"{pvt_data.name}.tab", "w") as file:
-            file.write(content.getvalue())
+        pvt_data = self._convert_and_fix_pvt_table_data()
+        write_pvt_table_file(
+            pvt_data, destiny_folder / f"{pvt_data.name}.tab", WELLPROP_HEADER_COMMENTS
+        )

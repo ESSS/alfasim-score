@@ -13,7 +13,7 @@ def test_generate_pvt_table_content(
     fluid_name: str,
 ) -> None:
     converter = WellpropToPvtConverter(shared_datadir / fluid_name)
-    pvt_data = converter._convert_pvt_table_data()
+    pvt_data = converter._convert_and_fix_pvt_table_data()
     content = converter._generate_pvt_table_content(pvt_data)
     file_regression.check(content.getvalue(), extension=".tab")
 
@@ -30,8 +30,13 @@ def test_convert_pvt_table_data(
 
 def test_convert_pvt_table_file(
     shared_datadir: Path,
+    tmp_path: Path,
 ) -> None:
     converter = WellpropToPvtConverter(shared_datadir / "N2_LIFT")
-    converter.generate_pvt_table_file(shared_datadir)
-    output_pvt_filepath = Path(shared_datadir / "N2_LIFT.tab")
+    converter.generate_pvt_table_file(tmp_path)
+    output_pvt_filepath = tmp_path / "N2_LIFT.tab"
     assert output_pvt_filepath.exists(), "PVT table could not be created."
+    expected_content = converter._generate_pvt_table_content(
+        converter._convert_and_fix_pvt_table_data()
+    )
+    assert output_pvt_filepath.read_text() == expected_content.getvalue()

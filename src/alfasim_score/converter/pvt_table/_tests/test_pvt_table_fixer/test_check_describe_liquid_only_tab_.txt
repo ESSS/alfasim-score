@@ -1,0 +1,5 @@
+PVT table 'DFLT_FCBA_9.90' (20 points)
+  GAS phase does not exist in 20 of 20 points (100.0%)
+    the phase does not exist anywhere, its properties were copied from the other phase
+    filled columns: ROG, DROGDP, DROGDT, VISG, CPG, HG, TCG
+  Columns of an existing phase that are zero in every point (reported only, they are not fixed): HHL, SIGGHL

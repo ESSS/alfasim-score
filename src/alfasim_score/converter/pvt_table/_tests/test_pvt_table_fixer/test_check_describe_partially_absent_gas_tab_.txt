@@ -1,0 +1,5 @@
+PVT table 'BLACK_OIL_PARTIALLY_ABSENT_GAS' (16 points)
+  GAS phase does not exist in 10 of 16 points (62.5%)
+    filled columns: ROG, VISG, CPG, HG, TCG
+  Columns of an existing phase that are zero in every point (reported only, they are not fixed): SIGGHL
+  DROHLDP is out of the physical bounds in 12 points of an existing phase (reported only, it is not fixed)
