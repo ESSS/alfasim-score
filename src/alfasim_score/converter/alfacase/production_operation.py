@@ -28,11 +28,13 @@ from alfasim_sdk._internal.constants import FLUID_OIL
 from alfasim_sdk._internal.constants import FLUID_WATER
 from barril.units import Array
 from barril.units import Scalar
+from pathlib import Path
 
 from alfasim_score.common import LiftMethod
 from alfasim_score.common import OperationType
 from alfasim_score.common import convert_api_gravity_to_oil_density
 from alfasim_score.common import convert_gas_gravity_to_gas_density
+from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import CO2_MOLAR_FRACTION_DEFAULT
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import GAS_LIFT_VALVE_DEFAULT_DELTA_P_MIN
@@ -102,6 +104,9 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                 co2_mol_frac=CO2_MOLAR_FRACTION_DEFAULT,
             )
         }
+        if self.score_data.has_gas_lift():
+            gas_lift_fluid = self.lift_method_data["fluid"]
+            alfacase.pvt_models.tables[gas_lift_fluid] = Path(f"{gas_lift_fluid}.tab")
 
     def configure_well_initial_conditions(self, alfacase: CaseDescription) -> None:
         """Configure the well initial conditions with default values."""
@@ -155,7 +160,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                         FLUID_WATER: -1.0 * self.score_data.operation_data["water_flow_rate"],
                     },
                 ),
-                pvt_model=self.score_data.operation_data["fluid"],
+                pvt_model=BASE_PVT_TABLE_NAME,
             ),
             attr.evolve(
                 default_nodes.pop(WELLBORE_BOTTOM_NODE_NAME),
@@ -164,7 +169,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                     pressure=self.score_data.operation_data["flow_initial_pressure"],
                     split_type=MassInflowSplitType.Pvt,
                 ),
-                pvt_model=self.score_data.operation_data["fluid"],
+                pvt_model=BASE_PVT_TABLE_NAME,
             ),
         ]
         gas_lift_node = default_nodes.pop(GAS_LIFT_MASS_NODE_NAME)
@@ -181,7 +186,7 @@ class ProductionOperationBuilder(BaseOperationBuilder):
                         FLUID_WATER: NULL_VOLUMETRIC_FLOW_RATE,
                     },
                 ),
-                pvt_model=self.score_data.operation_data["fluid"],
+                pvt_model=self.lift_method_data["fluid"],
             )
         configured_nodes.append(gas_lift_node)
         alfacase.nodes = configured_nodes

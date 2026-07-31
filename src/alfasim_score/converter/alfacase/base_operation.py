@@ -42,6 +42,7 @@ from typing_extensions import assert_never
 
 from alfasim_score.common import OperationType
 from alfasim_score.common import ScoreSimulationRegime
+from alfasim_score.constants import BASE_PVT_TABLE_NAME
 from alfasim_score.constants import GAS_LIFT_MASS_NODE_NAME
 from alfasim_score.constants import INITIAL_TIMESTEP
 from alfasim_score.constants import MAXIMUM_TIMESTEP
@@ -305,7 +306,7 @@ class BaseOperationBuilder:
             NodeDescription(
                 name=WELLBORE_TOP_NODE_NAME,
                 node_type=NodeCellType.MassSource,
-                pvt_model=self.score_data.operation_data["fluid"],
+                pvt_model=BASE_PVT_TABLE_NAME,
                 mass_source_properties=MassSourceNodePropertiesDescription(
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
@@ -319,7 +320,7 @@ class BaseOperationBuilder:
             NodeDescription(
                 name=WELLBORE_BOTTOM_NODE_NAME,
                 node_type=NodeCellType.Pressure,
-                pvt_model=self.score_data.operation_data["fluid"],
+                pvt_model=BASE_PVT_TABLE_NAME,
                 pressure_properties=PressureNodePropertiesDescription(
                     split_type=MassInflowSplitType.Pvt,
                 ),
@@ -327,7 +328,7 @@ class BaseOperationBuilder:
             NodeDescription(
                 name=GAS_LIFT_MASS_NODE_NAME,
                 node_type=NodeCellType.MassSource,
-                pvt_model=self.score_data.operation_data["fluid"],
+                pvt_model=BASE_PVT_TABLE_NAME,
                 mass_source_properties=MassSourceNodePropertiesDescription(
                     temperature_input_type=MultiInputType.Constant,
                     source_type=MassSourceType.AllVolumetricFlowRates,
