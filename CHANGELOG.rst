@@ -1,3 +1,10 @@
+1.4.0 (2026-08-03)
+------------------
+
+* Include script and CLI (``alfasim-score-fix-pvt-table``) to check and fix ``.tab`` PVT tables delivered by WELLBOREPROPS that write zeroed properties for phases that do not exist.
+* Fix wellbore/node PVT model on the converted alfacase to use the ``base`` PVT table.
+
+
 1.3.1 (2026-06-19)
 ------------------
 
