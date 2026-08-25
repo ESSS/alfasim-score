@@ -1,6 +1,7 @@
 import pytest
 from pathlib import Path
 
+from alfasim_score.converter.pvt_table.pvt_table_file import FIXED_TABLE_COMMENT
 from alfasim_score.converter.pvt_table.pvt_table_file import PvtTableError
 from alfasim_score.converter.pvt_table.pvt_table_file import _parse_table_name
 from alfasim_score.converter.pvt_table.pvt_table_file import generate_pvt_table_content
@@ -72,10 +73,51 @@ def test_read_keeps_the_header_verbatim(shared_datadir: Path) -> None:
     pvt_table_data = read_pvt_table_file(shared_datadir / "with_comments.tab")
     assert pvt_table_data.layout is not None
     header_text = "\n".join(pvt_table_data.layout.header_lines)
-    assert header_text.startswith("! A pvt table with comments in the header.")
+    assert header_text.startswith('PVTTABLE LABEL = "TABLE_WITH_COMMENTS", PHASE = TWO,')
+    assert "! A pvt table with comments in the header." in header_text
     assert "BUBBLEPRESSURES = (1.500000e+05, 1.600000e+05),\\" in header_text
     assert "PRESSURE = (1.000000e+05,\\\n 2.000000e+05) Pa,\\" in header_text
     assert list(pvt_table_data.table.columns) == ["PT", "TM", "ROG", "ROHL", "RS"]
+
+
+def test_write_puts_the_comments_after_the_keywords_of_the_header() -> None:
+    """
+    The comments cannot be written before the PVTTABLE LABEL keyword, since the readers of the tab
+    file format tell the format of the file by its first line.
+    """
+    pvt_table_data = parse_pvt_table_content(
+        'PVTTABLE LABEL = "A", PHASE = TWO,\n'
+        "COLUMNS = (PT, TM, ROG)\n"
+        "PVTTABLE POINT = (1.0, 2.0, 3.0)\n"
+    )
+    content = generate_pvt_table_content(pvt_table_data, ("! a comment", "! another comment"))
+    assert content.getvalue() == (
+        'PVTTABLE LABEL = "A", PHASE = TWO,\n'
+        "COLUMNS = (PT, TM, ROG)\n"
+        "! a comment\n"
+        "! another comment\n"
+        "PVTTABLE POINT = (1.000000e+00, 2.000000e+00, 3.000000e+00)\n"
+    )
+
+
+def test_write_moves_the_comments_found_before_the_label(shared_datadir: Path) -> None:
+    """
+    A file written by an older version of this package has the comments before the label, which is
+    put in the accepted order when the file is written again.
+    """
+    pvt_table_data = read_pvt_table_file(shared_datadir / "comments_before_label.tab")
+    content = generate_pvt_table_content(pvt_table_data).getvalue()
+    lines = content.splitlines()
+    assert lines[0] == 'PVTTABLE LABEL = "TABLE_WITH_COMMENTS", PHASE = TWO,'
+    comment_index = lines.index(FIXED_TABLE_COMMENT)
+    assert lines[comment_index - 1] == "COLUMNS = (PT, TM, ROG, ROHL, RS)"
+    assert lines[comment_index + 1].startswith("PVTTABLE POINT = ")
+
+
+def test_write_does_not_repeat_a_comment_the_file_already_has(shared_datadir: Path) -> None:
+    pvt_table_data = read_pvt_table_file(shared_datadir / "comments_before_label.tab")
+    content = generate_pvt_table_content(pvt_table_data, (FIXED_TABLE_COMMENT,)).getvalue()
+    assert content.count(FIXED_TABLE_COMMENT) == 1
 
 
 @pytest.mark.parametrize(

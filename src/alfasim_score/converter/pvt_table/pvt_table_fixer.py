@@ -253,8 +253,9 @@ class PvtTableFixer:
         """
         Fix the pvt table and write it to a file in the OLGA keyword format.
 
-        A comment telling the file was fixed is written at the top of the file, but only when there
-        was something to fix, so that a table that is already correct is written back unchanged.
+        A comment telling the file was fixed is written in the header of the file, but only when
+        there was something to fix, so that a table that is already correct is written back
+        unchanged.
         """
         fixed_pvt_table_data, check_result = self.fix()
         header_comments = (FIXED_TABLE_COMMENT,) if check_result.has_issues else ()
