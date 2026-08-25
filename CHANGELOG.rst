@@ -1,3 +1,9 @@
+1.4.1 (2026-08-25)
+------------------
+
+* Fix the comments written before the ``PVTTABLE LABEL`` keyword of the generated ``.tab`` PVT tables, which made ALFAsim fail to read the file with ``Unknown PVT Table input file format!``. The comments are now written after the keywords of the header, and the tables already generated are put in the accepted order when they are written again.
+
+
 1.4.0 (2026-08-03)
 ------------------
 
