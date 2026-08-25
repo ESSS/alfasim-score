@@ -18,8 +18,8 @@ PVT_TABLE_VALUE_FORMAT = "{:.6e}"
 PRESSURE_COLUMN = "PT"
 TEMPERATURE_COLUMN = "TM"
 
-# Comments written at the top of the tables this package generates, so that the origin of a file can
-# be told apart from a table delivered by WELLBOREPROPS.
+# Comments written in the header of the tables this package generates, so that the origin of a file
+# can be told apart from a table delivered by WELLBOREPROPS.
 WELLPROP_CONVERSION_COMMENT = "! tab file converted from WELLBOREPROPS csv files by alfasim-score"
 FIXED_TABLE_COMMENT = (
     "! tab file fixed by alfasim-score, the properties of the points where a phase does not exist "
@@ -112,6 +112,54 @@ def _has_header_line(pvt_table_data: PvtTableData, line: str) -> bool:
     return any(header_line.strip() == line for header_line in pvt_table_data.layout.header_lines)
 
 
+def _generate_header_lines(pvt_table_data: PvtTableData) -> list[str]:
+    """Generate the keyword lines of the header of a pvt table file."""
+    return [
+        f'PVTTABLE LABEL = "{pvt_table_data.name}", PHASE = {LABEL_NUMBER_OF_PHASES},',
+        "STDPRESSURE = {} ATM,\\".format(_format_number(STDPRESSURE.GetValue("atm"))),
+        "STDTEMPERATURE = {} K,\\".format(_format_number(STDTEMPERATURE.GetValue("K"))),
+        "PRESSURE = ({}) Pa,\\".format(
+            ", ".join(map(_format_number, pvt_table_data.pressures.GetValues("Pa")))
+        ),
+        "TEMPERATURE = ({}) C,\\".format(
+            ", ".join(map(_format_number, pvt_table_data.temperatures.GetValues("degC")))
+        ),
+        "COLUMNS = ({})".format(", ".join(pvt_table_data.table.columns)),
+    ]
+
+
+def _build_header_lines(
+    pvt_table_data: PvtTableData, header_comments: tuple[str, ...]
+) -> list[str]:
+    """
+    Build the lines written before the table points, with the comments after the keywords.
+
+    The format of a pvt table file is told by its first line, which has to have the PVTTABLE LABEL
+    keyword, so no comment can be written before it. The comments found before the label in the file
+    the table was read from are moved as well, so that a file written by an older version of this
+    package is put in the accepted order when it is written again.
+    """
+    if pvt_table_data.layout is None:
+        keyword_lines = _generate_header_lines(pvt_table_data)
+        lines_before_the_label: list[str] = []
+    else:
+        header_lines = pvt_table_data.layout.header_lines
+        label_index = next(
+            (
+                index
+                for index, header_line in enumerate(header_lines)
+                if _LABEL_PATTERN.search(header_line) is not None
+            ),
+            0,
+        )
+        keyword_lines = header_lines[label_index:]
+        lines_before_the_label = header_lines[:label_index]
+    new_comments = [
+        comment for comment in header_comments if not _has_header_line(pvt_table_data, comment)
+    ]
+    return keyword_lines + lines_before_the_label + new_comments
+
+
 def generate_pvt_table_content(
     pvt_table_data: PvtTableData, header_comments: tuple[str, ...] = ()
 ) -> StringIO:
@@ -119,42 +167,18 @@ def generate_pvt_table_content(
     Generate the content of a pvt table file in the OLGA keyword format.
 
     When the table carries the layout of the file it was read from, the original header is written
-    back verbatim and only the table points are generated again.
+    back verbatim and only the table points are generated again, except for the comments found
+    before the PVTTABLE LABEL keyword, which are moved after the keywords of the header.
 
     :param pvt_table_data: the pvt table to be written
-    :param header_comments: comment lines written at the top of the file, skipped when the header
-        read from the original file already has them, so that fixing a file twice does not repeat
-        the same comment
+    :param header_comments: comment lines written after the keywords of the header, skipped when the
+        header read from the original file already has them, so that fixing a file twice does not
+        repeat the same comment
     :return: the content of the pvt table file
     """
     file_buffer = StringIO()
-    for comment in header_comments:
-        if not _has_header_line(pvt_table_data, comment):
-            file_buffer.write(f"{comment}\n")
-    if pvt_table_data.layout is not None:
-        for header_line in pvt_table_data.layout.header_lines:
-            file_buffer.write(f"{header_line}\n")
-    else:
-        file_buffer.write(
-            f'PVTTABLE LABEL = "{pvt_table_data.name}", PHASE = {LABEL_NUMBER_OF_PHASES},\n'
-        )
-        file_buffer.write(
-            "STDPRESSURE = {} ATM,\\\n".format(_format_number(STDPRESSURE.GetValue("atm")))
-        )
-        file_buffer.write(
-            "STDTEMPERATURE = {} K,\\\n".format(_format_number(STDTEMPERATURE.GetValue("K")))
-        )
-        file_buffer.write(
-            "PRESSURE = ({}) Pa,\\\n".format(
-                ", ".join(map(_format_number, pvt_table_data.pressures.GetValues("Pa")))
-            )
-        )
-        file_buffer.write(
-            "TEMPERATURE = ({}) C,\\\n".format(
-                ", ".join(map(_format_number, pvt_table_data.temperatures.GetValues("degC")))
-            )
-        )
-        file_buffer.write("COLUMNS = ({})\n".format(", ".join(pvt_table_data.table.columns)))
+    for header_line in _build_header_lines(pvt_table_data, header_comments):
+        file_buffer.write(f"{header_line}\n")
     for _, row in pvt_table_data.table.iterrows():
         file_buffer.write(f"PVTTABLE POINT = ({', '.join(map(_format_number, row.tolist()))})\n")
     return file_buffer
@@ -173,7 +197,7 @@ def write_pvt_table_file(
 
     :param pvt_table_data: the pvt table to be written
     :param output_filepath: where the pvt table file is written
-    :param header_comments: comment lines written at the top of the file
+    :param header_comments: comment lines written after the keywords of the header
     """
     content = generate_pvt_table_content(pvt_table_data, header_comments)
     newline = pvt_table_data.layout.newline if pvt_table_data.layout is not None else None
