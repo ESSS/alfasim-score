@@ -73,7 +73,7 @@ How to use it
    warning lists the properties written as zero because their csv files are missing.
 
    The same is available in the command line, which writes ``<folder name>.tab`` inside each
-   folder, or in the folder given by ``--output-folder``::
+   folder, or in the existing folder given by ``--output-folder``::
 
     $ alfasim-score-convert-wellprop DFLT_FCBA_9.90 N2_LIFT
     $ alfasim-score-convert-wellprop DFLT_FCBA_9.90 --output-folder pvt_tables

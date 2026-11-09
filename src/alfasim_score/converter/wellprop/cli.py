@@ -37,11 +37,11 @@ def _create_parser() -> argparse.ArgumentParser:
 
 def _convert_one_folder(wellprop_folder: Path, output_folder: Optional[Path]) -> int:
     """Convert one WELLBOREPROPS folder into a pvt table file."""
-    if not wellprop_folder.is_dir():
-        print(f"{wellprop_folder}: is not a folder", file=sys.stderr)
-        return EXIT_CODE_INVALID_FOLDER
     destiny_folder = output_folder if output_folder is not None else wellprop_folder
-    destiny_folder.mkdir(parents=True, exist_ok=True)
+    for folder in (wellprop_folder, destiny_folder):
+        if not folder.is_dir():
+            print(f"{folder}: is not a folder", file=sys.stderr)
+            return EXIT_CODE_INVALID_FOLDER
     WellpropToPvtConverter(wellprop_folder).generate_pvt_table_file(destiny_folder)
     print(f"{wellprop_folder}: written to {destiny_folder / wellprop_folder.name}.tab")
     return EXIT_CODE_SUCCESS

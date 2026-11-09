@@ -24,6 +24,7 @@ def test_convert_more_than_one_folder_to_the_output_folder(
     shared_datadir: Path, tmp_path: Path
 ) -> None:
     output_folder = tmp_path / "pvt_tables"
+    output_folder.mkdir()
     wellprop_folders = [shared_datadir / "N2_LIFT", shared_datadir / "DFLT_FCBA_9.90"]
 
     assert (
@@ -41,4 +42,16 @@ def test_folder_that_does_not_exist_is_reported_as_an_error(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     assert main([str(tmp_path / "missing")]) == EXIT_CODE_INVALID_FOLDER
+    assert "is not a folder" in capsys.readouterr().err
+
+
+def test_output_folder_that_does_not_exist_is_reported_as_an_error(
+    shared_datadir: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    output_folder = tmp_path / "missing"
+
+    assert (
+        main([str(shared_datadir / "N2_LIFT"), "-o", str(output_folder)])
+        == EXIT_CODE_INVALID_FOLDER
+    )
     assert "is not a folder" in capsys.readouterr().err
