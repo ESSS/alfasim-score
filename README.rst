@@ -68,7 +68,15 @@ How to use it
     table_converter.generate_pvt_table_file(Path("name_of_folder_to_save_converted_pvt_table"))
 
    The saved table is already fixed, so the phases that do not exist in the wellprop csv files do
-   not reach ALFAsim as zeroed properties.
+   not reach ALFAsim as zeroed properties. The gas-liquid surface tension is read from the
+   ``equivLIQUID`` interfacial tension csv file (or the ``GAS`` one when it is missing), and a
+   warning lists the properties written as zero because their csv files are missing.
+
+   The same is available in the command line, which writes ``<folder name>.tab`` inside each
+   folder, or in the folder given by ``--output-folder``::
+
+    $ alfasim-score-convert-wellprop DFLT_FCBA_9.90 N2_LIFT
+    $ alfasim-score-convert-wellprop DFLT_FCBA_9.90 --output-folder pvt_tables
 
 #. The pvt tables delivered by WELLBOREPROPS as `.tab` files write every property as zero where a
    phase does not exist, which ALFAsim is not able to use. These tables can be checked and fixed

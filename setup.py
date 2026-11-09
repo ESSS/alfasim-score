@@ -43,6 +43,7 @@ setup(
     entry_points={
         "console_scripts": [
             "alfasim-score-fix-pvt-table=alfasim_score.cli:main",
+            "alfasim-score-convert-wellprop=alfasim_score.converter.wellprop.cli:main",
         ],
     },
     extras_require=extras_require,
