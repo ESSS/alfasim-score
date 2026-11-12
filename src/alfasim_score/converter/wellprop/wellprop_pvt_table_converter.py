@@ -4,8 +4,8 @@ from typing import Tuple
 import itertools
 import numpy as np
 import pandas as pd
+import warnings
 from barril.units import Array
-from barril.units import Scalar
 from io import StringIO
 from pathlib import Path
 
@@ -179,12 +179,24 @@ class WellpropToPvtConverter:
         properties[PvtTableProperties.LiquidThermalConductivity.value] = np.array(
             liquid_constants["conductivity"]
         )
-        properties[PvtTableProperties.GasLiquidSurfaceTension.value] = np.array(
-            [Scalar(0.0, "N/m").GetValue("N/m")] * number_of_points
+        # The gas-liquid surface tension is a property of the interface, so the liquid and the gas
+        # files hold the same values: use the liquid one and fall back to the gas one.
+        surface_tension = self.dataframes["equivLIQUID_interfacial_tension"]
+        if surface_tension.empty:
+            surface_tension = self.dataframes["GAS_interfacial_tension"]
+        properties[PvtTableProperties.GasLiquidSurfaceTension.value] = (
+            surface_tension.values.astype(float).flatten()
         )
-        for key, value in properties.items():
-            if not value.size:
-                properties[key] = np.zeros(number_of_points)
+
+        missing_properties = [key for key, value in properties.items() if not value.size]
+        if missing_properties:
+            warnings.warn(
+                f"No wellprop file found in {self.wellprop_folder} for the properties "
+                f"{', '.join(missing_properties)}: they are written as zero in the pvt table.",
+                stacklevel=2,
+            )
+        for key in missing_properties:
+            properties[key] = np.zeros(number_of_points)
 
         return PvtTableData(
             name=self.pvt_filename,
